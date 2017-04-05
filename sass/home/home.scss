@@ -1,0 +1,128 @@
+/**********************home********************************/
+.home-header {
+	@extend .pl30;
+	background: $fff;
+	li {
+		a {
+			@extend .block;
+			@extend .h45;
+			@extend .lh45;
+			@extend .mr50;
+			@extend .fs16;
+			@extend .relative;
+			@extend .oh;
+			color: $nav-color;
+		}
+	}
+}
+
+.home-content {
+	@include stretch(45px, 0, 0, 0);
+	margin: 0 20px;
+	.home-main, .home-other {
+		margin: 0 5px 20px;
+		width: calc(100% / 2 - 10px);
+		height: calc(100% - 20px);
+		& > section {
+			height: calc(100% - 60px);
+			& > a {
+				@extend .inline-block;
+				width: calc(100% / 2 - 10px);
+				height: calc((100% - 30px) / 3);
+				margin: 0 5px 10px;
+				&:hover {
+					.icon {
+						width: 50%;
+						height: 100%;
+					}
+				}
+			}
+			figure {
+				@extend .fl;
+				@extend .relative;
+				@extend .wh100s;
+				@extend .fs18;
+				padding: 20px;
+				color: $fff;
+				section {
+					@extend .tc;
+					@extend .relative;
+					height: 70%;
+				}
+				.icon {
+					@include stretch(50%, false, false, 50%);
+					transform: translate(-50%, -50%);
+					width: 40%;
+					height: 80%;
+					transition: all .3s;
+				}
+				figcaption {
+					@include stretch(false, false, 20px, 20px);
+				}
+			}
+		}
+		h3 {
+			@extend .h60;
+			@extend .lh60;
+			margin-left: 5px;
+		}
+	}
+	& > section {
+		@extend .w100s;
+		@extend .clearfix;
+	}
+	.home-main a {
+		&:nth-child(1) {
+			figure {
+				background: $left-bg1;
+			}
+		}
+		&:nth-child(2) {
+			figure {
+				background: $left-bg2;
+			}
+		}
+		&:nth-child(3) {
+			figure {
+				background: $left-bg3;
+			}
+		}
+		&:nth-child(4) {
+			figure {
+				background: $left-bg4;
+			}
+		}
+		&:nth-child(5) {
+			figure {
+				background: $left-bg5;
+			}
+		}
+		&:nth-child(6) {
+			figure {
+				background: $left-bg6;
+			}
+		}
+	}
+	.home-other a {
+		&:nth-child(1) {
+			figure {
+				background: $right-bg1;
+			}
+		}
+		&:nth-child(2) {
+			figure {
+				background: $right-bg2;
+			}
+		}
+		&:nth-child(3) {
+			figure {
+				background: $right-bg3;
+			}
+		}
+		&:nth-child(4) {
+			figure {
+				background: $right-bg4;
+			}
+		}
+	}
+}

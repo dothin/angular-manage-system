@@ -1,0 +1,79 @@
+
+/**********************login***********************/
+/*login*/
+.login {
+	@extend .relative;
+	&:before, &:after {
+		position: absolute;
+		content: '';
+		width: 431px;
+		height: 585px;
+	}
+	&:before {
+		background: url("../images/login-left.png") center center no-repeat;
+	}
+	&:after {
+		background: url("../images/login-right.png") center center no-repeat;
+		right: 0;
+		top: 0;
+		width: 374px;
+		height: 502px;
+	}
+	.login-logo {
+		background: url("../images/login-logo.png") center center no-repeat;
+		width: 184px;
+		height: 39px;
+		text-indent: -9999px;
+		position: fixed;
+		top: 40px;
+		left: 50%;
+		transform:translateX(-50%);
+	}
+	.login-form {
+		@include stretch(50%, false, false, 50%);
+		transform:translate(-50%, -50%);
+		p {
+			margin-bottom: 20px;
+		}
+		.form-group {
+			margin-top: 15px;
+			@extend .relative;
+			.icon {
+				@include stretch(15px, false, false, 10px);
+			}
+			.check-model {
+				@include stretch(17px, 6px, false, false);
+			}
+			@include checkbox-box('***', 'abc');
+		}
+		input {
+			width: 400px;
+			border: 1px solid $border-color;
+			text-indent: 40px;
+			border-radius: 5px;
+			@extend .h50;
+		}
+		input[type="checkbox"] {
+			height: 20px;
+			width: 20px;
+			vertical-align: text-bottom;
+			@extend .mr10;
+		}
+		a {
+			@include stretch(10px, 0, false, false);
+		}
+		input[type="submit"] {
+			@extend .h60;
+			font-size: 22px;
+			letter-spacing: 10px;
+			text-indent: 10px;
+		}
+	}
+	.copy-right {
+		position: fixed;
+		bottom: 20px;
+		left: 50%;
+		@extend .fs12;
+		transform:translateX(-50%);
+	}
+}

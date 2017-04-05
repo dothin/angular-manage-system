@@ -1,0 +1,169 @@
+{
+    "version": 1,
+    "themeName": "huaxiang3.2",
+    "theme": {
+        "seriesCnt": "5",
+        "backgroundColor": "rgba(0,0,0,0)",
+        "titleColor": "#333333",
+        "subtitleColor": "#aaaaaa",
+        "textColorShow": false,
+        "textColor": "#333",
+        "markTextColor": "#486074",
+        "color": [
+            "#00aaff",
+            "#ff587b",
+            "#29d582",
+            "#ffc62f",
+            "#24ccf6",
+            "#f7233c",
+            "#7d68ff",
+            "#ff7700"
+        ],
+        "borderColor": "#cccccc",
+        "borderWidth": 0,
+        "visualMapColor": [
+            "#12a1e8",
+            "#96d2f0"
+        ],
+        "legendTextColor": "#486074",
+        "kColor": "#c12e34",
+        "kColor0": "#2b821d",
+        "kBorderColor": "#c12e34",
+        "kBorderColor0": "#2b821d",
+        "kBorderWidth": 1,
+        "lineWidth": 2,
+        "symbolSize": "5",
+        "symbol": "emptyCircle",
+        "symbolBorderWidth": "2",
+        "lineSmooth": false,
+        "graphLineWidth": "1",
+        "graphLineColor": "#aaaaaa",
+        "mapLabelColor": "#c12e34",
+        "mapLabelColorE": "rgb(193,46,52)",
+        "mapBorderColor": "#eeeeee",
+        "mapBorderColorE": "#dddddd",
+        "mapBorderWidth": 0.5,
+        "mapBorderWidthE": 1,
+        "mapAreaColor": "#dddddd",
+        "mapAreaColorE": "rgba(230,182,0,1)",
+        "axes": [
+            {
+                "type": "all",
+                "name": "通用坐标轴",
+                "axisLineShow": true,
+                "axisLineColor": "#333",
+                "axisTickShow": true,
+                "axisTickColor": "#333",
+                "axisLabelShow": true,
+                "axisLabelColor": "#333",
+                "splitLineShow": true,
+                "splitLineColor": [
+                    "#ccc"
+                ],
+                "splitAreaShow": false,
+                "splitAreaColor": [
+                    "rgba(250,250,250,0.3)",
+                    "rgba(200,200,200,0.3)"
+                ]
+            },
+            {
+                "type": "category",
+                "name": "类目坐标轴",
+                "axisLineShow": true,
+                "axisLineColor": "#f8f8f8",
+                "axisTickShow": false,
+                "axisTickColor": "#333",
+                "axisLabelShow": true,
+                "axisLabelColor": "#486074",
+                "splitLineShow": true,
+                "splitLineColor": [
+                    "#f8f8f8"
+                ],
+                "splitAreaShow": false,
+                "splitAreaColor": [
+                    "rgba(250,250,250,0.3)",
+                    "rgba(200,200,200,0.3)"
+                ]
+            },
+            {
+                "type": "value",
+                "name": "数值坐标轴",
+                "axisLineShow": true,
+                "axisLineColor": "#f8f8f8",
+                "axisTickShow": false,
+                "axisTickColor": "#333",
+                "axisLabelShow": true,
+                "axisLabelColor": "#486074",
+                "splitLineShow": true,
+                "splitLineColor": [
+                    "#f8f8f8"
+                ],
+                "splitAreaShow": false,
+                "splitAreaColor": [
+                    "rgba(250,250,250,0.3)",
+                    "rgba(200,200,200,0.3)"
+                ]
+            },
+            {
+                "type": "log",
+                "name": "对数坐标轴",
+                "axisLineShow": false,
+                "axisLineColor": "#f8f8f8",
+                "axisTickShow": false,
+                "axisTickColor": "#333",
+                "axisLabelShow": true,
+                "axisLabelColor": "#486074",
+                "splitLineShow": true,
+                "splitLineColor": [
+                    "#f8f8f8"
+                ],
+                "splitAreaShow": false,
+                "splitAreaColor": [
+                    "rgba(250,250,250,0.3)",
+                    "rgba(200,200,200,0.3)"
+                ]
+            },
+            {
+                "type": "time",
+                "name": "时间坐标轴",
+                "axisLineShow": false,
+                "axisLineColor": "#f8f8f8",
+                "axisTickShow": false,
+                "axisTickColor": "#333",
+                "axisLabelShow": true,
+                "axisLabelColor": "#486074",
+                "splitLineShow": true,
+                "splitLineColor": [
+                    "#f8f8f8"
+                ],
+                "splitAreaShow": false,
+                "splitAreaColor": [
+                    "rgba(250,250,250,0.3)",
+                    "rgba(200,200,200,0.3)"
+                ]
+            }
+        ],
+        "axisSeperateSetting": true,
+        "toolboxColor": "#06467c",
+        "toolboxEmpasisColor": "#4187c2",
+        "tooltipAxisColor": "#f8f8f8",
+        "tooltipAxisWidth": 1,
+        "timelineLineColor": "#005eaa",
+        "timelineLineWidth": 1,
+        "timelineItemColor": "#005eaa",
+        "timelineItemColorE": "#005eaa",
+        "timelineCheckColor": "#005eaa",
+        "timelineCheckBorderColor": "rgba(49,107,194,0.5)",
+        "timelineItemBorderWidth": 1,
+        "timelineControlColor": "#005eaa",
+        "timelineControlBorderColor": "#005eaa",
+        "timelineControlBorderWidth": 0.5,
+        "timelineLabelColor": "#005eaa",
+        "datazoomBackgroundColor": "rgba(47,69,84,0)",
+        "datazoomDataColor": "rgba(47,69,84,0.3)",
+        "datazoomFillColor": "rgba(167,183,204,0.4)",
+        "datazoomHandleColor": "#a7b7cc",
+        "datazoomHandleWidth": "100",
+        "datazoomLabelColor": "#333333"
+    }
+}

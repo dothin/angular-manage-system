@@ -1,0 +1,253 @@
+<header class="hx-header">
+    <nav>
+        <ul class="list-inline clearfix">
+            <li>
+                <a ng-if="vm._param.type === 0" href="#/main/groupHX/study" title="返回学习成绩">返回学习成绩</a>
+                <a ng-if="vm._param.type === 1"  href="#/main/warning">预测预警</a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<section class="hx-content">
+    <section class="col-index">
+        <div class="col-index-box">
+            <section class="col-1-1 col-index-top">
+                <div ng-if="vm.userType===1" class="fl list-left">该群体  共 <mark>{{vm.totalNum}}</mark> 条记录</div>
+                <div ng-if="vm.userType===0" class="fl list-left">该群体  共 <mark>{{vm.totalNum}}</mark> 人</div>
+                <div class="fl">
+                    <select ng-if="vm.userType===1" class="form-control fl max200" ng-model="vm.choosedCollege" ng-change="vm.changeSelect()"
+                            ng-options="option.name for option in vm.filter.college">
+                        <option value="">不限学院</option>
+                    </select>
+                    <select ng-if="vm.userType===0" class="form-control fl max200" ng-model="vm.choosedMajor" ng-change="vm.changeSelect()"
+                            ng-options="option.name for option in vm.filter.major[0].major">
+                        <option value="">不限专业</option>
+                    </select>
+                    <select class="form-control fl" ng-model="vm.choosedGrade" ng-change="vm.changeSelect()"
+                            ng-options="option.name for option in vm.filter.grade">
+                        <option value="">不限年级</option>
+                    </select>
+                    <select class="form-control fl" ng-model="vm.item" ng-change="vm.changeSelect()"
+                            ng-options="option.name for option in vm.itemList">
+                    </select>
+                </div>
+                <div class="fr" ng-if="vm.userType===0">
+                    <button ng-disabled="vm.tableFlag===2" class="btn-primary fr" ng-if="!vm.checkStudentExport" ng-click="vm.exportStudent()">
+                        导出名单
+                    </button>
+                    <button disabled class="btn-primary fr" ng-if="vm.checkStudentExport">
+                        正在导出…
+                    </button>
+                    <span class="reminder fr">名单将发至您的邮箱</span>
+                </div>
+            </section>
+            <section class="col-1-1 col-index-bottom pagination-wrap" ng-switch="vm.tableFlag">
+                <div class="is-loading" ng-switch-when="0">加载中……</div>
+                <table ng-switch-when="1" ng-if="vm.userType===0 && vm._param.subType === 0">
+                    <thead>
+                    <tr>
+                        <td class="w100">姓名</td>
+                        <td class="w160">学号</td>
+                        <td>专业</td>
+                        <td class="w80">年级</td>
+                        <td>学年/学期</td>
+                        <td>挂科数</td>
+                        <td class="w160">操作</td>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="item in vm.dataList">
+                        <td><go-student-h-x student="item"></go-student-h-x></td>
+                        <td title="{{item.sn}}">{{item.sn}}</td>
+                        <td title="{{item.major}}">{{item.major}}</td>
+                        <td title="{{item.grade}}">{{item.grade}}</td>
+                        <td title="{{item.year}}">{{item.year}}</td>
+                        <td title="{{item.failNum}}">{{item.failNum}}</td>
+                        <td>
+                            <a ng-if="vm._param.type === 1" class="fl" href="#/main/warning/studyDetail">查看详情</a>
+                            <focus-modal conf="vm.focusConf" action="addFocus"  input="item"></focus-modal>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+                <table ng-switch-when="1" ng-if="vm.userType===1 && vm._param.subType === 0">
+                    <thead>
+                    <tr>
+                        <td>学院</td>
+                        <td class="w80">年级</td>
+                        <td>学年/学期</td>
+                        <td>挂科人数</td>
+                        <td class="w160">操作</td>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="item in vm.dataList">
+                        <td title="{{item.college}}">{{item.college}}</td>
+                        <td title="{{item.grade}}">{{item.grade}}</td>
+                        <td title="{{item.year}}">{{item.year}}</td>
+                        <td title="一科：{{item.oneFail}}；两科：{{item.twoFail}}；三科及以上：{{item.threeFail}}">一科：{{item.oneFail}}；两科：{{item.twoFail}}；三科及以上：{{item.threeFail}}</td>
+                        <td>
+                            <a href="javascript:;"  ng-if="!vm.checkExport(item)" ng-click="vm.export(item)">导出名单</a>
+                            <span ng-if="vm.checkExport(item)" >正在导出…</span>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+                <table ng-switch-when="1" ng-if="vm.userType===0 && vm._param.subType === 1">
+                    <thead>
+                    <tr>
+                        <td class="w100">姓名</td>
+                        <td class="w160">学号</td>
+                        <td>专业</td>
+                        <td class="w80">年级</td>
+                        <td>学年/学期</td>
+                        <td>排名变动</td>
+                        <td class="w80">操作</td>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="item in vm.dataList">
+                        <td><go-student-h-x student="item"></go-student-h-x></td>
+                        <td title="{{item.sn}}">{{item.sn}}</td>
+                        <td title="{{item.major}}">{{item.major}}</td>
+                        <td title="{{item.grade}}">{{item.grade}}</td>
+                        <td title="{{item.year}}">{{item.year}}</td>
+                        <td title="{{item.upOrDown}}">{{item.upOrDown}}</td>
+                        <td>
+                            <a ng-if="vm._param.type === 1" class="fl" href="#/main/warning/studyDetail">查看详情</a>
+                            <focus-modal conf="vm.focusConf" action="addFocus"  input="item"></focus-modal>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+                <table ng-switch-when="1" ng-if="vm.userType===1 && vm._param.subType === 1">
+                    <thead>
+                    <tr>
+                        <td>学院</td>
+                        <td class="w80">年级</td>
+                        <td>学年/学期</td>
+                        <td>排名变动</td>
+                        <td class="w160">操作</td>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="item in vm.dataList">
+                        <td title="{{item.college}}">{{item.college}}</td>
+                        <td title="{{item.grade}}">{{item.grade}}</td>
+                        <td title="{{item.year}}">{{item.year}}</td>
+                        <td title="上升：{{item.up}}人；下降：{{item.down}}人">上升：{{item.up}}人；下降：{{item.down}}人</td>
+                        <td>
+                            <a href="javascript:;"  ng-if="!vm.checkExport(item)" ng-click="vm.export(item)">导出名单</a>
+                            <span ng-if="vm.checkExport(item)" >正在导出…</span>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+                <table ng-switch-when="1" ng-if="vm.userType===0 && vm._param.subType === 2">
+                    <thead>
+                    <tr>
+                        <td class="w100">姓名</td>
+                        <td class="w160">学号</td>
+                        <td>专业</td>
+                        <td class="w80">年级</td>
+                        <td>学年/学期</td>
+                        <td>排名上升</td>
+                        <td class="w80">操作</td>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="item in vm.dataList">
+                        <td><go-student-h-x student="item"></go-student-h-x></td>
+                        <td title="{{item.sn}}">{{item.sn}}</td>
+                        <td title="{{item.major}}">{{item.major}}</td>
+                        <td title="{{item.grade}}">{{item.grade}}</td>
+                        <td title="{{item.year}}">{{item.year}}</td>
+                        <td title="{{item.upOrDown}}">{{item.upOrDown}}</td>
+                        <td>
+                            <a ng-if="vm._param.type === 1" class="fl" href="#/main/warning/studyDetail">查看详情</a>
+                            <focus-modal conf="vm.focusConf" action="addFocus"  input="item"></focus-modal>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+                <table ng-switch-when="1" ng-if="vm.userType===1 && vm._param.subType === 2">
+                    <thead>
+                    <tr>
+                        <td>学院</td>
+                        <td class="w80">年级</td>
+                        <td>学年/学期</td>
+                        <td>排名上升</td>
+                        <td class="w160">操作</td>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="item in vm.dataList">
+                        <td title="{{item.college}}">{{item.college}}</td>
+                        <td title="{{item.grade}}">{{item.grade}}</td>
+                        <td title="{{item.year}}">{{item.year}}</td>
+                        <td title="{{item.up}}">{{item.up}}</td>
+                        <td>
+                            <a href="javascript:;"  ng-if="!vm.checkExport(item)" ng-click="vm.export(item)">导出名单</a>
+                            <span ng-if="vm.checkExport(item)" >正在导出…</span>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+                <table ng-switch-when="1" ng-if="vm.userType===0 && vm._param.subType === 3">
+                    <thead>
+                    <tr>
+                        <td class="w100">姓名</td>
+                        <td class="w160">学号</td>
+                        <td>专业</td>
+                        <td class="w80">年级</td>
+                        <td>学年/学期</td>
+                        <td>排名下降</td>
+                        <td class="w80">操作</td>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="item in vm.dataList">
+                        <td><go-student-h-x student="item"></go-student-h-x></td>
+                        <td title="{{item.sn}}">{{item.sn}}</td>
+                        <td title="{{item.major}}">{{item.major}}</td>
+                        <td title="{{item.grade}}">{{item.grade}}</td>
+                        <td title="{{item.year}}">{{item.year}}</td>
+                        <td title="{{item.upOrDown}}">{{item.upOrDown}}</td>
+                        <td>
+                            <a ng-if="vm._param.type === 1" class="fl" href="#/main/warning/studyDetail">查看详情</a>
+                            <focus-modal conf="vm.focusConf" action="addFocus"  input="item"></focus-modal>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+                <table ng-switch-when="1" ng-if="vm.userType===1 && vm._param.subType === 3">
+                    <thead>
+                    <tr>
+                        <td>学院</td>
+                        <td class="w80">年级</td>
+                        <td>学年/学期</td>
+                        <td>排名下降</td>
+                        <td class="w160">操作</td>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="item in vm.dataList">
+                        <td title="{{item.college}}">{{item.college}}</td>
+                        <td title="{{item.grade}}">{{item.grade}}</td>
+                        <td title="{{item.year}}">{{item.year}}</td>
+                        <td title="{{item.down}}">{{item.down}}</td>
+                        <td>
+                            <a href="javascript:;"  ng-if="!vm.checkExport(item)" ng-click="vm.export(item)">导出名单</a>
+                            <span ng-if="vm.checkExport(item)" >正在导出…</span>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+                <tm-pagination conf="vm.paginationConf"></tm-pagination>
+                <div ng-switch-when="2" class="no-results">暂无记录</div>
+            </section>
+        </div>
+    </section>
+</section>
+
+

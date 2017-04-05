@@ -1,0 +1,87 @@
+/**********************user********************************/
+.user-content{
+	@include stretch(45px,0,0,0);
+	padding:0 20px;
+	overflow: auto;
+	.user-top,.user-bottom{
+		padding:20px;
+		margin:20px 10px 20px;
+		background: $fff;
+		dt,dd{
+			@extend .fl;
+			@extend .h30;
+			@extend .lh30;
+		}
+		dt{
+			clear: left;
+		}
+		h3{
+			@extend .fs16;
+			@extend .h30;
+			span{
+				@extend .fs12;
+				@extend .ml10;
+				color:$weak-color;
+			}
+		}
+		.form-group{
+			@extend .relative;
+			margin-bottom: 10px;
+			.check-model {
+				@include stretch(5px, false, false, 0);
+			}
+			@include checkbox-box($check-width: 40px, $check-height: 20px, $check-active-bg: $active-color);
+			padding-left:50px;
+			label:nth-child(2){
+				width:130px;
+				@extend .inline-block;
+			}
+			.form-control{
+				width:60px;
+				border:1px solid $border-color;
+				border-radius:5px;
+				@extend .pl10;
+				@extend .h30;
+				@extend .lh30;
+			}
+		}
+		.reset-pass{
+			.form-group{
+				padding-left:0;
+				label{
+					width:100px;
+					@extend .inline-block;
+					@extend .h50;
+					@extend .lh50;
+				}
+				.form-control{
+					width:320px;
+					@extend .h40;
+					@extend .lh40;
+				}
+				ul{
+					margin-left: 100px;
+					width: 320px;
+				}
+			}
+			.btn-primary{
+				margin-left:100px;
+				@extend .mt10;
+			 }
+		}
+		.btn-primary{
+			@extend .h45;
+			@extend .lh45;
+			@extend .fs20;
+			letter-spacing: 5px;
+			width:135px;
+			margin-left:-50px;
+		}
+	}
+	.user-top{
+		height:140px;
+	}
+	.user-bottom{
+		min-height: calc(100% - 200px);
+	}
+}

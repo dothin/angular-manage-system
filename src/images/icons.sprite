@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SpriteFile xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" CssFileName="../images" ImageName="icons" IsPhone="false" xmlns="CssSprite">
+  <SpriteList>
+    <Sprite Path="chenjiyuce.png" LocationX="0" LocationY="0" />
+    <Sprite Path="pinkunyuce.png" LocationX="0" LocationY="100" />
+    <Sprite Path="shiliangaojin.png" LocationX="0" LocationY="200" />
+    <Sprite Path="biyequxiangyuce.png" LocationX="0" LocationY="300" />
+    <Sprite Path="more.png" LocationX="0" LocationY="400" />
+    <Sprite Path="kaitong.png" LocationX="0" LocationY="500" />
+    <Sprite Path="qidai.png" LocationX="0" LocationY="603" />
+  </SpriteList>
+</SpriteFile>

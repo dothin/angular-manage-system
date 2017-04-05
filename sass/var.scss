@@ -1,0 +1,300 @@
+@import "color";
+//var
+.text-error {
+	color: $red;
+	height: 25px;
+	line-height: 25px;
+	background: #fbe3e3;
+	padding-left: 10px;
+}
+
+.text-red {
+	color: $red;
+}
+
+//extend
+.fl {
+	float: left;
+}
+
+.fr {
+	float: right;
+}
+
+.clearfix {
+	&:before,
+	&:after {
+		content: "";
+		display: table;
+		font: 0/0 a;
+	}
+	&:after {
+		clear: both;
+	}
+}
+
+.hide {
+	display: none !important;
+}
+
+.block {
+	display: block !important;
+}
+
+.relative {
+	position: relative;
+}
+
+.oh {
+	overflow: hidden !important;
+}
+
+.ellipsis {
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+}
+
+.inline-block {
+	display: inline-block;
+}
+
+.block {
+	display: block;
+}
+
+.cursor-pointer {
+	cursor: pointer;
+}
+
+.tl {
+	text-align: left;
+}
+
+.tc {
+	text-align: center;
+}
+
+.tr {
+	text-align: right;
+}
+
+.fs12 {
+	font-size: 12px;
+}
+
+.fs16 {
+	font-size: 16px;
+	@media (max-height: 768px) {
+		font-size: 14px;
+	}
+}
+
+.fs18 {
+	font-size: 18px;
+	@media (max-height: 768px) {
+		font-size: 16px;
+	}
+}
+
+.fs20 {
+	font-size: 20px;
+	@media (max-height: 768px) {
+		font-size: 18px;
+	}
+}
+
+@for $i from 2 through 6 {
+	.w#{$i*10} {
+		width: $i*10px;
+	}
+}
+
+@for $i from 2 through 7 {
+	.h#{$i*10} {
+		height: $i*10px;
+	}
+}
+
+@for $i from 2 through 7 {
+	.lh#{$i*10} {
+		line-height: $i*10px;
+	}
+}
+
+.h35 {
+	height: 35px;
+}
+
+.h45 {
+	height: 45px;
+}
+
+.lh35 {
+	line-height: 35px;
+}
+
+.h55 {
+	height: 55px;
+}
+
+.lh55 {
+	line-height: 55px;
+}
+
+.lh45 {
+	line-height: 45px;
+}
+
+.h75 {
+	height: 75px;
+}
+
+.lh75 {
+	line-height: 75px;
+}
+
+@for $i from 1 through 4 {
+	.mt#{$i*10} {
+		margin-top: $i*10px;
+	}
+}
+
+.mt15 {
+	margin-top: 15px;
+}
+
+@for $i from 1 through 5 {
+	.mr#{$i*10} {
+		margin-right: $i*10px;
+	}
+}
+
+@for $i from 0 through 5 {
+	.ml#{$i*10} {
+		margin-left: $i*10px;
+	}
+}
+
+@for $i from 1 through 4 {
+	.pr#{$i*10} {
+		padding-right: $i*10px;
+	}
+}
+
+@for $i from 1 through 4 {
+	.pl#{$i*10} {
+		padding-left: $i*10px;
+	}
+}
+
+.w50 {
+	width: 50px;
+}
+
+.w100 {
+	width: 100px;
+}
+
+.w110 {
+	width: 110px;
+}
+
+.w80 {
+	width: 80px;
+}
+
+.w120 {
+	width: 120px;
+}
+
+.w160 {
+	width: 160px;
+}
+
+.w300 {
+	width: 300px;
+}
+
+.h50s {
+	height: 50%;
+}
+
+.h80s {
+	height: 80%;
+}
+
+.h90s {
+	height: 90%;
+}
+
+.h100s {
+	height: 100%;
+}
+
+.w100s {
+	width: 100%;
+}
+
+.wh100s {
+	height: 100%;
+	width: 100%;
+}
+
+.max200 {
+	max-width: 200px;
+}
+
+.equal-height {
+	padding-bottom: 9999px;
+	margin-bottom: -9999px;
+}
+
+//%
+//icon
+.icons {
+	background: url(../images/icons.png) no-repeat;
+}
+
+.chenjiyuce {
+	height: 100px;
+	width: 100px;
+	background-position: 0 0;
+}
+
+.pinkunyuce {
+	height: 100px;
+	width: 100px;
+	background-position: 0 -100px;
+}
+
+.shiliangaojin {
+	height: 100px;
+	width: 100px;
+	background-position: 0 -200px;
+}
+
+.biyequxiangyuce {
+	height: 100px;
+	width: 100px;
+	background-position: 0 -300px;
+}
+
+.more {
+	height: 100px;
+	width: 100px;
+	background-position: 0 -400px;
+}
+
+.kaitong {
+	height: 103px;
+	width: 103px;
+	background-position: 0 -500px;
+}
+
+.qidai {
+	height: 103px;
+	width: 103px;
+	background-position: 0 -603px;
+}
+

@@ -1,0 +1,128 @@
+@import "var";
+/*********************reset***************************/
+* {
+	box-sizing: border-box;
+}
+
+*:before,
+*:after {
+	box-sizing: border-box;
+}
+
+body, ul, ol, dl, dd, h1, h2, h3, h4, p, input, select, textarea, form, figure, figcaption {
+	margin: 0;
+	padding: 0
+}
+
+h1, h2, h3, h4 {
+	font-weight: normal;
+	font-size: $font-size;
+}
+
+body {
+	@extend .relative;
+	font-family: $yaHei;
+	font-size: $font-size;
+	@media (max-height: 768px) {
+		font-size: 12px;
+	}
+	color: $color;
+	min-width: 1280px;
+}
+
+html, body, .body-wrap, .login {
+	@extend .h100s;
+}
+
+img {
+	border: none;
+	vertical-align: middle;
+}
+
+input, select, textarea, button {
+	font-family: $yaHei;
+	outline: none;
+	border: none;
+	background-color: transparent
+}
+
+input[type="button"], input[type="submit"], button {
+	@extend .cursor-pointer;
+	&:disabled {
+		background: $btn-primary-disabled-color;
+		cursor: not-allowed;
+	}
+}
+
+select {
+	border: 1px solid $weak-color;
+}
+
+textarea {
+	resize: none
+}
+
+table {
+	border-collapse: collapse;
+	border-spacing: 0;
+	table-layout: fixed;
+}
+
+td,
+th {
+	padding: 0;
+	word-break: break-all;
+	@extend .ellipsis;
+}
+
+mark {
+	background: transparent;
+	color: $active-color;
+	@extend .fs16;
+}
+
+em, i {
+	font-style: normal
+}
+
+li {
+	list-style: none;
+}
+
+a {
+	color: $color;
+	text-decoration: none;
+}
+
+::-ms-clear, ::-ms-reveal {
+	display: none;
+}
+
+a:hover, a:active, input:active {
+	text-decoration: none;
+	outline: 0;
+}
+
+#loading-bar-spinner {
+	top: auto;
+	bottom: 20px;
+	left: 10px;
+}
+
+/*********************some style for common***************************/
+ul.list-inline > li {
+	@extend .fl;
+}
+
+#loading-bar .bar {
+	background: $red;
+}
+
+#loading-bar .peg {
+	box-shadow: $red 1px 0 6px 1px;
+}
+
+#loading-bar-spinner .spinner-icon {
+	border-top-color: $red;
+	border-left-color: $red;
+}

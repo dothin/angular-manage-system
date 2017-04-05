@@ -1,0 +1,45 @@
+<header class="hx-content-header clearfix">
+    <group-h-x-header-left></group-h-x-header-left>
+    <set-term config="vm.termConf"></set-term>
+</header>
+<section class="col-wrap">
+    <section ng-show="vm.config.fail.show" class="{{vm.config.fail.class}}">
+        <header class="col-header">
+            <h3>挂科</h3>
+            <a class="fr check-list" ng-click="vm.getStudyFailDetail()">查看名单</a>
+        </header>
+        <section class="col-content student-exp">
+            <div>一门： <mark>{{vm.failData.oneFail}}</mark> 人</div>
+            <div>两门： <mark>{{vm.failData.twoFail}}</mark> 人</div>
+            <div>三门及以上： <mark>{{vm.failData.threeFail}}</mark> 人</div>
+        </section>
+    </section>
+    <section ng-show="vm.config.rankChange.show" class="{{vm.config.rankChange.class}}">
+        <header class="col-header">
+            <h3>排名变动</h3>
+            <a class="fr check-list" ng-click="vm.getStudyRankChange()">查看名单</a>
+        </header>
+        <section class="col-content student-exp">
+            <div>上升： <mark>{{vm.upDownData.up || '-'}}</mark> 人</div>
+            <div>下降： <mark>{{vm.upDownData.down || '-'}}</mark> 人</div>
+        </section>
+    </section>
+    <section ng-show="vm.config.courseAvg.show" class="{{vm.config.courseAvg.class}}" ng-class="{'full-screen': vm.courseAvgMode}">
+        <header class="col-header">
+            <h3>课程平均分</h3>
+            <change-mode mode="vm.courseAvgMode"></change-mode>
+        </header>
+        <section class="col-content">
+            <div class="h100s" id="courseAvg"></div>
+        </section>
+    </section>
+    <section ng-show="vm.config.courseScore.show" class="{{vm.config.courseScore.class}}" ng-class="{'full-screen': vm.courseScoreMode}">
+        <header class="col-header">
+            <h3>课程分数</h3>
+            <change-mode mode="vm.courseScoreMode"></change-mode>
+        </header>
+        <section class="col-content">
+            <div class="h100s" id="courseScore"></div>
+        </section>
+    </section>
+</section>

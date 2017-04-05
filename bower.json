@@ -1,0 +1,30 @@
+{
+  "name": "angular-manage-system",
+  "description": "angular-manage-system",
+  "main": "index.js",
+  "authors": [
+    "dothin"
+  ],
+  "license": "ISC",
+  "keywords": [
+    "corporation"
+  ],
+  "homepage": "",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "devDependencies": {
+    "angular": "^1.5.8",
+    "angular-ui-router": "^0.3.1",
+    "angular-animate": "^1.5.8",
+    "oclazyload": "^1.0.9",
+    "normalize-scss": "normalize.scss#^6.0.0",
+    "angular-cookies": "^1.5.8",
+    "angular-loading-bar": "^0.9.0",
+    "echarts": "^3.3.2"
+  }
+}

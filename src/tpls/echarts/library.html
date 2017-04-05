@@ -1,0 +1,61 @@
+<header class="hx-content-header clearfix">
+    <group-h-x-header-left></group-h-x-header-left>
+    <set-time conf="vm.timeConf"></set-time>
+</header>
+<section class="col-wrap">
+    <section ng-show="vm.config.situationNum.show" class="{{vm.config.situationNum.class}}"
+             ng-class="{'full-screen': vm.situationNumMode}">
+        <header class="col-header">
+            <h3>
+                <span ng-class="{active:vm.tabs === 0}" ng-click="vm.changeTabs(0)">泡馆情况</span>
+                <span ng-class="{active:vm.tabs === 1}" ng-click="vm.changeTabs(1)">泡馆人数</span>
+            </h3>
+            <change-mode mode="vm.situationNumMode"></change-mode>
+        </header>
+        <section class="col-content">
+            <section ng-if="vm.tabs === 0" class="col-content-top">
+                <span>泡馆天数：&nbsp;&nbsp;本群体&nbsp;<mark>{{vm.groupAvgDay | toFixed:2}}</mark>天</span>
+                <span>全校平均&nbsp;<mark>{{vm.schoolAvgDay | toFixed:2}}</mark>天</span>&nbsp;&nbsp;
+                <span>泡馆时长：&nbsp;&nbsp;本群体&nbsp;<mark>{{vm.groupAvgHour | toFixed:2}}</mark>h</span>
+                <span>全校平均&nbsp;<mark>{{vm.schoolAvgHour | toFixed:2}}</mark>h</span>
+            </section>
+            <section ng-if="vm.tabs === 1" class="col-content-top">
+                <span>本群体月均泡馆人数&nbsp;<mark>{{vm.avgGroup | toFixed:2}}</mark>人</span>
+                <span>全校月均泡馆人数&nbsp;<mark>{{vm.avgSchool | toFixed:2}}</mark>人</span>
+            </section>
+            <div class="col-content-bottom" id="situationNum"></div>
+        </section>
+    </section>
+    <section ng-show="vm.config.bookType.show" class="{{vm.config.bookType.class}}">
+        <header class="col-header">
+            <h3>借阅图书类别</h3>
+        </header>
+        <section class="col-content group-book">
+            <div ng-if="!vm.rankBooks" class="is-loading">加载中……</div>
+            <ul ng-repeat="book in vm.rankBooks |limitTo:6" class="slide-top">
+                <li><span
+                        ng-class="{'first-rank':$index === 0,'second-rank':$index === 1,'third-rank':$index === 2,'normal-rank':$index > 2}">{{$index+1}}</span>
+                </li>
+                <li title="{{book.name}}">{{book.name}}</li>
+                <li>借阅{{book.num}}次</li>
+            </ul>
+            <div ng-if="vm.rankBooks.length === 0" class="no-results">暂无数据</div>
+        </section>
+    </section>
+    <section ng-show="vm.config.bookRank.show" class="{{vm.config.bookRank.class}}">
+        <header class="col-header">
+            <h3>借阅图书排行榜</h3>
+        </header>
+        <section class="col-content group-book">
+            <div ng-if="!vm.books" class="is-loading">加载中……</div>
+            <ul ng-repeat="book in vm.books |limitTo:6" class="slide-top">
+                <li><span
+                        ng-class="{'first-rank':$index === 0,'second-rank':$index === 1,'third-rank':$index === 2,'normal-rank':$index > 2}">{{$index+1}}</span>
+                </li>
+                <li title="{{book.name}}">{{book.name}}</li>
+                <li>借阅{{book.num}}次</li>
+            </ul>
+            <div ng-if="vm.books.length === 0" class="no-results">暂无数据</div>
+        </section>
+    </section>
+</section>

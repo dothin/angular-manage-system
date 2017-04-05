@@ -1,0 +1,92 @@
+<header class="hx-header list-header">
+    <nav>
+        <ul class="list-inline clearfix">
+            <li><a href="#/main/groupHX/consumption" title="返回群体消费水平">返回群体消费水平</a></li>
+        </ul>
+    </nav>
+</header>
+<section class="hx-content">
+    <section class="col-index">
+        <div class="col-index-box">
+            <section class="col-1-1 col-index-top">
+                <div ng-if="vm.userType===1" class="fl list-left">该群体  共 <mark>{{vm.totalNum}}</mark> 条记录</div>
+                <div ng-if="vm.userType===0" class="fl list-left">该群体  共 <mark>{{vm.totalNum}}</mark> 人</div>
+                <div class="fl">
+                    <select ng-if="vm.userType===1" class="form-control fl" ng-model="vm.choosedCollege" ng-change="vm.changeSelect()"
+                            ng-options="option.name for option in vm.filter.college">
+                        <option value="">不限学院</option>
+                    </select>
+                    <select ng-if="vm.userType===0" class="form-control fl" ng-model="vm.choosedMajor" ng-change="vm.changeSelect()"
+                            ng-options="option.name for option in vm.filter.major[0].major">
+                        <option value="">不限专业</option>
+                    </select>
+                    <select class="form-control fl" ng-model="vm.choosedGrade" ng-change="vm.changeSelect()"
+                            ng-options="option.name for option in vm.filter.grade">
+                        <option value="">不限年级</option>
+                    </select>
+                </div>
+                <div class="fr" ng-if="vm.userType===0">
+                    <button ng-disabled="vm.tableFlag===2" class="btn-primary fr" ng-if="!vm.checkStudentExport" ng-click="vm.exportStudent()">
+                        导出名单
+                    </button>
+                    <button disabled class="btn-primary fr" ng-if="vm.checkStudentExport">
+                        正在导出…
+                    </button>
+                    <span class="reminder fr">名单将发至您的邮箱</span>
+                </div>
+            </section>
+            <section class="col-1-1 col-index-bottom pagination-wrap" ng-switch="vm.tableFlag">
+                <div class="is-loading" ng-switch-when="0">加载中……</div>
+                <table ng-switch-when="1" ng-if="vm.userType===0">
+                    <thead>
+                    <tr>
+                        <td class="w100">姓名</td>
+                        <td class="w160">学号</td>
+                        <td>专业</td>
+                        <td class="w100">年级</td>
+                        <td class="w100">食堂月均消费次数</td>
+                        <td class="w160">操作</td>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="item in vm.dataList">
+                        <td><go-student-h-x student="item"></go-student-h-x></td>
+                        <td title="{{item.studentId}}">{{item.studentId}}</td>
+                        <td title="{{item.majorName}}">{{item.majorName}}</td>
+                        <td title="{{item.gradeName}}">{{item.gradeName}}</td>
+                        <td title="{{item.avgMonthCounts}}">{{item.avgMonthCounts}}</td>
+                        <td>
+                            <focus-modal conf="vm.focusConf" action="addFocus"  input="item"></focus-modal>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+                <table ng-switch-when="1" ng-if="vm.userType===1">
+                    <thead>
+                    <tr>
+                        <td>学院</td>
+                        <td class="w100">年级</td>
+                        <td>单餐低消费次数多的学生人数</td>
+                        <td class="w160">操作</td>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="item in vm.dataList">
+                        <td title="{{item.collegeName}}">{{item.collegeName}}</td>
+                        <td title="{{item.gradeName}}">{{item.gradeName}}</td>
+                        <td title="{{item.messLowCounts}}">{{item.messLowCounts}}</td>
+                        <td>
+                            <a href="javascript:;"  ng-if="!vm.checkExport(item)" ng-click="vm.export(item)">导出名单</a>
+                            <span ng-if="vm.checkExport(item)" >正在导出…</span>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+                <tm-pagination conf="vm.paginationConf"></tm-pagination>
+                <div ng-switch-when="2" class="no-results">暂无记录</div>
+            </section>
+        </div>
+    </section>
+</section>
+
+

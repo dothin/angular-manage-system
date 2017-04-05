@@ -1,0 +1,25 @@
+<header class="hx-content-header clearfix">
+    <group-h-x-header-left></group-h-x-header-left>
+    <set-time conf="vm.timeConf"></set-time>
+</header>
+<section class="col-wrap">
+    <section ng-show="vm.config.friendship.show" class="{{vm.config.friendship.class}}" ng-class="{'full-screen': vm.friendshipMode}">
+        <header class="col-header">
+            <h3>学生拥有朋友数</h3>
+            <a class="fr check-list" ng-click="vm.getFriendDetail()">查看0个朋友的学生名单</a>
+            <change-mode mode="vm.friendshipMode"></change-mode>
+        </header>
+        <section class="col-content">
+            <div class="h100s" id="friendship"></div>
+        </section>
+    </section>
+    <section ng-show="vm.config.active.show" class="{{vm.config.active.class}}" ng-class="{'full-screen': vm.activeMode}">
+        <header class="col-header">
+            <h3>社交活跃度</h3>
+            <change-mode mode="vm.activeMode"></change-mode>
+        </header>
+        <section class="col-content">
+            <div class="h100s" id="active"></div>
+        </section>
+    </section>
+</section>

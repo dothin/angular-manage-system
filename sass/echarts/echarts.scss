@@ -1,0 +1,134 @@
+/*******************groupHXHeaderLeft*************************/
+.group-name {
+	@extend .ellipsis;
+	max-width: 300px;
+}
+
+.group-base-college {
+	& > div:first-child {
+		height: calc(100% - 20px);
+	}
+	a {
+		padding: 5px;
+		background: $weak-color;
+		font-size: 0;
+		border-radius: 50%;
+		@extend .mr10;
+		@extend .inline-block;
+		&.active, &:hover {
+			background: $active-color;
+		}
+	}
+}
+
+.col-age {
+	@extend .h70;
+	& > div {
+		color: $active-color;
+		@extend .mt40;
+		font-weight: bold;
+		&:before {
+			margin-right: 5px;
+			font-weight: normal;
+		}
+	}
+}
+
+.student-exp {
+	@extend .fs16;
+	& > div {
+		@extend .mt30;
+		@media (max-height: 768px) {
+			margin-top: 20px;
+		}
+	}
+}
+
+.low-consumption {
+	@extend .relative;
+	.tc {
+		@include stretch(50%, false, false, 50%);
+		@extend .w100s;
+		transform: translate(-50%, -50%);
+	}
+}
+
+.check-list {
+	@extend .cursor-pointer;
+	color: $link-color;
+}
+
+.group-book {
+	margin-top: 20px !important;
+	@media (max-height: 768px) {
+		margin-top: 0 !important;
+	}
+	margin-left: -20px;
+	margin-right: -20px;
+	ul {
+		@extend .w100s;
+		@extend .oh;
+		line-height: 33px;
+		@media (max-height: 768px) {
+			line-height: 28px;
+		}
+		&:nth-child(odd) {
+			background-color: $table-odd-bg;
+		}
+		li {
+			@extend .fl;
+			&:nth-child(1) {
+				width: 60px;
+				@extend .ml20;
+			}
+			&:nth-child(2) {
+				width: calc(100% - 210px);
+				height: 25px;
+				@extend .ellipsis;
+			}
+			&:nth-child(3) {
+				width: 120px;
+				@extend .ml10;
+			}
+			span {
+				@extend .tc;
+				width: 20px;
+				border-radius: 10px;
+				padding: 2px 15px;
+				color: $fff;
+			}
+		}
+	}
+}
+
+.group-com {
+	line-height: 20px;
+	color: $fff;
+	@extend .tc;
+}
+
+.group-percent {
+	padding-top: 25px;
+}
+
+.group-filter {
+	margin-left: 20px;
+}
+
+.group-hov {
+	@extend .cursor-pointer;
+	padding-bottom: 23px;
+}
+
+.group-situation-num {
+	@extend .ml20;
+}
+
+.group-stu-top {
+	margin-top: 50px !important;
+}
+
+.group-library-top {
+	margin-top: 44px;
+	margin-bottom: -30px;
+}

@@ -1,0 +1,85 @@
+<header class="hx-content-header clearfix">
+    <group-h-x-header-left></group-h-x-header-left>
+    <set-time conf="vm.timeConf"></set-time>
+</header>
+<section class="col-wrap">
+    <section ng-show="vm.config.lowConsume.show" class="{{vm.config.lowConsume.class}}">
+        <header class="col-header">
+            <h3>食堂低消费学生</h3>
+            <a class="fr check-list" ng-click="vm.getLowConDetail()">查看名单</a>
+        </header>
+        <section class="col-content low-consumption">
+            <div class="tc">
+                <p>单餐低消费次数多的学生</p>
+                <p>
+                    <mark>{{vm.lowData.num}}</mark> 人
+                </p>
+            </div>
+        </section>
+    </section>
+    <section ng-show="vm.config.eatConsume.show" class="{{vm.config.eatConsume.class}}" ng-class="{'full-screen': vm.mealsMode}">
+        <header class="col-header">
+            <h3>三餐消费</h3>
+            <change-mode mode="vm.mealsMode"></change-mode>
+        </header>
+        <section class="col-content stu-center">
+            <div class="stu-meals">
+                <div class="fl" id="eatConsume"></div>
+                <div class="fr">
+                    <p>每月6-7点早餐次数</p>
+                    <p>{{vm.avgData[0].six | toFixed:2}}</p>
+                    <p>每月7-8点早餐次数</p>
+                    <p>{{vm.avgData[0].seven | toFixed:2}}</p>
+                    <p>每月8-9点早餐次数</p>
+                    <p>{{vm.avgData[0].eight | toFixed:2}}</p>
+                </div>
+            </div>
+        </section>
+    </section>
+    <section ng-show="vm.config.consumeType.show" class="{{vm.config.consumeType.class}}" ng-class="{'full-screen': vm.typeMode}">
+        <header class="col-header">
+            <h3>消费类型</h3>
+            <change-mode mode="vm.typeMode"></change-mode>
+        </header>
+        <section class="col-content stu-center">
+            <div class="h100s" id="consumeType"></div>
+        </section>
+    </section>
+    <section ng-show="vm.config.cardMonth.show" class="{{vm.config.cardMonth.class}}" ng-class="{'full-screen': vm.cardMode}">
+        <header class="col-header">
+            <h3>每月刷卡</h3>
+            <change-mode mode="vm.cardMode"></change-mode>
+            <span class="check-wrap">低消费频次的学生数据纳入计算<label ng-class="{active:vm.isLow}" class="check-model"><i></i><input type="checkbox" class="hide" ng-change="vm.initCard()" ng-model="vm.isLow"></label></span>
+        </header>
+        <section class="col-content clearfix consumption-card">
+            <aside class="fl">
+                <ul class="list-horizontal">
+                    <li><a href="javascript:;" ng-class="{active:vm.cardItem==='1'}" ng-click="vm.changeItem('1')">总体</a></li>
+                    <li><a href="javascript:;" ng-class="{active:vm.cardItem==='2'}" ng-click="vm.changeItem('2')">食堂</a></li>
+                    <li><a href="javascript:;" ng-class="{active:vm.cardItem==='3'}" ng-click="vm.changeItem('3')">超市</a></li>
+                    <li><a href="javascript:;" ng-class="{active:vm.cardItem==='4'}" ng-click="vm.changeItem('4')">宿舍</a></li>
+                    <li><a href="javascript:;" ng-class="{active:vm.cardItem==='5'}" ng-click="vm.changeItem('5')">休闲</a></li>
+                    <li><a href="javascript:;" ng-class="{active:vm.cardItem==='6'}" ng-click="vm.changeItem('6')">交通</a></li>
+                    <li><a href="javascript:;" ng-class="{active:vm.cardItem==='7'}" ng-click="vm.changeItem('7')">文印</a></li>
+                    <li><a href="javascript:;" ng-class="{active:vm.cardItem==='8'}" ng-click="vm.changeItem('8')">图书馆</a></li>
+                    <li><a href="javascript:;" ng-class="{active:vm.cardItem==='9'}" ng-click="vm.changeItem('9')">充值</a></li>
+                </ul>
+            </aside>
+            <div class="fr echarts">
+                <section class="col-content-top">
+                    消费金额:&nbsp;&nbsp;本群体&nbsp;<mark>{{vm.cardData.group.allMoney | toFixed:2}}</mark>元&nbsp;全校平均&nbsp;<mark>{{vm.cardData.school.allMoney | toFixed:2}}</mark>元&nbsp;&nbsp;消费次数:&nbsp;&nbsp;本群体&nbsp;<mark>{{vm.cardData.group.allTimes | toFixed:2}}</mark>次&nbsp;全校平均&nbsp;<mark>{{vm.cardData.school.allTimes | toFixed:2}}</mark>&nbsp;次
+                </section>
+                <div id="cardMonth" class="col-content-bottom"></div>
+            </div>
+        </section>
+    </section>
+    <section ng-show="vm.config.economic.show && vm.right.economic === 1" class="{{vm.config.economic.class}}" ng-class="{'full-screen': vm.economicMode}">
+        <header class="col-header">
+            <h3>经济水平评估</h3>
+            <change-mode mode="vm.economicMode"></change-mode>
+        </header>
+        <section class="col-content">
+            <div class="echarts" id="economic"></div>
+        </section>
+    </section>
+</section>
