@@ -1,0 +1,668 @@
+.whatever {
+	width: 44px;
+	height: 44px;
+	@include stretch(50%, false, false, 50%);
+	transform: translate(-50%, -50%);
+	background: url("../../images/loading.gif") center center no-repeat;
+}
+
+.is-loading, .no-results {
+	@extend .tc;
+}
+
+.no-results {
+	height: 100px;
+	line-height: 100px;
+}
+
+.is-loading {
+	@extend .h100s;
+	background: url("../../images/loading.gif") center center no-repeat;
+	text-indent: -9999px;
+}
+
+.pagination-wrap {
+	.is-loading {
+		height: 100px;
+	}
+}
+
+/********************header**********************/
+.header {
+	@extend .h60;
+	border-bottom: 1px solid $border-color;
+	h1 {
+		@extend .h60;
+		width: $aside-width;
+		@media (max-width: 1366px) {
+			width: 180px;
+		}
+		background: $aside-bg-color url("../images/logo.png") 20px center no-repeat;
+		color: $fff;
+		padding-left: 70px;
+		padding-right: 40px;
+		padding-top: 11px;
+		line-height: 20px;
+		letter-spacing: 3px;
+		@media (max-height: 768px) {
+			height: 50px;
+			line-height: 15px;
+		}
+
+		@media (max-width: 1366px) {
+			background: $aside-bg-color url("../images/logo.png") 10px center no-repeat;
+			padding-left: 60px;
+			padding-right: 10px;
+		}
+	}
+	h2 {
+		@extend .lh60;
+		@extend .ml30;
+		@media (max-height: 768px) {
+			line-height: 50px;
+		}
+		color: $nav-color;
+	}
+	.fr {
+		@extend .lh60;
+		@media (max-height: 768px) {
+			line-height: 50px;
+		}
+		@extend .pr30;
+	}
+	@at-root .search-btn-wrap {
+		@extend .inline-block;
+	}
+	a {
+		@extend .relative;
+		@extend .pl20;
+		@extend .pr20;
+		color: $nav-color;
+	}
+	@at-root .icon {
+		width: 18px;
+		height: 18px;
+		vertical-align: text-bottom;
+		fill: currentColor;
+	}
+}
+
+/********************content**********************/
+.content {
+	@include stretch(60px, 0, 0, 0);
+	@media (max-height: 768px) {
+		top: 50px;
+	}
+}
+
+/********************aside**********************/
+.aside {
+	@include stretch(0, false, 0, 0);
+	width: $aside-width;
+	@media (max-width: 1366px) {
+		width: 180px;
+	}
+	background: $aside-bg-color;
+	dt {
+		@extend .h40;
+		@extend .lh50;
+		@extend .fs12;
+		@extend .ml20;
+		color: $aside-dt-color;
+	}
+	a {
+		@extend .block;
+		@extend .h40;
+		@extend .lh40;
+		@extend .fs16;
+		@extend .pl10;
+		@extend .relative;
+		@extend .ml10;
+		@extend .mr10;
+		@extend .oh;
+		border-radius: 5px;
+		@include left-to-right(40px, $aside-active-color, 5px);
+		color: $aside-a-color;
+		z-index: 1;
+		.icon {
+			@extend .mr20;
+			@media (max-width: 1366px) {
+				margin-right: 10px;
+			}
+			color: $fff;
+		}
+		&:after {
+			z-index: -1;
+		}
+		&:hover, &.active {
+			color: $fff;
+		}
+	}
+}
+
+/********************main-section**********************/
+.main-section {
+	@include stretch(0, 0, 0, $aside-width);
+	@media (max-width: 1366px) {
+		left: 180px;
+	}
+	background: $main-section-bg-color;
+	/********************hx-header**********************/
+	@at-root .hx-header {
+		@extend .pl30;
+		background: $fff;
+		li {
+			a {
+				@extend .block;
+				@extend .h45;
+				@extend .lh45;
+				@extend .mr50;
+				@extend .fs16;
+				@extend .relative;
+				@extend .oh;
+				@include left-to-right(2px);
+				color: $nav-color;
+				@media (max-height: 768px) {
+					height: 35px;
+					line-height: 35px;
+				}
+			}
+		}
+	}
+	/**********************hx-content***********************/
+	@at-root .hx-content {
+		@include stretch(45px, 0, 0, 0);
+		@media (max-height: 768px) {
+			top: 35px;
+		}
+		@at-root {
+			.hx-content-header {
+				@extend .h60;
+				@extend .lh60;
+				@extend .pl30;
+				@extend .pr20;
+				@media (max-height: 768px) {
+					height: 45px;
+					line-height: 45px;
+				}
+			}
+
+			.col-wrap {
+				@include stretch(60px, 0, 0, 0);
+				@media (max-height: 768px) {
+					top: 45px;
+				}
+				overflow: auto;
+				padding: 0 20px;
+			}
+
+			.col-index {
+				@include stretch(20px, 0, 0, 0);
+				overflow: auto;
+				padding: 0 20px;
+				.col-index-box {
+
+				}
+				.col-index-top {
+					.fl {
+						@extend .fs16;
+						@extend .lh35;
+					}
+					.form-control {
+						@extend .ml20;
+						height: 35px;
+						line-height: 35px;
+						padding-left: 5px;
+						min-width: 135px;
+						border: 1px solid $border-color;
+						border-radius: 5px;
+					}
+					.btn-primary {
+						@extend .h40;
+						width: 140px;
+						@extend .fs16;
+					}
+				}
+				.col-index-bottom {
+					height: calc(100% - 115px);
+				}
+			}
+
+			.col-3-1,
+			.col-3-2,
+			.col-4-1,
+			.col-4-3,
+			.col-2-1,
+			.col-1-1 {
+				@extend .fl;
+				@extend .oh;
+				height: calc(50% - 20px);
+				background: $fff;
+				margin: 0 10px 20px;
+				padding: 20px;
+				@media (max-height: 768px) {
+					padding: 5px 20px;
+				}
+				.col-header {
+					@extend .relative;
+					h3 {
+						@extend .h30;
+						@extend .lh30;
+						@extend .fs16;
+						@extend .inline-block;
+						span {
+							@extend .mr20;
+							@extend .inline-block;
+							@extend .relative;
+							@extend .oh;
+							@include left-to-right(1px);
+							@extend .cursor-pointer;
+							&.active, &:hover {
+								background: transparent;
+							}
+						}
+					}
+					a {
+						color: $link-color;
+						@extend .h30;
+						@extend .lh30;
+					}
+					.change-mode {
+						display: none;
+						text-align: center;
+						@include stretch(0, 0, false, false);
+						cursor: pointer;
+						.icon {
+							height: 25px;
+							width: 25px;
+							&:hover {
+								color: $black;
+							}
+						}
+					}
+					.check-wrap {
+						@include stretch(0, 60px, false, false);
+					}
+					.check-model {
+						@include stretch(0, -40px, false, false);
+					}
+					@include checkbox-box($check-width: 30px, $check-height: 15px, $check-active-bg: $active-color);
+				}
+				.col-content {
+					height: calc(100% - 40px);
+					@extend .mt10;
+					@at-root .list-horizontal {
+						width: 50px;
+						a {
+							@extend .h30;
+							@media (max-height: 768px) {
+								height: 16px;
+							}
+							@extend .block;
+							transition: color .3s;
+							&:hover, &.active {
+								color: $active-color;
+							}
+						}
+					}
+					@at-root .echarts {
+						@extend .wh100s;
+					}
+					@at-root .col-content-top {
+						@extend .tc;
+						@extend .h30;
+						@extend .lh30;
+						@media (max-height: 768px) {
+							margin-top: -10px;
+						}
+						span {
+							@extend .mr10;
+						}
+					}
+					@at-root .col-content-bottom {
+						height: calc(100% - 30px);
+					}
+				}
+				&:hover .change-mode {
+					display: block;
+					animation: right-to-left .3s;
+				}
+				@keyframes right-to-left {
+					from {
+						transform: translate(20px, -20px);
+					}
+					to {
+						transform: translate(0, 0);
+					}
+				}
+			}
+
+			.col-h100s {
+				height: calc(100% - 20px);
+			}
+
+			.col-3-1 {
+				width: calc(33.3% - 20px);
+			}
+
+			.col-3-2 {
+				width: calc(200% / 3 - 20px);
+			}
+
+			.col-4-1 {
+				width: calc(100% / 4 - 20px);
+			}
+
+			.col-4-3 {
+				width: calc(300% / 4 - 20px);
+			}
+
+			.col-2-1 {
+				width: calc(100% / 2 - 20px);
+			}
+
+			.col-1-1 {
+				width: calc(100% - 20px);
+			}
+		}
+	}
+}
+
+/*************************setTime***************************/
+.set-time {
+	@extend .pr10;
+	i {
+		@extend .mr10;
+	}
+	select {
+		@extend .mr10;
+		@extend .lh30;
+		@extend .h30;
+		background: $fff;
+		padding: 0 10px;
+		border-radius: 5px;
+	}
+}
+
+/*************************table***************************/
+table {
+	@extend .w100s;
+	tr {
+		@extend .h40;
+		@extend .lh40;
+		th {
+			@extend .tl;
+			@extend .pl20;
+			font-weight: normal;
+			border-bottom: 1px solid $border-color;
+		}
+		td {
+			@extend .pl20;
+			a {
+				@extend .mr10;
+				color: $link-color;
+			}
+		}
+	}
+	tbody > tr:nth-child(even) {
+		background: $table-odd-bg;
+	}
+}
+
+/**********************filter******************************/
+.filter-option {
+	@extend .relative;
+	@extend .h45;
+	border-top: 1px solid #eee;
+	&:last-child {
+		border-bottom: 1px solid #eee;
+	}
+	input {
+		@extend .relative;
+		top: 2px;
+		margin-right: 5px;
+	}
+	label {
+		@extend .block;
+		@extend .ml20;
+		@extend .cursor-pointer;
+		min-width: 100px;
+	}
+}
+
+.filter-list {
+	@extend .inline-block;
+	@extend .relative;
+	@extend .pl30;
+	width: calc(100% - 141px);
+	@media (max-width: 1366px) {
+		width: calc(100% - 101px);
+		padding-left: 10px;
+	}
+	& > li {
+		@extend .fl;
+		@extend .pl20;
+		@extend .pr20;
+		&:before, &:after {
+			position: absolute;
+			content: '';
+			border: 0 solid transparent;
+			display: none;
+		}
+		&:before {
+			margin-left: 4px;
+			margin-top: 24px;
+			border-width: 10px;
+			border-bottom-color: $fff;
+			z-index: 2;
+		}
+
+		&:after {
+			margin-left: 2px;
+			margin-top: -25px;
+			border-width: 12px;
+			border-bottom-color: #eee;
+		}
+		&:hover:before,
+		&:hover:after {
+			@extend .block;
+		}
+
+		&:hover .list-second {
+			@extend .block;
+			color: $color;
+		}
+
+		&:hover .list-four {
+			@extend .block;
+			color: $color;
+		}
+
+		&:hover {
+			color: $active-color;
+		}
+	}
+	& > .three-word:hover:before {
+		@extend .block;
+		margin-left: 13px;
+	}
+	& > .three-word:hover:after {
+		@extend .block;
+		margin-left: 11px;
+	}
+	& > .four-word:hover:before {
+		@extend .block;
+		margin-left: 19px;
+	}
+	& > .four-word:hover:after {
+		@extend .block;
+		margin-left: 17px;
+	}
+	li {
+		@extend .h45;
+		@extend .lh45;
+		@extend .cursor-pointer;
+	}
+}
+
+.chosed-list {
+	@extend .inline-block;
+	@extend .relative;
+	@extend .h45;
+	margin: 0;
+	padding: 15px 0 20px 15px;
+}
+
+.chosed-span {
+	@extend .pl20;
+}
+
+/*常用对比中的专业样式*/
+.filter-major {
+	@extend .inline-block;
+	@extend .relative;
+	padding-left: 15px;
+	li {
+		@extend .pl20;
+		@extend .pr20;
+		@extend .h45;
+		@extend .lh45;
+		@extend .tc;
+		@extend .cursor-pointer;
+	}
+	& > li:hover {
+		@extend .h45;
+		@extend .lh45;
+		@extend .tc;
+		color: $active-color;
+		background: #eee;
+		.list-major {
+			@extend .block;
+			@extend .w100s;
+			@extend .tl;
+			color: $color;
+			background: #eee;
+		}
+	}
+}
+
+.list-major {
+	position: absolute;
+	left: 15px;
+	background-color: $fff;
+	display: none;
+	padding-top: 10px;
+	z-index: 1;
+	box-shadow: 0 10px 20px #ccc;
+}
+
+/*添加结束*/
+
+.list-second, .list-four {
+	@extend .w100s;
+	@include stretch(44px, false, false, 0);
+	background-color: $fff;
+	display: none;
+	padding-left: 33px;
+	z-index: 1;
+	box-shadow: 0 0 20px #ccc;
+}
+
+.list-four > li {
+	@extend .pl20;
+	@extend .pr20;
+	@extend .h45;
+	@extend .tc;
+	&:hover {
+		color: $active-color;
+		background: #eee;
+		.list-third {
+			@extend .block;
+			@extend .w100s;
+			@extend .tl;
+			@include stretch(false, false, false, 0);
+			color: $color;
+			background: #eee;
+		}
+	}
+}
+
+.list-third {
+	padding-left: 15px;
+	display: none;
+	z-index: 3;
+	box-shadow: 0 10px 20px #ccc;
+}
+
+.list-third li:hover, .list-second li:hover {
+	color: $active-color;
+}
+
+.title-left {
+	@extend .h45;
+	@extend .lh45;
+	@extend .fl;
+	@extend .pl20;
+	width: 140px;
+	border-right: 1px solid $border-color;
+	@media (max-width: 1366px) {
+		width: 100px;
+	}
+}
+
+.list-icon {
+	@extend .inline-block;
+	width: 0;
+	height: 0;
+	border: 3px solid $color;
+	border-bottom: 3px solid transparent;
+	border-right: 3px solid transparent;
+	transform: rotate(-135deg);
+	margin-bottom: 3px;
+	margin-left: 5px;
+}
+
+/*******************************全屏****************************/
+.full-screen {
+	position: fixed !important;
+	top: 0 !important;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	width: 100% !important;
+	height: 100% !important;
+	margin: 0;
+	z-index: 99999999;
+}
+
+/*******************************按钮****************************/
+.btn-cancel, .btn-primary {
+	@extend .tc;
+	@extend .h30;
+	@extend .lh30;
+	@extend .pl10;
+	@extend .pr10;
+	color: $fff;
+	background: $btn-default-color;
+	border-radius: 3px;
+}
+
+.btn-primary {
+	background: $btn-primary-color;
+	&:hover {
+		background: $btn-primary-hover-color;
+	}
+	&:disabled {
+		background: $btn-primary-disabled-color;
+	}
+}
+
+.entry {
+	width: 1600px;
+	height: 900px;
+	margin: 0 auto;
+	@extend .block;
+	background: url("../images/entry.png") center top no-repeat;
+}
+
+
