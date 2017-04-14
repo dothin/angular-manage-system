@@ -12,7 +12,7 @@ module.exports = () => {
     let dest = _root + 'dist',
         imgSrc = _root + 'src/images/**/*.{png,jpg,gif,ico}',
         htmlSrc = _root + 'src/components/**/*.html',
-        cssSrc = _root + 'src/sass/screen.scss',
+        cssSrc = _root + 'src/sass/index.scss',
         jsSrc = [
             _root + 'src/components/**/helper.module.js',
             _root + 'src/components/**/core.module.js',
