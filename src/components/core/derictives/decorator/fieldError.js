@@ -10,7 +10,7 @@
     /**
      * 错误提示指令
      */
-    angular.module('app.core').factory('fieldError', fieldError);
+    angular.module('app.core').directive('fieldError', fieldError);
 
     fieldError.$inject = ['$compile'];
 

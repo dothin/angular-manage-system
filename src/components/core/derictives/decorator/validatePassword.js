@@ -7,7 +7,7 @@
  */
 (function () {
     'use strict';
-    angular.module('app.core').factory('validatePassword', validatePassword);
+    angular.module('app.core').directive('validatePassword', validatePassword);
 
     validatePassword.$inject = ['$compile'];
 

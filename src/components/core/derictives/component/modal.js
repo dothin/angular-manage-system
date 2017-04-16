@@ -10,7 +10,7 @@
     /**
      * 模态框指令
      */
-    angular.module('app.core').factory('modal', modal);
+    angular.module('app.core').directive('modal', modal);
 
     modal.$inject = [];
 

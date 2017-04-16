@@ -10,7 +10,7 @@
     /**
      * 退出
      */
-    angular.module('app.core').factory('logout', logout);
+    angular.module('app.core').directive('logout', logout);
 
     logout.$inject = ['tools', '$state', 'userServer'];
 

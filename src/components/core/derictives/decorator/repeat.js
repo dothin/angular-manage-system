@@ -7,7 +7,7 @@
  */
 (function () {
     'use strict';
-    angular.module('app.core').factory('repeat', repeat);
+    angular.module('app.core').directive('repeat', repeat);
 
     repeat.$inject = [];
 

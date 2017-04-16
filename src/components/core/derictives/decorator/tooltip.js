@@ -7,7 +7,7 @@
  */
 (function () {
     'use strict';
-    angular.module('app.core').factory('tooltip', tooltip);
+    angular.module('app.core').directive('tooltip', tooltip);
 
     tooltip.$inject = ['$compile'];
 
