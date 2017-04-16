@@ -8,9 +8,9 @@
 (function () {
     'use strict';
     angular.module('app.login').controller('loginCtrl', loginCtrl);
-    loginCtrl.$inject = ['$rootScope', '$state', 'userSerivce'];
+    loginCtrl.$inject = ['$rootScope', '$state', 'userServer'];
     /* @ngInject */
-    function loginCtrl($rootScope, $state, userSerivce) {
+    function loginCtrl($rootScope, $state, userServer) {
         //检查登录
         $rootScope.user && $state.go('main');
         var vm = this;
@@ -24,7 +24,7 @@
             vm.submit = true;
             if (vm.loginForm.$valid) {
                 $state.go('main');
-                userSerivce.login(vm.user).then(function () {
+                userServer.login(vm.user).then(function () {
                     
                 });
             }

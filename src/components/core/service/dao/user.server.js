@@ -7,10 +7,10 @@
  */
 (function() {
     'use strict';
-    angular.module('app.core').factory('userSerivce', userSerivce);
-    userSerivce.$inject = ['httpServer'];
+    angular.module('app.core').factory('userServer', userServer);
+    userServer.$inject = ['httpServer'];
 
-    function userSerivce(httpServer) {
+    function userServer(httpServer) {
         var myServices = {};
         //登录
         myServices.login = function (data) {
