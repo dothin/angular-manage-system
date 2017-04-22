@@ -6,7 +6,7 @@
  */
 (function () {
     'use strict';
-    angular.module('app.helper').factory('postInterceptor', postInterceptor);
+    angular.module('app.core').factory('postInterceptor', postInterceptor);
     postInterceptor.$inject = ['$rootScope', '$location', '$q', 'tools', '$timeout', '$cookies'];
     function postInterceptor ($rootScope, $location, $q, tools, $timeout, $cookies) {
         return {

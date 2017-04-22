@@ -1,0 +1,79 @@
+
+/**
+*PAGENATION COMPONENT
+*/
+$page-active-color: $active-color;
+$page-height: 24px;
+$page-line-height: 24px;
+$page-width: 24px;
+.pagination-wrap {
+	padding-bottom: 45px !important;
+}
+
+.page-list, .ng-table-pager {
+	position: absolute;
+	left: 50%;
+	margin-top: 10px;
+	.pagination {
+		position: relative;
+		float: left;
+		left: -50%;
+		margin: 0;
+		li {
+			list-style: none;
+			float: left;
+			margin-right: 10px;
+		}
+		a {
+			display: block;
+			color: $black;
+			height: 24px;
+			min-width: 24px;
+			text-align: center;
+			line-height: 24px;
+			background: transparent;
+			border: 0;
+			padding: 0 5px;
+			border-radius: 4px;
+			&:hover {
+				background: transparent;
+				color: $black;
+			}
+			&:active {
+				background: $page-active-color;
+				color: $fff;
+			}
+		}
+		.active {
+			a {
+				background: $page-active-color;
+				color: $fff;
+			}
+			&hover a {
+				color: $fff;
+				cursor: default;
+			}
+		}
+		.disabled a {
+			color: #999 !important;
+			&:hover, &:active {
+				color: #999;
+				background: transparent !important;
+				cursor: default;
+			}
+		}
+		li:first-child a:active,
+		li:last-child a:active {
+			background: $page-active-color;
+			color: $fff;
+		}
+		.separate a {
+			cursor: default;
+			&:hover, &:active {
+				color: #999;
+				background: transparent !important;
+				cursor: default;
+			}
+		}
+	}
+}

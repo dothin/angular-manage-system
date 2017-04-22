@@ -1,11 +1,11 @@
-@import "mixin";
+/***********************color****************************/
 $fff: #fff !default;
 $black: #000 !default;
 $red: #ff3333 !default;
-$success-color: #25c685; //成功提示框颜色
-$error-color: #ff7f7f; //失败提示框颜色
+$success-color: #25c685 !default; //成功提示框颜色
+$error-color: #ff7f7f !default; //失败提示框颜色
 /*base*/
-$yaHei: "Microsoft YaHei UI"; //默认字体类型
+$yaHei: "Microsoft YaHei UI" !default; //默认字体类型
 $font-size: 14px !default; //默认字体大小
 $color: #486074 !default; //普通文字颜色
 $nav-color: #2c3e50 !default; //顶部栏、导航栏颜色、图标颜色
@@ -19,6 +19,9 @@ $border-color: #eee !default; //border颜色
 $btn-primary-color: $active-color; //按钮颜色
 $btn-primary-hover-color: #009fef; //按钮hover颜色
 $btn-primary-disabled-color: #b8c5cb; //按钮disabled颜色
+$btn-danger-color: $red; //按钮颜色
+$btn-danger-hover-color: #FF2120; //按钮hover颜色
+$btn-danger-disabled-color: $error-color; //按钮disabled颜色
 $btn-default-color: #4f5f6f; //默认按钮颜色
 $btn-default-hover-color: #4f5f6f; //默认按钮hover颜色
 /*aside*/
@@ -33,42 +36,5 @@ $main-section-bg-color: #ecf2fb !default; //右侧内容背景底色
 /*table*/
 $table-odd-bg: #fbfcfd !default; //表格偶数行颜色
 /*other*/
-$do-choose-color: #5c778e !default; //两两对比选择条件背景
 $shadow-color: #ddd !default; //shadow颜色
 $input-disabled-color: #ecf2fb !default; //表单disabled背景
-
-//首页色块
-//left
-$left-bg1: #2292fb;
-$left-bg2: #00a9cd;
-$left-bg3: #0ec479;
-$left-bg4: #ffa60a;
-$left-bg5: #fb4a72;
-$left-bg6: #f1123a;
-//right
-$right-bg1: #7460fb;
-$right-bg2: #f78205;
-$right-bg3: #486074;
-$right-bg4: #0f6dec;
-
-//排行颜色
-$first-color: #ee4e1c;
-$second-color: #f6c52f;
-$third-color: #38f;
-$normal-color: #cbd0dc;
-
-.first-rank {
-	background: $first-color;
-}
-
-.second-rank {
-	background: $second-color;
-}
-
-.third-rank {
-	background: $third-color;
-}
-
-.normal-rank {
-	background: $normal-color;
-}

@@ -7,7 +7,7 @@
  */
 (function () {
     'use strict';
-    angular.module('app.core').directive('changeMode', changeMode);
+    angular.module('app.echarts').directive('changeMode', changeMode);
 
     changeMode.$inject = ['$timeout'];
 

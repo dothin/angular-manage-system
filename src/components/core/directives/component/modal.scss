@@ -1,0 +1,80 @@
+
+/**
+*MODAL COMPONENT
+*/
+.modal {
+	width: 100%;
+	background: rgba(0, 0, 0, .7);
+	height: 100%;
+	position: fixed;
+	left: 0;
+	top: 0;
+	z-index: 9999;
+	display: none;
+	@at-root .modal-content {
+		width: 400px;
+		background: $fff;
+		position: fixed;
+		left: 50%;
+		top: 50%;
+		transform: translate(-50%, -50%);
+		box-shadow: 0 10px 10px #333;
+		border-radius: 2px;
+		header {
+			@extend .h55;
+			@extend .lh55;
+			padding: 0 20px;
+			background: $active-color;
+			h3 {
+				@extend .inline-block;
+				@extend .fs20;
+				color: $fff;
+			}
+			a {
+				@extend .fr;
+				padding: 0 10px;
+				margin-right: -15px;
+				.icon {
+					@extend .ml0;
+					color: $fff;
+				}
+				&:hover {
+					.icon {
+						transform: scale(1.2);
+					}
+				}
+			}
+		}
+
+		.modal-wrap {
+			padding: 20px;
+			max-height: 660px;
+			overflow: auto;
+			@media (max-height: 768px) {
+				max-height:460px;
+			}
+		}
+
+		footer {
+			@extend .tc;
+			@extend .h70;
+			@extend .lh70;
+			border-top: 1px solid $border-color;
+		}
+
+		.btn-cancel, .btn-primary {
+			@extend .h45;
+			@extend .lh45;
+			@extend .pl40;
+			@extend .pr40;
+			@extend .fs20;
+		}
+
+		.btn-primary {
+			@extend .ml10;
+		}
+	}
+	.modal-lg {
+		width: 800px;
+	}
+}

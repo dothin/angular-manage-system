@@ -9,7 +9,7 @@
     'use strict';
     angular.module('app.login').controller('loginCtrl', loginCtrl);
     loginCtrl.$inject = ['$rootScope', '$state', 'userServer'];
-    /* @ngInject */
+
     function loginCtrl($rootScope, $state, userServer) {
         //检查登录
         $rootScope.user && $state.go('main');

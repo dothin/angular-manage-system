@@ -1,0 +1,72 @@
+
+/**
+*SEARCH COMPONENT
+*/
+$search-group-height: 40px;
+$search-group-line-height: 40px;
+$search-group-text-width: 220px;
+$search-group-button-width: 40px;
+$search-group-border: 1px solid $border-color;
+$search-group-hover-border-color: $border-color;
+$search-group-active-border-color: $active-color;
+$search-icon-pos-top: 8px;
+$search-icon-pos-right: 12px;
+$search-text-radius: 5px 0 0 5px;
+$search-btn-radius: 0 5px 5px 0;
+.search-btn-group {
+	height: $search-group-height;
+	line-height: $search-group-line-height;
+	button {
+		position: relative;
+		height: $search-group-height;
+		width: $search-group-button-width;
+		padding: 0;
+		outline: 0;
+		border: $search-group-border;
+		border-left: 0;
+		margin-left: -8px;
+		vertical-align: top;
+		background: $fff;
+		border-radius: $search-btn-radius;
+	}
+	.icon {
+		color: #a8bec9;
+	}
+	.search {
+		position: absolute;
+		top: $search-icon-pos-top;
+		right: $search-icon-pos-right;
+	}
+	input[type="text"]:hover + button {
+		border-color: $search-group-hover-border-color;
+	}
+	input[type="text"]:focus + button,
+	input[type="text"]:active + button {
+		border-color: $search-group-active-border-color;
+	}
+	input[type="text"]:focus + button .icon,
+	input[type="text"]:active + button .icon {
+		color: $search-group-active-border-color;
+	}
+	/*input[type="text"]:focus + button .search,
+	input[type="text"]:active + button .search {
+		background-position: 0 -329px;
+	}*/
+	input[type="text"] {
+		-webkit-appearance: none;
+		outline: 0 none;
+		padding: 0;
+		text-indent: 10px;
+		&:hover {
+			border-color: $search-group-hover-border-color;
+		}
+		&:focus, &:active {
+			border-color: $search-group-active-border-color;
+		}
+		width: $search-group-text-width;
+		height: $search-group-height;
+		border: $search-group-border;
+		border-right: 0;
+		border-radius: $search-text-radius;
+	}
+}

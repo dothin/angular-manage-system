@@ -1,4 +1,17 @@
-@import "component";
+//sass统一入口配置
+@import "../../lib/normalize-scss/sass/normalize/import-now";
+@import "mixin";
+@import "var/index";
+@import "reset";
+@import "animation";
+
+//组件（指令）
+@import "../components/core/directives/component/modal";
+@import "../components/core/directives/component/search";
+@import "../components/core/directives/component/tmPagination";
+@import "../components/core/directives/decorator/tooltip";
+
+//业务
 @import "../components/echarts/echarts";
 @import "../components/home/home";
 @import "../components/layout/layout";

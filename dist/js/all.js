@@ -7,13 +7,7 @@
  */
 (function() {
     'use strict';
-    angular.module('app.helper',
-        [
-            'ui.router',
-            'angular-loading-bar',
-            'ngAnimate',
-            'ngCookies'
-        ]);
+    angular.module('app.helper',['ui.router']);
 })();
 /**
  * Created with IntelliJ IDEA.
@@ -24,7 +18,11 @@
  */
 (function() {
     'use strict';
-    angular.module('app.core', ['app.helper']);
+    angular.module('app.core', [
+        'app.helper',
+        'angular-loading-bar',
+        'ngAnimate',
+        'ngCookies']);
 })();
 /**
  * Created with IntelliJ IDEA.
@@ -90,6 +88,23 @@
 /**
  * Created with IntelliJ IDEA.
  * User: dothin
+ * Date: 2017/4/22
+ * Time: 17:24
+ * To change this template use File | Settings | File Templates.
+ */
+(function() {
+    'use strict';
+    angular.module('app').config(appConfig);
+
+    appConfig.$inject = ['$httpProvider'];
+
+    function appConfig($httpProvider) {
+        $httpProvider.interceptors.push('postInterceptor');
+    }
+})();
+/**
+ * Created with IntelliJ IDEA.
+ * User: dothin
  * Date: 2017/4/13
  * Time: 15:17
  * To change this template use File | Settings | File Templates.
@@ -128,6 +143,47 @@
         $rootScope.isActive;
         $rootScope.alertValue = '';
         $rootScope.alert = false;
+    }
+})();
+/**
+ * Created with IntelliJ IDEA.
+ * User: gaoHuaBin
+ * Date: 2016/11/22
+ * Time: 16:37
+ * To change this template use File | Settings | File Templates.
+ */
+(function () {
+    'use strict';
+    angular.module('app.echarts').directive('changeMode', changeMode);
+
+    changeMode.$inject = ['$timeout'];
+
+    function changeMode($timeout) {
+        return {
+            restrict: 'E',
+            template: '<span class="change-mode">' +
+            '<svg class="icon" aria-hidden="true">' +
+            '<use ng-if="!mode" xlink:href="#icon-quanping"></use>' +
+            '<use ng-if="mode" xlink:href="#icon-suoxiao"></use>' +
+            '</svg></span>',
+            replace: true,
+            scope: {
+                mode: '='
+            },
+            link: function (scope, element) {
+                var _timer = null;
+                element.on('click', function () {
+                    $timeout.cancel(_timer);
+                    scope.mode = !scope.mode;
+                    scope.$apply();
+                    _timer = $timeout(function () {
+                        /*var event = new Event('resize');
+                         window.dispatchEvent(event);*/
+                        window.onresize();
+                    }, 14);
+                });
+            }
+        };
     }
 })();
 /**
@@ -178,90 +234,29 @@
     }
 })();
 /**
- * @Author: gaohuabin
- * @Date:   2016-10-07 17:17:55
- * @Last Modified by:   gaohuabin
- * @Last Modified time: 2016-10-07 17:19:15
- */
-(function () {
-    'use strict';
-    angular.module('app.helper').factory('postInterceptor', postInterceptor);
-    postInterceptor.$inject = ['$rootScope', '$location', '$q', 'tools', '$timeout', '$cookies'];
-    function postInterceptor ($rootScope, $location, $q, tools, $timeout, $cookies) {
-        return {
-            'request': function (config) {
-                return config;
-            },
-            'response': function (resp) {
-                if (resp.data.status === false) {
-                    if (resp.data.code === 70005) {
-                        if (resp.data.code === 70005) {
-                            tools.alertError('登录过期，正在跳转到登录界面');
-                            $timeout(function () {
-                                $cookies.remove('user');
-                                $rootScope.user = $cookies.getObject('user');
-                                localStorage.clear();
-                                window.location.href = $location.$$absUrl.split('#')[0] + '#/login';
-                            }, 2000);
-                        } else {
-                            tools.alertError(resp.data.message);
-                        }
-                    } else {
-                        tools.alertError(resp.data.message);
-                    }
-                }
-                return resp;
-            },
-            'requestError': function (rejection) {
-                console.log('requestError' + $q.reject(rejection));
-                return $q.reject(rejection);
-            },
-            'responseError': function (rejection) {
-                if (rejection.status === 500) {
-                    tools.alertError('服务器异常！！！');
-                    /*$timeout(function () {
-                     $cookies.remove('user');
-                     $rootScope.user = $cookies.getObject('user');
-                     localStorage.clear();
-                     window.location.href = $location.$$protocol + '://' + $location.$$host + ':' + $location.$$port + '/#/login';
-                     }, 1000);*/
-                }
-                return rejection;
-            }
-        };
-    }
-})();
-/**
  * Created with IntelliJ IDEA.
  * User: dothin
  * Date: 2017/4/13
  * Time: 9:38
  * To change this template use File | Settings | File Templates.
  */
-// Help configure the state-base ui.router
 (function () {
     'use strict';
+    /**
+     * 定义provider，等待各个模块的run方法调用来配置路由
+     */
     angular.module('app.helper').provider('routerHelper', routerHelperProvider);
-    routerHelperProvider.$inject = ['$stateProvider', '$urlRouterProvider', '$httpProvider'];
-    /* @ngInject */
-    function routerHelperProvider($stateProvider, $urlRouterProvider, $httpProvider) {
+    routerHelperProvider.$inject = ['$stateProvider', '$urlRouterProvider'];
+
+    function routerHelperProvider($stateProvider, $urlRouterProvider) {
         this.$get = RouterHelper;
         RouterHelper.$inject = ['$rootScope', '$state'];
-        /* @ngInject */
+
         function RouterHelper($rootScope, $state) {
-            $httpProvider.interceptors.push('postInterceptor');
             var hasOtherwise = false;
             ///////////////
             function configureStates(states, otherwisePath) {
                 states.forEach(function (state) {
-                    // add login check if requireLogin is true
-                    /*var data = state.config.data;
-                    if (data && data.requireLogin === true) {
-                        state.config.resolve = angular.extend(state.config.resolve || {}, {
-                            'loginResolve': resolve.login
-                        });
-                    }
-                    state.config.resolve = angular.extend(state.config.resolve || {}, config.resolveAlways);*/
                     $stateProvider.state(state.state, state.config);
                 });
                 if (otherwisePath && !hasOtherwise) {
@@ -280,115 +275,6 @@
             };
             return service;
         }
-    }
-})();
-/**
- * Created with IntelliJ IDEA.
- * User: dothin
- * Date: 2017/4/12
- * Time: 17:57
- * To change this template use File | Settings | File Templates.
- */
-(function() {
-    'use strict';
-    angular.module('app.helper').service('tools', tools);
-    tools.$inject = ['$timeout', '$rootScope'];
-    /* @ngInject */
-    function tools($timeout, $rootScope) {
-        /**
-         * 成功提示框
-         * @param data  提示信息
-         */
-        this.alertSuccess = function (data, time) {
-            $rootScope.alert = true;
-            $rootScope.isActive = true;
-            $timeout(function () {
-                $rootScope.alert = false;
-            }, time ? time : 2000);
-            $rootScope.alertValue = data;
-        };
-        /**
-         * 失败提示框
-         * @param data  提示信息
-         */
-        this.alertError = function (data, time) {
-            $rootScope.alert = true;
-            $rootScope.isActive = false;
-            $timeout(function () {
-                $rootScope.alert = false;
-            }, time ? time : 2000);
-            $rootScope.alertValue = data;
-        };
-        /**
-         * 判断对象是否为空
-         * @param e
-         * @returns {boolean}
-         */
-        this.isEmptyObject = function (e) {
-            var t;
-            for (t in e) {
-                return !1;
-            }
-            return !0;
-        };
-        /**
-         * 改数组null为0
-         * @param arr
-         * @param item *多少
-         * @returns {boolean}
-         */
-        this.formatArr = function (arr, item) {
-            return arr.map(function (data) {
-                return data == null || data === 'NaN' ? 0 : (item == null ? data : data * item);
-            });
-        };
-        /**
-         * 格式化字符串
-         * @param str   传入字符串
-         * @param num   从第几个位置开始
-         * @param tips  添加标记
-         * @returns {string}
-         */
-        this.formatStr = function (str, num, tips) {
-            var newStr = '';
-            var count = 0;
-            if (str) {
-                for (var i = 0, len = str.length; i < len; i++) {
-                    if (count % num === 0 && count !== 0) {
-                        newStr = newStr + tips + str.charAt(i);
-                    } else {
-                        newStr = newStr + str.charAt(i);
-                    }
-                    count++;
-                }
-                return newStr;
-            } else {
-                return str;
-            }
-        };
-        /**
-         * 返回数组中最大值
-         * @param arr
-         */
-        this.max = function (arr) {
-            //Math.max.apply(null, [])  =>-Infinity
-            if (angular.isArray(arr)) {
-                return arr.length > 0 ? Math.max.apply(null, arr) : 0;
-            } else {
-                console.log(arr + 'is not a array');
-            }
-        };
-        /**
-         * 返回数组中最小值
-         * @param arr
-         */
-        this.min = function (arr) {
-            if (angular.isArray(arr)) {
-                return arr.length > 0 ? Math.min.apply(null, arr) : 0;
-            } else {
-                console.log(arr + 'is not a array');
-            }
-        };
     }
 })();
 /**
@@ -451,6 +337,7 @@
     'use strict';
     angular.module('app.layout').controller('asideCtrl', asideCtrl);
     asideCtrl.$inject = ['$state', '$rootScope'];
+
     function asideCtrl($state, $rootScope) {
         var vm = this;
         vm.state = $state;
@@ -469,6 +356,7 @@
     'use strict';
     angular.module('app.layout').controller('headerCtrl', headerCtrl);
     headerCtrl.$inject = ['$state', '$rootScope'];
+
     function headerCtrl($state, $rootScope) {
     }
 })();
@@ -486,7 +374,6 @@
     angular.module('app.layout').run(appRun);
     appRun.$inject = ['routerHelper'];
 
-    /* @ngInject */
     function appRun(routerHelper) {
         var otherwise = '/main';
         routerHelper.configureStates(getStates(), otherwise);
@@ -540,7 +427,7 @@
     'use strict';
     angular.module('app.login').controller('loginCtrl', loginCtrl);
     loginCtrl.$inject = ['$rootScope', '$state', 'userServer'];
-    /* @ngInject */
+
     function loginCtrl($rootScope, $state, userServer) {
         //检查登录
         $rootScope.user && $state.go('main');
@@ -708,42 +595,811 @@
 })();
 
 /**
+ * @Author: gaohuabin
+ * @Date:   2016-10-07 17:17:55
+ * @Last Modified by:   gaohuabin
+ * @Last Modified time: 2016-10-07 17:19:15
+ */
+(function () {
+    'use strict';
+    angular.module('app.core').factory('postInterceptor', postInterceptor);
+    postInterceptor.$inject = ['$rootScope', '$location', '$q', 'tools', '$timeout', '$cookies'];
+    function postInterceptor ($rootScope, $location, $q, tools, $timeout, $cookies) {
+        return {
+            'request': function (config) {
+                return config;
+            },
+            'response': function (resp) {
+                if (resp.data.status === false) {
+                    if (resp.data.code === 70005) {
+                        if (resp.data.code === 70005) {
+                            tools.alertError('登录过期，正在跳转到登录界面');
+                            $timeout(function () {
+                                $cookies.remove('user');
+                                $rootScope.user = $cookies.getObject('user');
+                                localStorage.clear();
+                                window.location.href = $location.$$absUrl.split('#')[0] + '#/login';
+                            }, 2000);
+                        } else {
+                            tools.alertError(resp.data.message);
+                        }
+                    } else {
+                        tools.alertError(resp.data.message);
+                    }
+                }
+                return resp;
+            },
+            'requestError': function (rejection) {
+                console.log('requestError' + $q.reject(rejection));
+                return $q.reject(rejection);
+            },
+            'responseError': function (rejection) {
+                if (rejection.status === 500) {
+                    tools.alertError('服务器异常！！！');
+                    /*$timeout(function () {
+                     $cookies.remove('user');
+                     $rootScope.user = $cookies.getObject('user');
+                     localStorage.clear();
+                     window.location.href = $location.$$protocol + '://' + $location.$$host + ':' + $location.$$port + '/#/login';
+                     }, 1000);*/
+                }
+                return rejection;
+            }
+        };
+    }
+})();
+/**
  * Created with IntelliJ IDEA.
  * User: gaoHuaBin
  * Date: 2016/11/22
- * Time: 16:37
+ * Time: 15:30
  * To change this template use File | Settings | File Templates.
  */
 (function () {
     'use strict';
-    angular.module('app.core').directive('changeMode', changeMode);
-
-    changeMode.$inject = ['$timeout'];
-
-    function changeMode($timeout) {
-        return {
-            restrict: 'E',
-            template: '<span class="change-mode">' +
-            '<svg class="icon" aria-hidden="true">' +
-            '<use ng-if="!mode" xlink:href="#icon-quanping"></use>' +
-            '<use ng-if="mode" xlink:href="#icon-suoxiao"></use>' +
-            '</svg></span>',
-            replace: true,
-            scope: {
-                mode: '='
+    /**
+     * echarts主题配置
+     */
+    var _theme = {
+        'color': [
+            '#00aaff',
+            '#ff587b',
+            '#29d582',
+            '#ffc62f',
+            '#24ccf6',
+            '#f7233c',
+            '#7d68ff',
+            '#ff7700'
+        ],
+        'backgroundColor': 'rgba(0,0,0,0)',
+        'textStyle': {},
+        'title': {
+            'textStyle': {
+                'color': '#333333'
             },
-            link: function (scope, element) {
-                var _timer = null;
-                element.on('click', function () {
-                    $timeout.cancel(_timer);
-                    scope.mode = !scope.mode;
-                    scope.$apply();
-                    _timer = $timeout(function () {
-                        /*var event = new Event('resize');
-                         window.dispatchEvent(event);*/
-                        window.onresize();
-                    }, 14);
+            'subtextStyle': {
+                'color': '#aaaaaa'
+            }
+        },
+        'line': {
+            'itemStyle': {
+                'normal': {
+                    'borderWidth': '2'
+                }
+            },
+            'lineStyle': {
+                'normal': {
+                    'width': 2
+                }
+            },
+            'symbolSize': '5',
+            'symbol': 'emptyCircle',
+            'smooth': false
+        },
+        'radar': {
+            'itemStyle': {
+                'normal': {
+                    'borderWidth': '2'
+                }
+            },
+            'lineStyle': {
+                'normal': {
+                    'width': 2
+                }
+            },
+            'symbolSize': '5',
+            'symbol': 'emptyCircle',
+            'smooth': false
+        },
+        'bar': {
+            'itemStyle': {
+                'normal': {
+                    'barBorderWidth': 0,
+                    'barBorderColor': '#cccccc'
+                },
+                'emphasis': {
+                    'barBorderWidth': 0,
+                    'barBorderColor': '#cccccc'
+                }
+            }
+        },
+        'pie': {
+            'itemStyle': {
+                'normal': {
+                    'borderWidth': 0,
+                    'borderColor': '#cccccc'
+                },
+                'emphasis': {
+                    'borderWidth': 0,
+                    'borderColor': '#cccccc'
+                }
+            }
+        },
+        'scatter': {
+            'itemStyle': {
+                'normal': {
+                    'borderWidth': 0,
+                    'borderColor': '#cccccc'
+                },
+                'emphasis': {
+                    'borderWidth': 0,
+                    'borderColor': '#cccccc'
+                }
+            }
+        },
+        'boxplot': {
+            'itemStyle': {
+                'normal': {
+                    'borderWidth': 0,
+                    'borderColor': '#cccccc'
+                },
+                'emphasis': {
+                    'borderWidth': 0,
+                    'borderColor': '#cccccc'
+                }
+            }
+        },
+        'parallel': {
+            'itemStyle': {
+                'normal': {
+                    'borderWidth': 0,
+                    'borderColor': '#cccccc'
+                },
+                'emphasis': {
+                    'borderWidth': 0,
+                    'borderColor': '#cccccc'
+                }
+            }
+        },
+        'sankey': {
+            'itemStyle': {
+                'normal': {
+                    'borderWidth': 0,
+                    'borderColor': '#cccccc'
+                },
+                'emphasis': {
+                    'borderWidth': 0,
+                    'borderColor': '#cccccc'
+                }
+            }
+        },
+        'funnel': {
+            'itemStyle': {
+                'normal': {
+                    'borderWidth': 0,
+                    'borderColor': '#cccccc'
+                },
+                'emphasis': {
+                    'borderWidth': 0,
+                    'borderColor': '#cccccc'
+                }
+            }
+        },
+        'gauge': {
+            'itemStyle': {
+                'normal': {
+                    'borderWidth': 0,
+                    'borderColor': '#cccccc'
+                },
+                'emphasis': {
+                    'borderWidth': 0,
+                    'borderColor': '#cccccc'
+                }
+            }
+        },
+        'candlestick': {
+            'itemStyle': {
+                'normal': {
+                    'color': '#c12e34',
+                    'color0': '#2b821d',
+                    'borderColor': '#c12e34',
+                    'borderColor0': '#2b821d',
+                    'borderWidth': 1
+                }
+            }
+        },
+        'graph': {
+            'itemStyle': {
+                'normal': {
+                    'borderWidth': 0,
+                    'borderColor': '#cccccc'
+                }
+            },
+            'lineStyle': {
+                'normal': {
+                    'width': '1',
+                    'color': '#aaaaaa'
+                }
+            },
+            'symbolSize': '25'
+        },
+        'map': {
+            'itemStyle': {
+                'normal': {
+                    'areaColor': '#dddddd',
+                    'borderColor': '#eeeeee',
+                    'borderWidth': 0.5
+                },
+                'emphasis': {
+                    'areaColor': 'rgba(230,182,0,1)',
+                    'borderColor': '#dddddd',
+                    'borderWidth': 1
+                }
+            },
+            'label': {
+                'normal': {
+                    'textStyle': {
+                        'color': '#c12e34'
+                    }
+                },
+                'emphasis': {
+                    'textStyle': {
+                        'color': 'rgb(193,46,52)'
+                    }
+                }
+            }
+        },
+        'geo': {
+            'itemStyle': {
+                'normal': {
+                    'areaColor': '#dddddd',
+                    'borderColor': '#eeeeee',
+                    'borderWidth': 0.5
+                },
+                'emphasis': {
+                    'areaColor': 'rgba(230,182,0,1)',
+                    'borderColor': '#dddddd',
+                    'borderWidth': 1
+                }
+            },
+            'label': {
+                'normal': {
+                    'textStyle': {
+                        'color': '#c12e34'
+                    }
+                },
+                'emphasis': {
+                    'textStyle': {
+                        'color': 'rgb(193,46,52)'
+                    }
+                }
+            }
+        },
+        'categoryAxis': {
+            'axisLine': {
+                'show': true,
+                'lineStyle': {
+                    'color': '#f8f8f8'
+                }
+            },
+            'axisTick': {
+                'show': false,
+                'lineStyle': {
+                    'color': '#333'
+                }
+            },
+            'axisLabel': {
+                'show': true,
+                'textStyle': {
+                    'color': '#486074'
+                }
+            },
+            'splitLine': {
+                'show': true,
+                'lineStyle': {
+                    'color': [
+                        '#f8f8f8'
+                    ]
+                }
+            },
+            'splitArea': {
+                'show': false,
+                'areaStyle': {
+                    'color': [
+                        'rgba(250,250,250,0.3)',
+                        'rgba(200,200,200,0.3)'
+                    ]
+                }
+            }
+        },
+        'valueAxis': {
+            'axisLine': {
+                'show': true,
+                'lineStyle': {
+                    'color': '#f8f8f8'
+                }
+            },
+            'axisTick': {
+                'show': false,
+                'lineStyle': {
+                    'color': '#333'
+                }
+            },
+            'axisLabel': {
+                'show': true,
+                'textStyle': {
+                    'color': '#486074'
+                }
+            },
+            'splitLine': {
+                'show': true,
+                'lineStyle': {
+                    'color': [
+                        '#f8f8f8'
+                    ]
+                }
+            },
+            'splitArea': {
+                'show': false,
+                'areaStyle': {
+                    'color': [
+                        'rgba(250,250,250,0.3)',
+                        'rgba(200,200,200,0.3)'
+                    ]
+                }
+            }
+        },
+        'logAxis': {
+            'axisLine': {
+                'show': false,
+                'lineStyle': {
+                    'color': '#f8f8f8'
+                }
+            },
+            'axisTick': {
+                'show': false,
+                'lineStyle': {
+                    'color': '#333'
+                }
+            },
+            'axisLabel': {
+                'show': true,
+                'textStyle': {
+                    'color': '#486074'
+                }
+            },
+            'splitLine': {
+                'show': true,
+                'lineStyle': {
+                    'color': [
+                        '#f8f8f8'
+                    ]
+                }
+            },
+            'splitArea': {
+                'show': false,
+                'areaStyle': {
+                    'color': [
+                        'rgba(250,250,250,0.3)',
+                        'rgba(200,200,200,0.3)'
+                    ]
+                }
+            }
+        },
+        'timeAxis': {
+            'axisLine': {
+                'show': false,
+                'lineStyle': {
+                    'color': '#f8f8f8'
+                }
+            },
+            'axisTick': {
+                'show': false,
+                'lineStyle': {
+                    'color': '#333'
+                }
+            },
+            'axisLabel': {
+                'show': true,
+                'textStyle': {
+                    'color': '#486074'
+                }
+            },
+            'splitLine': {
+                'show': true,
+                'lineStyle': {
+                    'color': [
+                        '#f8f8f8'
+                    ]
+                }
+            },
+            'splitArea': {
+                'show': false,
+                'areaStyle': {
+                    'color': [
+                        'rgba(250,250,250,0.3)',
+                        'rgba(200,200,200,0.3)'
+                    ]
+                }
+            }
+        },
+        'toolbox': {
+            'iconStyle': {
+                'normal': {
+                    'borderColor': '#06467c'
+                },
+                'emphasis': {
+                    'borderColor': '#4187c2'
+                }
+            }
+        },
+        'legend': {
+            'textStyle': {
+                'color': '#486074'
+            }
+        },
+        'tooltip': {
+            'axisPointer': {
+                'lineStyle': {
+                    'color': '#f8f8f8',
+                    'width': 1
+                },
+                'crossStyle': {
+                    'color': '#f8f8f8',
+                    'width': 1
+                }
+            }
+        },
+        'timeline': {
+            'lineStyle': {
+                'color': '#005eaa',
+                'width': 1
+            },
+            'itemStyle': {
+                'normal': {
+                    'color': '#005eaa',
+                    'borderWidth': 1
+                },
+                'emphasis': {
+                    'color': '#005eaa'
+                }
+            },
+            'controlStyle': {
+                'normal': {
+                    'color': '#005eaa',
+                    'borderColor': '#005eaa',
+                    'borderWidth': 0.5
+                },
+                'emphasis': {
+                    'color': '#005eaa',
+                    'borderColor': '#005eaa',
+                    'borderWidth': 0.5
+                }
+            },
+            'checkpointStyle': {
+                'color': '#005eaa',
+                'borderColor': 'rgba(49,107,194,0.5)'
+            },
+            'label': {
+                'normal': {
+                    'textStyle': {
+                        'color': '#005eaa'
+                    }
+                },
+                'emphasis': {
+                    'textStyle': {
+                        'color': '#005eaa'
+                    }
+                }
+            }
+        },
+        'visualMap': {
+            'color': [
+                '#12a1e8',
+                '#96d2f0'
+            ]
+        },
+        'dataZoom': {
+            'backgroundColor': 'rgba(47,69,84,0)',
+            'dataBackgroundColor': 'rgba(47,69,84,0.3)',
+            'fillerColor': 'rgba(167,183,204,0.4)',
+            'handleColor': '#a7b7cc',
+            'handleSize': '100%',
+            'textStyle': {
+                'color': '#333333'
+            }
+        },
+        'markPoint': {
+            'label': {
+                'normal': {
+                    'textStyle': {
+                        'color': '#486074'
+                    }
+                },
+                'emphasis': {
+                    'textStyle': {
+                        'color': '#486074'
+                    }
+                }
+            }
+        }
+    };
+    angular.module('app.core').constant('THEME', _theme);
+})();
+/**
+ * Created with IntelliJ IDEA.
+ * User: gaoHuaBin
+ * Date: 2016/12/5
+ * Time: 11:02
+ * To change this template use File | Settings | File Templates.
+ */
+(function () {
+    'use strict';
+    /**
+     * 常量
+     */
+    angular.module('app.core').constant('ERRORS', {
+        email: '格式错误',
+        required: '不能为空',
+        validatePassword: '密码格式错误',
+        repeat: '确认秘密和新密码不一致',
+        number: '只能是数字'
+    });
+})();
+/**
+ * Created with IntelliJ IDEA.
+ * User: dothin
+ * Date: 2017/4/13
+ * Time: 11:20
+ * To change this template use File | Settings | File Templates.
+ */
+(function () {
+    'use strict';
+    /**
+     * 常量
+     */
+    angular.module('app.core').constant('ROOT', '');
+})();
+/**
+ * Created with IntelliJ IDEA.
+ * User: dothin
+ * Date: 2017/4/12
+ * Time: 20:16
+ * To change this template use File | Settings | File Templates.
+ */
+(function () {
+    'use strict';
+    angular.module('app.core').factory('httpServer', httpServer);
+    httpServer.$inject = ['$http', '$q', 'ROOT'];
+
+    function httpServer($http, $q, ROOT) {
+        return {
+            postHttp: function (url, data) {
+                var deferred = $q.defer();
+                if (data) {
+                    $http({
+                        method: 'post',
+                        url: ROOT + url,
+                        data: data,
+                        timeout: deferred.promise,
+                        cancel: deferred
+                    }).success(function (resp) {
+                        deferred.resolve(resp);
+                    }).error(function (resp) {
+                        deferred.reject(resp);
+                    });
+                } else {
+                    $http({
+                        method: 'post',
+                        url: ROOT + url,
+                        timeout: deferred.promise,
+                        cancel: deferred,
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded'
+                        }
+                    }).success(function (resp) {
+                        deferred.resolve(resp);
+                    }).error(function (resp) {
+                        deferred.reject(resp);
+                    });
+                }
+                return deferred.promise;
+            },
+            put: function (url, data) {
+                var deferred = $q.defer();
+                $http({
+                    method: 'put',
+                    url: ROOT + url,
+                    data: data,
+                    timeout: deferred.promise,
+                    cancel: deferred
+                }).success(function (resp) {
+                    deferred.resolve(resp);
+                }).error(function (resp) {
+                    deferred.reject(resp);
                 });
+                return deferred.promise;
+            },
+            post: function (url, data) {
+                var deferred = $q.defer();
+                $http.post(ROOT + url + '/' + data, {
+                    timeout: deferred.promise,
+                    cancel: deferred
+                }).success(function (resp) {
+                    deferred.resolve(resp);
+                }).error(function (resp) {
+                    deferred.reject(resp);
+                });
+                return deferred.promise;
+            },
+            get: function (url, data) {
+                var deferred = $q.defer();
+                $http.get(ROOT + url + (data ? ('/' + data) : ''), {
+                    timeout: deferred.promise,
+                    cancel: deferred
+                }).success(function (resp) {
+                    deferred.resolve(resp);
+                }).error(function (resp) {
+                    deferred.reject(resp);
+                });
+                return deferred.promise;
+            },
+            delete: function (url, data) {
+                var deferred = $q.defer();
+                $http.delete(ROOT + url + '/' + data, {
+                    timeout: deferred.promise,
+                    cancel: deferred
+                }).success(function (resp) {
+                    deferred.resolve(resp);
+                }).error(function (resp) {
+                    deferred.reject(resp);
+                });
+                return deferred.promise;
+            }
+        };
+    }
+})();
+
+/**
+ * Created with IntelliJ IDEA.
+ * User: dothin
+ * Date: 2017/4/13
+ * Time: 11:41
+ * To change this template use File | Settings | File Templates.
+ */
+(function() {
+    'use strict';
+    angular.module('app.core').factory('userServer', userServer);
+    userServer.$inject = ['httpServer'];
+
+    function userServer(httpServer) {
+        var myServices = {};
+        //登录
+        myServices.login = function (data) {
+            return httpServer.postHttp('/user/login', data);
+        };
+        //退出登录
+        myServices.logout = function () {
+            return httpServer.postHttp('/user/logout');
+        };
+        return myServices;
+    }
+})();
+/**
+ * Created with IntelliJ IDEA.
+ * User: dothin
+ * Date: 2017/4/12
+ * Time: 17:57
+ * To change this template use File | Settings | File Templates.
+ */
+(function() {
+    'use strict';
+    angular.module('app.core').service('tools', tools);
+    tools.$inject = ['$timeout', '$rootScope'];
+
+    function tools($timeout, $rootScope) {
+        /**
+         * 成功提示框
+         * @param data  提示信息
+         */
+        this.alertSuccess = function (data, time) {
+            $rootScope.alert = true;
+            $rootScope.isActive = true;
+            $timeout(function () {
+                $rootScope.alert = false;
+            }, time ? time : 2000);
+            $rootScope.alertValue = data;
+        };
+        /**
+         * 失败提示框
+         * @param data  提示信息
+         */
+        this.alertError = function (data, time) {
+            $rootScope.alert = true;
+            $rootScope.isActive = false;
+            $timeout(function () {
+                $rootScope.alert = false;
+            }, time ? time : 2000);
+            $rootScope.alertValue = data;
+        };
+        /**
+         * 判断对象是否为空
+         * @param e
+         * @returns {boolean}
+         */
+        this.isEmptyObject = function (e) {
+            var t;
+            for (t in e) {
+                return !1;
+            }
+            return !0;
+        };
+        /**
+         * 改数组null为0
+         * @param arr
+         * @param item *多少
+         * @returns {boolean}
+         */
+        this.formatArr = function (arr, item) {
+            return arr.map(function (data) {
+                return data == null || data === 'NaN' ? 0 : (item == null ? data : data * item);
+            });
+        };
+        /**
+         * 格式化字符串
+         * @param str   传入字符串
+         * @param num   从第几个位置开始
+         * @param tips  添加标记
+         * @returns {string}
+         */
+        this.formatStr = function (str, num, tips) {
+            var newStr = '';
+            var count = 0;
+            if (str) {
+                for (var i = 0, len = str.length; i < len; i++) {
+                    if (count % num === 0 && count !== 0) {
+                        newStr = newStr + tips + str.charAt(i);
+                    } else {
+                        newStr = newStr + str.charAt(i);
+                    }
+                    count++;
+                }
+                return newStr;
+            } else {
+                return str;
+            }
+        };
+        /**
+         * 返回数组中最大值
+         * @param arr
+         */
+        this.max = function (arr) {
+            //Math.max.apply(null, [])  =>-Infinity
+            if (angular.isArray(arr)) {
+                return arr.length > 0 ? Math.max.apply(null, arr) : 0;
+            } else {
+                console.log(arr + 'is not a array');
+            }
+        };
+        /**
+         * 返回数组中最小值
+         * @param arr
+         */
+        this.min = function (arr) {
+            if (angular.isArray(arr)) {
+                return arr.length > 0 ? Math.min.apply(null, arr) : 0;
+            } else {
+                console.log(arr + 'is not a array');
             }
         };
     }
@@ -1562,652 +2218,5 @@
                 ngModel.$parsers.push(customValidator);
             }
         };
-    }
-})();
-/**
- * Created with IntelliJ IDEA.
- * User: gaoHuaBin
- * Date: 2016/11/22
- * Time: 15:30
- * To change this template use File | Settings | File Templates.
- */
-(function () {
-    'use strict';
-    /**
-     * echarts主题配置
-     */
-    var _theme = {
-        'color': [
-            '#00aaff',
-            '#ff587b',
-            '#29d582',
-            '#ffc62f',
-            '#24ccf6',
-            '#f7233c',
-            '#7d68ff',
-            '#ff7700'
-        ],
-        'backgroundColor': 'rgba(0,0,0,0)',
-        'textStyle': {},
-        'title': {
-            'textStyle': {
-                'color': '#333333'
-            },
-            'subtextStyle': {
-                'color': '#aaaaaa'
-            }
-        },
-        'line': {
-            'itemStyle': {
-                'normal': {
-                    'borderWidth': '2'
-                }
-            },
-            'lineStyle': {
-                'normal': {
-                    'width': 2
-                }
-            },
-            'symbolSize': '5',
-            'symbol': 'emptyCircle',
-            'smooth': false
-        },
-        'radar': {
-            'itemStyle': {
-                'normal': {
-                    'borderWidth': '2'
-                }
-            },
-            'lineStyle': {
-                'normal': {
-                    'width': 2
-                }
-            },
-            'symbolSize': '5',
-            'symbol': 'emptyCircle',
-            'smooth': false
-        },
-        'bar': {
-            'itemStyle': {
-                'normal': {
-                    'barBorderWidth': 0,
-                    'barBorderColor': '#cccccc'
-                },
-                'emphasis': {
-                    'barBorderWidth': 0,
-                    'barBorderColor': '#cccccc'
-                }
-            }
-        },
-        'pie': {
-            'itemStyle': {
-                'normal': {
-                    'borderWidth': 0,
-                    'borderColor': '#cccccc'
-                },
-                'emphasis': {
-                    'borderWidth': 0,
-                    'borderColor': '#cccccc'
-                }
-            }
-        },
-        'scatter': {
-            'itemStyle': {
-                'normal': {
-                    'borderWidth': 0,
-                    'borderColor': '#cccccc'
-                },
-                'emphasis': {
-                    'borderWidth': 0,
-                    'borderColor': '#cccccc'
-                }
-            }
-        },
-        'boxplot': {
-            'itemStyle': {
-                'normal': {
-                    'borderWidth': 0,
-                    'borderColor': '#cccccc'
-                },
-                'emphasis': {
-                    'borderWidth': 0,
-                    'borderColor': '#cccccc'
-                }
-            }
-        },
-        'parallel': {
-            'itemStyle': {
-                'normal': {
-                    'borderWidth': 0,
-                    'borderColor': '#cccccc'
-                },
-                'emphasis': {
-                    'borderWidth': 0,
-                    'borderColor': '#cccccc'
-                }
-            }
-        },
-        'sankey': {
-            'itemStyle': {
-                'normal': {
-                    'borderWidth': 0,
-                    'borderColor': '#cccccc'
-                },
-                'emphasis': {
-                    'borderWidth': 0,
-                    'borderColor': '#cccccc'
-                }
-            }
-        },
-        'funnel': {
-            'itemStyle': {
-                'normal': {
-                    'borderWidth': 0,
-                    'borderColor': '#cccccc'
-                },
-                'emphasis': {
-                    'borderWidth': 0,
-                    'borderColor': '#cccccc'
-                }
-            }
-        },
-        'gauge': {
-            'itemStyle': {
-                'normal': {
-                    'borderWidth': 0,
-                    'borderColor': '#cccccc'
-                },
-                'emphasis': {
-                    'borderWidth': 0,
-                    'borderColor': '#cccccc'
-                }
-            }
-        },
-        'candlestick': {
-            'itemStyle': {
-                'normal': {
-                    'color': '#c12e34',
-                    'color0': '#2b821d',
-                    'borderColor': '#c12e34',
-                    'borderColor0': '#2b821d',
-                    'borderWidth': 1
-                }
-            }
-        },
-        'graph': {
-            'itemStyle': {
-                'normal': {
-                    'borderWidth': 0,
-                    'borderColor': '#cccccc'
-                }
-            },
-            'lineStyle': {
-                'normal': {
-                    'width': '1',
-                    'color': '#aaaaaa'
-                }
-            },
-            'symbolSize': '25'
-        },
-        'map': {
-            'itemStyle': {
-                'normal': {
-                    'areaColor': '#dddddd',
-                    'borderColor': '#eeeeee',
-                    'borderWidth': 0.5
-                },
-                'emphasis': {
-                    'areaColor': 'rgba(230,182,0,1)',
-                    'borderColor': '#dddddd',
-                    'borderWidth': 1
-                }
-            },
-            'label': {
-                'normal': {
-                    'textStyle': {
-                        'color': '#c12e34'
-                    }
-                },
-                'emphasis': {
-                    'textStyle': {
-                        'color': 'rgb(193,46,52)'
-                    }
-                }
-            }
-        },
-        'geo': {
-            'itemStyle': {
-                'normal': {
-                    'areaColor': '#dddddd',
-                    'borderColor': '#eeeeee',
-                    'borderWidth': 0.5
-                },
-                'emphasis': {
-                    'areaColor': 'rgba(230,182,0,1)',
-                    'borderColor': '#dddddd',
-                    'borderWidth': 1
-                }
-            },
-            'label': {
-                'normal': {
-                    'textStyle': {
-                        'color': '#c12e34'
-                    }
-                },
-                'emphasis': {
-                    'textStyle': {
-                        'color': 'rgb(193,46,52)'
-                    }
-                }
-            }
-        },
-        'categoryAxis': {
-            'axisLine': {
-                'show': true,
-                'lineStyle': {
-                    'color': '#f8f8f8'
-                }
-            },
-            'axisTick': {
-                'show': false,
-                'lineStyle': {
-                    'color': '#333'
-                }
-            },
-            'axisLabel': {
-                'show': true,
-                'textStyle': {
-                    'color': '#486074'
-                }
-            },
-            'splitLine': {
-                'show': true,
-                'lineStyle': {
-                    'color': [
-                        '#f8f8f8'
-                    ]
-                }
-            },
-            'splitArea': {
-                'show': false,
-                'areaStyle': {
-                    'color': [
-                        'rgba(250,250,250,0.3)',
-                        'rgba(200,200,200,0.3)'
-                    ]
-                }
-            }
-        },
-        'valueAxis': {
-            'axisLine': {
-                'show': true,
-                'lineStyle': {
-                    'color': '#f8f8f8'
-                }
-            },
-            'axisTick': {
-                'show': false,
-                'lineStyle': {
-                    'color': '#333'
-                }
-            },
-            'axisLabel': {
-                'show': true,
-                'textStyle': {
-                    'color': '#486074'
-                }
-            },
-            'splitLine': {
-                'show': true,
-                'lineStyle': {
-                    'color': [
-                        '#f8f8f8'
-                    ]
-                }
-            },
-            'splitArea': {
-                'show': false,
-                'areaStyle': {
-                    'color': [
-                        'rgba(250,250,250,0.3)',
-                        'rgba(200,200,200,0.3)'
-                    ]
-                }
-            }
-        },
-        'logAxis': {
-            'axisLine': {
-                'show': false,
-                'lineStyle': {
-                    'color': '#f8f8f8'
-                }
-            },
-            'axisTick': {
-                'show': false,
-                'lineStyle': {
-                    'color': '#333'
-                }
-            },
-            'axisLabel': {
-                'show': true,
-                'textStyle': {
-                    'color': '#486074'
-                }
-            },
-            'splitLine': {
-                'show': true,
-                'lineStyle': {
-                    'color': [
-                        '#f8f8f8'
-                    ]
-                }
-            },
-            'splitArea': {
-                'show': false,
-                'areaStyle': {
-                    'color': [
-                        'rgba(250,250,250,0.3)',
-                        'rgba(200,200,200,0.3)'
-                    ]
-                }
-            }
-        },
-        'timeAxis': {
-            'axisLine': {
-                'show': false,
-                'lineStyle': {
-                    'color': '#f8f8f8'
-                }
-            },
-            'axisTick': {
-                'show': false,
-                'lineStyle': {
-                    'color': '#333'
-                }
-            },
-            'axisLabel': {
-                'show': true,
-                'textStyle': {
-                    'color': '#486074'
-                }
-            },
-            'splitLine': {
-                'show': true,
-                'lineStyle': {
-                    'color': [
-                        '#f8f8f8'
-                    ]
-                }
-            },
-            'splitArea': {
-                'show': false,
-                'areaStyle': {
-                    'color': [
-                        'rgba(250,250,250,0.3)',
-                        'rgba(200,200,200,0.3)'
-                    ]
-                }
-            }
-        },
-        'toolbox': {
-            'iconStyle': {
-                'normal': {
-                    'borderColor': '#06467c'
-                },
-                'emphasis': {
-                    'borderColor': '#4187c2'
-                }
-            }
-        },
-        'legend': {
-            'textStyle': {
-                'color': '#486074'
-            }
-        },
-        'tooltip': {
-            'axisPointer': {
-                'lineStyle': {
-                    'color': '#f8f8f8',
-                    'width': 1
-                },
-                'crossStyle': {
-                    'color': '#f8f8f8',
-                    'width': 1
-                }
-            }
-        },
-        'timeline': {
-            'lineStyle': {
-                'color': '#005eaa',
-                'width': 1
-            },
-            'itemStyle': {
-                'normal': {
-                    'color': '#005eaa',
-                    'borderWidth': 1
-                },
-                'emphasis': {
-                    'color': '#005eaa'
-                }
-            },
-            'controlStyle': {
-                'normal': {
-                    'color': '#005eaa',
-                    'borderColor': '#005eaa',
-                    'borderWidth': 0.5
-                },
-                'emphasis': {
-                    'color': '#005eaa',
-                    'borderColor': '#005eaa',
-                    'borderWidth': 0.5
-                }
-            },
-            'checkpointStyle': {
-                'color': '#005eaa',
-                'borderColor': 'rgba(49,107,194,0.5)'
-            },
-            'label': {
-                'normal': {
-                    'textStyle': {
-                        'color': '#005eaa'
-                    }
-                },
-                'emphasis': {
-                    'textStyle': {
-                        'color': '#005eaa'
-                    }
-                }
-            }
-        },
-        'visualMap': {
-            'color': [
-                '#12a1e8',
-                '#96d2f0'
-            ]
-        },
-        'dataZoom': {
-            'backgroundColor': 'rgba(47,69,84,0)',
-            'dataBackgroundColor': 'rgba(47,69,84,0.3)',
-            'fillerColor': 'rgba(167,183,204,0.4)',
-            'handleColor': '#a7b7cc',
-            'handleSize': '100%',
-            'textStyle': {
-                'color': '#333333'
-            }
-        },
-        'markPoint': {
-            'label': {
-                'normal': {
-                    'textStyle': {
-                        'color': '#486074'
-                    }
-                },
-                'emphasis': {
-                    'textStyle': {
-                        'color': '#486074'
-                    }
-                }
-            }
-        }
-    };
-    angular.module('app.core').constant('THEME', _theme);
-})();
-/**
- * Created with IntelliJ IDEA.
- * User: gaoHuaBin
- * Date: 2016/12/5
- * Time: 11:02
- * To change this template use File | Settings | File Templates.
- */
-(function () {
-    'use strict';
-    /**
-     * 常量
-     */
-    angular.module('app.core').constant('ERRORS', {
-        email: '格式错误',
-        required: '不能为空',
-        validatePassword: '密码格式错误',
-        repeat: '确认秘密和新密码不一致',
-        number: '只能是数字'
-    });
-})();
-/**
- * Created with IntelliJ IDEA.
- * User: dothin
- * Date: 2017/4/13
- * Time: 11:20
- * To change this template use File | Settings | File Templates.
- */
-(function () {
-    'use strict';
-    /**
-     * 常量
-     */
-    angular.module('app.core').constant('ROOT', '');
-})();
-/**
- * Created with IntelliJ IDEA.
- * User: dothin
- * Date: 2017/4/12
- * Time: 20:16
- * To change this template use File | Settings | File Templates.
- */
-(function () {
-    'use strict';
-    angular.module('app.core').factory('httpServer', httpServer);
-    httpServer.$inject = ['$http', '$q', 'ROOT'];
-
-    function httpServer($http, $q, ROOT) {
-        return {
-            postHttp: function (url, data) {
-                var deferred = $q.defer();
-                if (data) {
-                    $http({
-                        method: 'post',
-                        url: ROOT + url,
-                        data: data,
-                        timeout: deferred.promise,
-                        cancel: deferred
-                    }).success(function (resp) {
-                        deferred.resolve(resp);
-                    }).error(function (resp) {
-                        deferred.reject(resp);
-                    });
-                } else {
-                    $http({
-                        method: 'post',
-                        url: ROOT + url,
-                        timeout: deferred.promise,
-                        cancel: deferred,
-                        headers: {
-                            'Content-Type': 'application/x-www-form-urlencoded'
-                        }
-                    }).success(function (resp) {
-                        deferred.resolve(resp);
-                    }).error(function (resp) {
-                        deferred.reject(resp);
-                    });
-                }
-                return deferred.promise;
-            },
-            put: function (url, data) {
-                var deferred = $q.defer();
-                $http({
-                    method: 'put',
-                    url: ROOT + url,
-                    data: data,
-                    timeout: deferred.promise,
-                    cancel: deferred
-                }).success(function (resp) {
-                    deferred.resolve(resp);
-                }).error(function (resp) {
-                    deferred.reject(resp);
-                });
-                return deferred.promise;
-            },
-            post: function (url, data) {
-                var deferred = $q.defer();
-                $http.post(ROOT + url + '/' + data, {
-                    timeout: deferred.promise,
-                    cancel: deferred
-                }).success(function (resp) {
-                    deferred.resolve(resp);
-                }).error(function (resp) {
-                    deferred.reject(resp);
-                });
-                return deferred.promise;
-            },
-            get: function (url, data) {
-                var deferred = $q.defer();
-                $http.get(ROOT + url + (data ? ('/' + data) : ''), {
-                    timeout: deferred.promise,
-                    cancel: deferred
-                }).success(function (resp) {
-                    deferred.resolve(resp);
-                }).error(function (resp) {
-                    deferred.reject(resp);
-                });
-                return deferred.promise;
-            },
-            delete: function (url, data) {
-                var deferred = $q.defer();
-                $http.delete(ROOT + url + '/' + data, {
-                    timeout: deferred.promise,
-                    cancel: deferred
-                }).success(function (resp) {
-                    deferred.resolve(resp);
-                }).error(function (resp) {
-                    deferred.reject(resp);
-                });
-                return deferred.promise;
-            }
-        };
-    }
-})();
-
-/**
- * Created with IntelliJ IDEA.
- * User: dothin
- * Date: 2017/4/13
- * Time: 11:41
- * To change this template use File | Settings | File Templates.
- */
-(function() {
-    'use strict';
-    angular.module('app.core').factory('userServer', userServer);
-    userServer.$inject = ['httpServer'];
-
-    function userServer(httpServer) {
-        var myServices = {};
-        //登录
-        myServices.login = function (data) {
-            return httpServer.postHttp('/user/login', data);
-        };
-        //退出登录
-        myServices.logout = function () {
-            return httpServer.postHttp('/user/logout');
-        };
-        return myServices;
     }
 })();

@@ -1,0 +1,137 @@
+
+/**
+*TOOLTIPS COMPONENT
+*/
+.tool-tip {
+	position: absolute;
+	box-shadow: 2px 2px 5px $shadow-color;
+	padding: 5px 10px;
+	border: 1px solid $border-color;
+	font-size: 12px;
+	background: $fff;
+	font-family: $yaHei;
+	color: $color;
+	white-space: nowrap;
+	line-height: normal;
+	height: auto;
+	z-index: 2;
+	&:before, &:after {
+		position: absolute;
+		content: '';
+		border: solid transparent;
+		height: 0;
+		width: 0;
+	}
+}
+
+.tool-tip-top {
+	&:before, &:after {
+		top: 100%;
+		left: 50%;
+	}
+	&:after {
+		border-width: 5px;
+		border-top-color: $fff;
+		margin-left: -5px;
+	}
+	&:before {
+		border-width: 7px;
+		border-top-color: $border-color;
+		margin-left: -7px;
+	}
+	animation: top-to-bottom .3s ease-out;
+	@keyframes top-to-bottom {
+		from {
+			transform: translateY(10px);
+			opacity: 0;
+		}
+		to {
+			transform: translateY(0);
+			opacity: 1;
+		}
+	}
+}
+
+.tool-tip-right {
+	&:before, &:after {
+		top: 50%;
+		right: 100%;
+	}
+	&:after {
+		border-width: 5px;
+		border-right-color: $fff;
+		margin-top: -5px;
+	}
+	&:before {
+		border-width: 7px;
+		border-right-color: $border-color;
+		margin-top: -7px;
+	}
+	animation: right-to-left .3s ease-out;
+	@keyframes right-to-left {
+		from {
+			transform: translateX(-10px);
+			opacity: 0;
+		}
+		to {
+			transform: translateX(0);
+			opacity: 1;
+		}
+	}
+}
+
+.tool-tip-bottom {
+	&:before, &:after {
+		bottom: 100%;
+		left: 50%;
+	}
+	&:after {
+		border-width: 5px;
+		border-bottom-color: $fff;
+		margin-left: -5px;
+	}
+	&:before {
+		border-width: 7px;
+		border-bottom-color: $border-color;
+		margin-left: -7px;
+	}
+	animation: bottom-to-top .3s ease-out;
+	@keyframes bottom-to-top {
+		from {
+			transform: translateY(-10px);
+			opacity: 0;
+		}
+		to {
+			transform: translateY(0);
+			opacity: 1;
+		}
+	}
+}
+
+.tool-tip-left {
+	&:before, &:after {
+		top: 50%;
+		left: 100%;
+	}
+	&:after {
+		border-width: 5px;
+		border-left-color: $fff;
+		margin-top: -5px;
+	}
+	&:before {
+		border-width: 7px;
+		border-left-color: $border-color;
+		margin-top: -7px;
+	}
+	animation: left-to-right .3s ease-out;
+	@keyframes left-to-right {
+		from {
+			transform: translateX(10px);
+			opacity: 0;
+		}
+		to {
+			transform: translateX(0);
+			opacity: 1;
+		}
+	}
+}

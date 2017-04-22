@@ -1,5 +1,18 @@
 
 /**********************home********************************/
+//首页色块
+//left
+$left-bg1: #2292fb;
+$left-bg2: #00a9cd;
+$left-bg3: #0ec479;
+$left-bg4: #ffa60a;
+$left-bg5: #fb4a72;
+$left-bg6: #f1123a;
+//right
+$right-bg1: #7460fb;
+$right-bg2: #f78205;
+$right-bg3: #486074;
+$right-bg4: #0f6dec;
 .home-header {
 	@extend .pl30;
 	background: $fff;

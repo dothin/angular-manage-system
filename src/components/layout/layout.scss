@@ -1,4 +1,81 @@
 
+
+/**
+*ALERT COMPONENT
+*/
+.alert-success,
+.alert-error {
+	position: fixed;
+	top: 40px;
+	left: 50%;
+	min-width: 200px;
+	padding: 10px 20px;
+	background: $success-color;
+	z-index: 9999;
+	color: $fff;
+	font-size: 22px;
+	text-align: center;
+	transform: translate(-50%, 0);
+	animation: move 2s ease-out;
+}
+
+.alert-error {
+	background: $error-color;
+}
+
+@keyframes move {
+
+	0% {
+		top: -40px;
+	}
+	25%, 50%, 75%, 100% {
+		top: 40px;
+	}
+}
+
+/**
+*CHECKBOX COMPONENT
+*/
+@mixin checkbox-box($content:'',$active-content:'',$check-width:40px,$check-height:16px,$check-bg:#8091a5,$check-active-bg:#8091a5) {
+	.check-model {
+		border-radius: $check-height/2;
+		width: $check-width;
+		height: $check-height;
+		background-color: $check-bg;
+		cursor: pointer;
+		&:before {
+			content: $content;
+			color: $fff;
+			position: absolute;
+			top: 4px;
+			left: 18px;
+			@extend .fs12;
+		}
+		i {
+			width: $check-height - 2px;
+			height: $check-height - 2px;
+			background: $fff;
+			border-radius: ($check-height - 2px)/2;
+			transition: all .3s;
+			position: absolute;
+			top: 1px;
+			left: 1px;
+		}
+	}
+	.active {
+		background: $check-active-bg;
+		transition: all .3s;
+		i {
+			transition: all .3s;
+			left: $check-width - $check-height + 1;
+		}
+		&:before {
+			content: $active-content;
+			left: 3px;
+			top: 1px;
+		}
+	}
+}
 .whatever {
 	width: 44px;
 	height: 44px;

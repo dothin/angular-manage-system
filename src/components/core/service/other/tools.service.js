@@ -7,9 +7,9 @@
  */
 (function() {
     'use strict';
-    angular.module('app.helper').service('tools', tools);
+    angular.module('app.core').service('tools', tools);
     tools.$inject = ['$timeout', '$rootScope'];
-    /* @ngInject */
+
     function tools($timeout, $rootScope) {
         /**
          * 成功提示框

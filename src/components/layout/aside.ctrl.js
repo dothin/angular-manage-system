@@ -9,6 +9,7 @@
     'use strict';
     angular.module('app.layout').controller('asideCtrl', asideCtrl);
     asideCtrl.$inject = ['$state', '$rootScope'];
+
     function asideCtrl($state, $rootScope) {
         var vm = this;
         vm.state = $state;

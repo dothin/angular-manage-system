@@ -7,5 +7,9 @@
  */
 (function() {
     'use strict';
-    angular.module('app.core', ['app.helper']);
+    angular.module('app.core', [
+        'app.helper',
+        'angular-loading-bar',
+        'ngAnimate',
+        'ngCookies']);
 })();

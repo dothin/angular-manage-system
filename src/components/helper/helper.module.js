@@ -7,11 +7,5 @@
  */
 (function() {
     'use strict';
-    angular.module('app.helper',
-        [
-            'ui.router',
-            'angular-loading-bar',
-            'ngAnimate',
-            'ngCookies'
-        ]);
+    angular.module('app.helper',['ui.router']);
 })();

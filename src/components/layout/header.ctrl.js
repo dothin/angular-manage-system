@@ -10,6 +10,7 @@
     'use strict';
     angular.module('app.layout').controller('headerCtrl', headerCtrl);
     headerCtrl.$inject = ['$state', '$rootScope'];
+
     function headerCtrl($state, $rootScope) {
     }
 })();
