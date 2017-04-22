@@ -9,7 +9,11 @@
     'use strict';
     angular.module('app.core', [
         'app.helper',
+        'ngTable',
         'angular-loading-bar',
         'ngAnimate',
-        'ngCookies']);
+        'oc.lazyLoad',
+        'ngCookies',
+        'angularFileUpload'
+    ]);
 })();

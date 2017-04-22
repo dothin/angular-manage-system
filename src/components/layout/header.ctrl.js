@@ -12,5 +12,7 @@
     headerCtrl.$inject = ['$state', '$rootScope'];
 
     function headerCtrl($state, $rootScope) {
+        var vm = this;
+        vm.user = $rootScope.user;
     }
 })();

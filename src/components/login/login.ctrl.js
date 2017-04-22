@@ -8,9 +8,9 @@
 (function () {
     'use strict';
     angular.module('app.login').controller('loginCtrl', loginCtrl);
-    loginCtrl.$inject = ['$rootScope', '$state', 'userServer'];
+    loginCtrl.$inject = ['$rootScope', '$state', '$cookies'];
 
-    function loginCtrl($rootScope, $state, userServer) {
+    function loginCtrl($rootScope, $state, $cookies) {
         //检查登录
         $rootScope.user && $state.go('main');
         var vm = this;
@@ -23,10 +23,11 @@
         vm.login = function () {
             vm.submit = true;
             if (vm.loginForm.$valid) {
-                $state.go('main');
-                userServer.login(vm.user).then(function () {
-                    
+                $cookies.putObject('user', {
+                    name: vm.user.username
                 });
+                $rootScope.user = $cookies.getObject('user');
+                $state.go('main');
             }
         };
     }

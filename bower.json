@@ -25,6 +25,8 @@
     "normalize-scss": "normalize.scss#^6.0.0",
     "angular-cookies": "^1.5.8",
     "angular-loading-bar": "^0.9.0",
-    "echarts": "^3.3.2"
+    "echarts": "^3.3.2",
+    "angular-file-upload": "^2.5.0",
+    "ng-table": "1.0.0"
   }
 }

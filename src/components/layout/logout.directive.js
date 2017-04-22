@@ -10,7 +10,7 @@
     /**
      * 退出
      */
-    angular.module('app.core').directive('logout', logout);
+    angular.module('app.layout').directive('logout', logout);
 
     logout.$inject = ['tools', '$state', 'userServer'];
 
@@ -25,13 +25,8 @@
             scope: {},
             link: function (scope) {
                 scope.logout = function () {
-                    userServer.logout().then(function (data) {
-                        if (data.status) {
-                            tools.logout();
-                            //$state.go('login');
-                            window.location.href = 'http://rap.xdbigdata.com/app-store/#/login';
-                        }
-                    });
+                    tools.logout();
+                    $state.go('login');
                 };
             }
         };

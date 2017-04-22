@@ -117,11 +117,11 @@
 		}
 		background: $aside-bg-color url("../images/logo.png") 20px center no-repeat;
 		color: $fff;
-		padding-left: 70px;
+		padding-left: 20px;
 		padding-right: 40px;
 		padding-top: 11px;
 		line-height: 20px;
-		letter-spacing: 3px;
+		letter-spacing: 10px;
 		@media (max-height: 768px) {
 			height: 50px;
 			line-height: 15px;
@@ -129,7 +129,7 @@
 
 		@media (max-width: 1366px) {
 			background: $aside-bg-color url("../images/logo.png") 10px center no-repeat;
-			padding-left: 60px;
+			padding-left: 20px;
 			padding-right: 10px;
 		}
 	}
@@ -176,6 +176,7 @@
 /********************aside**********************/
 .aside {
 	@include stretch(0, false, 0, 0);
+	@extend .pt40;
 	width: $aside-width;
 	@media (max-width: 1366px) {
 		width: 180px;

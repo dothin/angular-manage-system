@@ -8,9 +8,17 @@
 (function() {
     'use strict';
     angular.module('app.core').service('tools', tools);
-    tools.$inject = ['$timeout', '$rootScope'];
+    tools.$inject = ['$timeout', '$rootScope', '$cookies'];
 
-    function tools($timeout, $rootScope) {
+    function tools($timeout, $rootScope, $cookies) {
+        /**
+         * 退出
+         */
+        this.logout = function () {
+            $cookies.remove('user');
+            $rootScope.user = $cookies.getObject('user');
+            localStorage.clear();
+        };
         /**
          * 成功提示框
          * @param data  提示信息

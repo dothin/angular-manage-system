@@ -11,6 +11,9 @@
         'app.core',
         'app.helper',
         'app.home',
+        'app.echarts',
+        'app.form',
+        'app.table',
         'app.layout',
         'app.login'
     ]);

@@ -11,15 +11,8 @@
     appRun.$inject = ['$rootScope', '$cookies', '$state', '$http'];
 
     function appRun($rootScope, $cookies, $state, $http) {
-        window.localStorage.setItem('user', angular.toJson({name: 'school'}));
-        var _user = angular.fromJson(localStorage.getItem('user'));
-        if (_user) {
-            $rootScope.user = {
-                username: _user.name,
-                type: 0
-            };
-        } else {
-            window.location.href = 'http://rap.xdbigdata.com/app-store/#/login';
+        if ($cookies.getObject('user')) {
+            $rootScope.user = $cookies.getObject('user');
         }
         /**
          * 取消请求
