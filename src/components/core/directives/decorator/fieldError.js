@@ -35,7 +35,7 @@
                     return ngModel.$error;
                 };
                 subScope.customMessages = scope.$eval(attrs.fieldError);
-                var hint = $compile('<ul ng-if="hasError()"><li ng-repeat="(name,wrong) in errors()" class="text-error" ng-if="wrong && name !==\'parse\'">{{name | error:customMessages}}</li></ul>')(subScope);
+                var hint = $compile('<ul ng-if="hasError()"><li ng-repeat="(name,wrong) in errors()" class="text-wrong" ng-if="wrong && name !==\'parse\'">{{name | error:customMessages}}</li></ul>')(subScope);
                 element.after(hint);
             }
         };

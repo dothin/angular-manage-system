@@ -10,7 +10,7 @@
     /**
      * 表单错误过滤器
      */
-    angular.module('app.core').factory('error', error);
+    angular.module('app.core').filter('error', error);
 
     error.$inject = ['ERRORS'];
 

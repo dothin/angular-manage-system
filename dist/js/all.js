@@ -255,7 +255,6 @@
                         controller: 'echartsCtrl as vm',
                         resolve: {
                             loadMyCtrl: ['$ocLazyLoad', function ($ocLazyLoad) {
-                                console.log(1)
                                 return $ocLazyLoad.load('lib/echarts/dist/echarts.min.js').then(function () {
                                     return $ocLazyLoad.load('plugins/china.js')
                                 });
@@ -263,6 +262,27 @@
                         }
                     }
                 }
+            }
+        },{
+            state: 'main.echarts.bar',
+            config: {
+                url: '/bar',
+                templateUrl: 'dist/tpls/echarts/bar/bar.html',
+                controller: 'barCtrl as vm'
+            }
+        },{
+            state: 'main.echarts.line',
+            config: {
+                url: '/line',
+                templateUrl: 'dist/tpls/echarts/line/line.html',
+                controller: 'lineCtrl as vm'
+            }
+        },{
+            state: 'main.echarts.pie',
+            config: {
+                url: '/pie',
+                templateUrl: 'dist/tpls/echarts/pie/pie.html',
+                controller: 'pieCtrl as vm'
             }
         }];
     }
@@ -660,7 +680,7 @@
     /**
      * 表单错误过滤器
      */
-    angular.module('app.core').factory('error', error);
+    angular.module('app.core').filter('error', error);
 
     error.$inject = ['ERRORS'];
 
@@ -766,6 +786,1332 @@
     }
 })();
 
+/**
+ * Created with IntelliJ IDEA.
+ * User: gaoHuaBin
+ * Date: 2016/11/21
+ * Time: 16:02
+ * To change this template use File | Settings | File Templates.
+ */
+(function () {
+    'use strict';
+    angular.module('app.echarts').controller('barCtrl', ['echartsHanderServer', 'barServer', 'compareResultLibraryServer', 'tools', '$filter', '$scope',
+        function (echartsHanderServer, barServer, compareResultLibraryServer, tools, $filter, $scope) {
+            var vm = this;
+            vm.init = function () {
+                echartsHanderServer.echartsHandler({
+                    'situation': function (ech, option) {
+                        vm.initSituation = function () {
+                            vm._postData = {
+                                startDate: vm.timeConf.startDate,
+                                endDate: vm.timeConf.endDate
+                            };
+                            angular.forEach(_param, function (data) {
+                                angular.extend(data, vm._postData);
+                            });
+                            compareResultLibraryServer.getCompareLibrarySituation(_param).then(function (data) {
+                                if (data.status) {
+                                    option.xAxis.data = _conditionList;
+                                    option.legend.data = ['平均每天泡馆时长', '平均每月泡馆天数'];
+                                    option.series = [
+                                        {
+                                            name: '平均每天泡馆时长',
+                                            type: 'bar',
+                                            barMaxWidth: 50,
+                                            data: $filter('toFixed')(data.data.avgHours, 2)
+                                        },
+                                        {
+                                            name: '平均每月泡馆天数',
+                                            type: 'bar',
+                                            barMaxWidth: 50,
+                                            yAxisIndex: 1,
+                                            data: $filter('toFixed')(data.data.avgDays, 2)
+                                        }
+                                    ];
+                                    ech.clear();
+                                    ech.setOption(option);
+                                    ech.hideLoading();
+                                }
+                            });
+                        };
+                        vm.initSituation();
+                    },
+                    'proportion': function (ech, option) {
+                        vm.initProportion = function () {
+                            vm._postData = {
+                                startDate: vm.timeConf.startDate,
+                                endDate: vm.timeConf.endDate
+                            };
+                            angular.forEach(_param, function (data) {
+                                angular.extend(data, vm._postData);
+                            });
+                            compareResultLibraryServer.getCompareLibraryProportion(_param).then(function (data) {
+                                if (data.status) {
+                                    option.xAxis.data = _conditionList;
+                                    option.series = [
+                                        {
+                                            name: '占比',
+                                            type: 'bar',
+                                            barMaxWidth: 50,
+                                            data: $filter('toFixed')(tools.formatArr(data.data, 100), 2)
+                                        }
+                                    ];
+                                    ech.clear();
+                                    ech.setOption(option);
+                                    ech.hideLoading();
+                                }
+                            });
+                        };
+                        vm.initProportion();
+                    },
+                    'average': function (ech, option) {
+                        vm.initAverage = function () {
+                            vm._postData = {
+                                startDate: vm.timeConf.startDate,
+                                endDate: vm.timeConf.endDate
+                            };
+                            angular.forEach(_param, function (data) {
+                                angular.extend(data, vm._postData);
+                            });
+                            compareResultLibraryServer.getCompareLibraryAverage(_param).then(function (data) {
+                                if (data.status) {
+                                    option.xAxis.data = data.data.date;
+                                    option.legend.data = _conditionList;
+                                    option.series = [];
+                                    angular.forEach(option.legend.data, function (data1, key) {
+                                        option.series.push({
+                                            name: data1,
+                                            type: 'line',
+                                            showAllSymbol: true,
+                                            data: $filter('toFixed')(data.data.data[key], 2)
+                                        });
+                                    });
+                                    ech.clear();
+                                    ech.setOption(option);
+                                    ech.hideLoading();
+                                }
+                            });
+                        };
+                        vm.initAverage();
+                    }
+                });
+            };
+            $scope.$watch('vm.timeConf.ready', function (to) {
+                to && vm.init();
+            });
+            vm.timeConf = {
+                submitTime: function () {
+                    vm.init();
+                }
+            };
+        }
+    ]);
+})();
+/**
+ * Created by xd-66 on 2016/11/24.
+ */
+(function () {
+    'use strict';
+    /**
+     * 个人画像---消费水平---echarts配置
+     */
+    angular.module('app.echarts').factory('barServer', ['barLine', 'pie', 'decareMap', 'gauge',
+        function (barLine, pie, decareMap, gauge) {
+            var _option = {
+                card: function () {
+                    //获取基础配置项
+                    var _consumptionOption = barLine.getOption('元', '次');
+                    //需要修改配置在此处进行
+                    return _consumptionOption;
+                },
+                type: function () {
+                    //获取基础配置项
+                    var _consumptionOption = pie.getOption('%');
+                    //需要修改配置在此处进行
+                    return _consumptionOption;
+                },
+                meals: function () {
+                    //获取基础配置项
+                    var _consumptionOption = decareMap.getOption();
+                    //需要修改配置在此处进行
+                    return _consumptionOption;
+                },
+                economic: function () {
+                    //获取基础配置项
+                    var _consumptionOption = gauge.getOption('');
+                    _consumptionOption.tooltip = {
+                        show: false
+                    };
+                    //需要修改配置在此处进行
+                    return _consumptionOption;
+                }
+            };
+            return {
+                card: _option.card(),
+                type: _option.type(),
+                meals: _option.meals(),
+                economic: _option.economic()
+            };
+        }
+    ]);
+})();
+/**
+ * Created with IntelliJ IDEA.
+ * User: codingYing
+ * Date: 2017/4/21
+ * Time: 10:32
+ * To change this template use File | Settings | File Templates.
+ */
+(function () {
+    'use strict';
+
+    angular.module('app.echarts').controller('lineCtrl', lineCtrl);
+
+    lineCtrl.$inject = [];
+    function lineCtrl() {
+        var vm = this;
+    }
+})();
+
+/**
+ * Created with IntelliJ IDEA.
+ * User: gaoHuaBin
+ * Date: 2016/11/21
+ * Time: 16:02
+ * To change this template use File | Settings | File Templates.
+ */
+(function () {
+    'use strict';
+    angular.module('app.echarts').controller('pieCtrl', ['echartsHanderServer', 'pieServer',
+        function (echartsHanderServer, pieServer) {
+            var vm = this;
+            vm.init = function () {
+                echartsHanderServer.echartsHandler(pieServer, {
+                    'pie1': function (ech, option) {
+                        vm.initSituation = function () {
+                            /*vm._postData = {
+                             startDate: vm.timeConf.startDate,
+                             endDate: vm.timeConf.endDate
+                             };
+                             angular.forEach(_param, function (data) {
+                             angular.extend(data, vm._postData);
+                             });
+                             compareResultLibraryServer.getCompareLibrarySituation(_param).then(function (data) {
+                             if (data.status) {
+                             option.xAxis.data = _conditionList;
+                             option.legend.data = ['平均每天泡馆时长', '平均每月泡馆天数'];
+                             option.series = [
+                             {
+                             name: '平均每天泡馆时长',
+                             type: 'bar',
+                             barMaxWidth: 50,
+                             data: $filter('toFixed')(data.data.avgHours, 2)
+                             },
+                             {
+                             name: '平均每月泡馆天数',
+                             type: 'bar',
+                             barMaxWidth: 50,
+                             yAxisIndex: 1,
+                             data: $filter('toFixed')(data.data.avgDays, 2)
+                             }
+                             ];
+                             ech.clear();
+                             ech.setOption(option);
+                             ech.hideLoading();
+                             }
+                             });*/
+                            option.series[0].data[0].value=20;
+                            option.series[0].data[1].value=80;
+                            option.series[1].data[0].value=20;
+                            option.series[1].data[1].value=80;
+                            option.series[2].data[0].value=20;
+                            option.series[2].data[1].value=80;
+                            option.series[3].data[0].value=20;
+                            option.series[3].data[1].value=80;
+                            ech.clear();
+                            ech.setOption(option);
+                            ech.hideLoading();
+                        };
+                        vm.initSituation();
+                    },
+                    'pie2': function (ech, option) {
+                        vm.initSituation = function () {
+                            option.series[0].data[0].value = 335;
+                            option.series[0].data[1].value = 310;
+                            ech.clear();
+                            ech.setOption(option);
+                            ech.hideLoading();
+                        };
+                        vm.initSituation();
+                    },
+                    'pie3': function (ech, option) {
+                        vm.initSituation = function () {
+                            ech.clear();
+                            ech.setOption(option);
+                            ech.hideLoading();
+                        };
+                        vm.initSituation();
+                    },
+                    'pie4': function (ech, option) {
+                        vm.initSituation = function () {
+                            ech.clear();
+                            ech.setOption(option);
+                            ech.hideLoading();
+                        };
+                        vm.initSituation();
+                    }
+                });
+            };
+            vm.init();
+        }
+    ]);
+})();
+/**
+ * Created by xd-66 on 2016/11/24.
+ */
+(function () {
+    'use strict';
+    /**
+     * 个人画像---消费水平---echarts配置
+     */
+    angular.module('app.echarts').factory('pieServer', ['pie',
+        function (pie) {
+            var _option = {
+                pie1: function () {
+                    //获取基础配置项
+                    var pieOption = pie.getOption('%');
+                    pieOption.xAxis = [
+                        {
+                            type: 'category',
+                            axisLine: {show: false},
+                            axisTick: {show: false},
+                            splitLine: {show: false},
+                            axisLabel: {interval: 0},
+                            data: ['正常在校学生相似度', '同班学生相似度', '同级学生相似度', '失联学生相似度']
+                        }
+                    ];
+                    pieOption.yAxis = [
+                        {
+                            show: false
+                        }
+                    ];
+                    pieOption.grid = {
+                        bottom: 30
+                    };
+                    pieOption.series = [
+                        {
+                            name: '正常在校学生',
+                            center: [
+                                '20.0%',
+                                '40%'
+                            ],
+                            radius: [
+                                '40%',
+                                '50%'
+                            ],
+                            type: 'pie',
+                            labelLine: {
+                                normal: {
+                                    show: false
+                                }
+                            },
+                            data: [{
+                                value: 0,
+                                name: '相似度',
+                                label: {
+                                    normal: {
+                                        formatter: '{d} %',
+                                        position: 'center',
+                                        show: true,
+                                        textStyle: {
+                                            fontSize: '16',
+                                            fontWeight: 'bold',
+                                            color: '#000'
+                                        }
+                                    }
+                                }
+                            }, {
+                                value: 0,
+                                name: '',
+                                tooltip: {
+                                    show: false
+                                },
+                                itemStyle: {
+                                    normal: {
+                                        color: '#eaecef'
+                                    },
+                                    emphasis: {
+                                        color: '#eaecef'
+                                    }
+                                },
+                                hoverAnimation: false
+                            }]
+                        }, {
+                            name: '同班学生',
+                            center: [
+                                '40.0%',
+                                '40%'
+                            ],
+                            radius: [
+                                '40%',
+                                '50%'
+                            ],
+                            type: 'pie',
+                            labelLine: {
+                                normal: {
+                                    show: false
+                                }
+                            },
+                            data: [{
+                                value: 0,
+                                name: '相似度',
+                                label: {
+                                    normal: {
+                                        formatter: '{d} %',
+                                        position: 'center',
+                                        show: true,
+                                        textStyle: {
+                                            fontSize: '16',
+                                            fontWeight: 'bold',
+                                            color: '#000'
+                                        }
+                                    }
+                                }
+                            }, {
+                                value: 0,
+                                name: '',
+                                tooltip: {
+                                    show: false
+                                },
+                                itemStyle: {
+                                    normal: {
+                                        color: '#eaecef'
+                                    },
+                                    emphasis: {
+                                        color: '#eaecef'
+                                    }
+                                },
+                                hoverAnimation: false
+                            }]
+                        }, {
+                            name: '同级学生',
+                            center: [
+                                '60.0%',
+                                '40%'
+                            ],
+                            radius: [
+                                '40%',
+                                '50%'
+                            ],
+                            type: 'pie',
+                            labelLine: {
+                                normal: {
+                                    show: false
+                                }
+                            },
+                            data: [{
+                                value: 0,
+                                name: '相似度',
+                                label: {
+                                    normal: {
+                                        formatter: '{d} %',
+                                        position: 'center',
+                                        show: true,
+                                        textStyle: {
+                                            fontSize: '16',
+                                            fontWeight: 'bold',
+                                            color: '#000'
+                                        }
+                                    }
+                                }
+                            }, {
+                                value: 0,
+                                name: '',
+                                tooltip: {
+                                    show: false
+                                },
+                                itemStyle: {
+                                    normal: {
+                                        color: '#eaecef'
+                                    },
+                                    emphasis: {
+                                        color: '#eaecef'
+                                    }
+                                },
+                                hoverAnimation: false
+                            }]
+                        }, {
+                            name: '失联学生',
+                            center: [
+                                '80.0%',
+                                '40%'
+                            ],
+                            radius: [
+                                '40%',
+                                '50%'
+                            ],
+                            type: 'pie',
+                            labelLine: {
+                                normal: {
+                                    show: false
+                                }
+                            },
+                            data: [{
+                                value: 0,
+                                name: '相似度',
+                                label: {
+                                    normal: {
+                                        formatter: '{d} %',
+                                        position: 'center',
+                                        show: true,
+                                        textStyle: {
+                                            fontSize: '16',
+                                            fontWeight: 'bold',
+                                            color: '#000'
+                                        }
+                                    }
+                                }
+                            }, {
+                                value: 0,
+                                name: '',
+                                tooltip: {
+                                    show: false
+                                },
+                                itemStyle: {
+                                    normal: {
+                                        color: '#eaecef'
+                                    },
+                                    emphasis: {
+                                        color: '#eaecef'
+                                    }
+                                },
+                                hoverAnimation: false
+                            }]
+                        }];
+                    //需要修改配置在此处进行
+                    return pieOption;
+                },
+                pie2: function () {
+                    //获取基础配置项
+                    var pieOption = pie.getOption('%');
+                    pieOption.series = [
+                        {
+                            name: '单维度占比',
+                            type: 'pie',
+                            radius: ['60%', '70%'],
+                            label: {
+                                normal: {
+                                    position: 'center'
+                                }
+                            },
+                            data: [
+                                {
+                                    value: 0,
+                                    name: '占有率',
+                                    label: {
+                                        normal: {
+                                            formatter: '{d} %',
+                                            textStyle: {
+                                                fontSize: 20
+                                            }
+                                        }
+                                    }
+                                },
+                                {
+                                    value: 0,
+                                    name: '占位',
+                                    label: {
+                                        normal: {
+                                            formatter: '\n完成率',
+                                            textStyle: {
+                                                color: '#999'
+                                            }
+                                        }
+                                    },
+                                    tooltip: {
+                                        show: false
+                                    },
+                                    itemStyle: {
+                                        normal: {
+                                            color: '#eaecef'
+                                        }, emphasis: {
+                                            color: '#eaecef'
+                                        }
+                                    },
+                                    hoverAnimation: false
+                                }
+                            ]
+                        }];
+                    //需要修改配置在此处进行
+                    return pieOption;
+                },
+                pie3: function () {
+                    //获取基础配置项
+                    var pieOption = pie.getOption('%');
+                    var data = [{
+                        value: 11,
+                        name: '食堂'
+                    }, {
+                        value: 22,
+                        name: '超市'
+                    }, {
+                        value: 33,
+                        name: '刷卡'
+                    }, {
+                        value: 22,
+                        name: '交通'
+                    }];
+                    pieOption.title = {
+                        text: '统计',
+                        x: 'center',
+                        y: 'center',
+                        textStyle: {
+                            fontWeight: 'normal',
+                            fontSize: 14
+                        }
+                    };
+                    pieOption.legend = {
+                        orient: 'vertical',
+                        right: '0%',
+                        bottom: '0%',
+                        data: ['食堂', '超市', '刷卡', '交通'],
+                        itemWidth:20,
+                        itemHeight:10
+                    };
+                    pieOption.series = [{
+                        name:'消费',
+                        type: 'pie',
+                        selectedMode: 'single',
+                        radius: ['25%', '60%'],
+                        label: {
+                            normal: {
+                                position: 'inner',
+                                textStyle: {
+                                    color: '#fff',
+                                    fontSize: 12
+                                }
+                            }
+                        },
+                        labelLine: {
+                            normal: {
+                                show: false
+                            }
+                        },
+                        data: data
+                    }, {
+                        name:'消费',
+                        type: 'pie',
+                        radius: ['60%', '90%'],
+                        itemStyle: {
+                            normal: {
+                                color: '#f2f2f2'
+                            },
+                            emphasis: {
+                                color: '#adadad'
+                            }
+                        },
+                        label: {
+                            normal: {
+                                position: 'inner',
+                                formatter: '{c}%',
+                                textStyle: {
+                                    color: '#777777',
+                                    fontSize: 12
+                                }
+                            }
+                        },
+                        data: data
+                    }];
+                    //需要修改配置在此处进行
+                    return pieOption;
+                },
+                pie4: function () {
+                    //获取基础配置项
+                    var pieOption = pie.getOption('%');
+                    var data = [{
+                        value: 11,
+                        name: '食堂'
+                    }, {
+                        value: 22,
+                        name: '超市'
+                    }, {
+                        value: 33,
+                        name: '刷卡'
+                    }, {
+                        value: 22,
+                        name: '交通'
+                    }];
+                    pieOption.title = {
+                        text: '统计',
+                        subtext: '2016年',
+                        x: 'center',
+                        y: 'center',
+                        textStyle: {
+                            fontWeight: 'normal',
+                            fontSize: 14
+                        }
+                    };
+                    pieOption.legend = {
+                        orient: 'vertical',
+                        right: '0%',
+                        bottom: '0%',
+                        data: ['食堂', '超市', '刷卡', '交通'],
+                        itemWidth:20,
+                        itemHeight:10
+                    };
+                    pieOption.series = [{
+                        name:'消费',
+                        type: 'pie',
+                        selectedMode: 'single',
+                        radius: ['50%', '90%'],
+                        label: {
+                            normal: {
+                                position: 'inner',
+                                textStyle: {
+                                    color: '#fff',
+                                    fontSize: 12
+                                }
+                            }
+                        },
+                        labelLine: {
+                            normal: {
+                                show: false
+                            }
+                        },
+                        data: data
+                    }];
+                    //需要修改配置在此处进行
+                    return pieOption;
+                }
+            };
+            return {
+                pie1: _option.pie1(),
+                pie2: _option.pie2(),
+                pie3: _option.pie3(),
+                pie4: _option.pie4()
+            };
+        }
+    ]);
+})();
+/**
+ * Created with IntelliJ IDEA.
+ * User: dothin
+ * Date: 2017/2/22
+ * Time: 11:21
+ * To change this template use File | Settings | File Templates.
+ */
+(function () {
+    'use strict';
+    angular.module('app.echarts').service('echartsFormatter', [function () {
+        /**
+         * 格式化柱状图和折线图
+         * @param params
+         * @param ticket
+         * @param callback
+         * @param flag  单位
+         * @returns {string}
+         */
+        this.formatter = function (params, ticket, callback, flag) {
+            //当前版本echarts存在bug，series里面的对象有多个时，params里面的对象的name属性值不一定存在
+            /**
+             * series : [
+             {
+                 name:'邮件营销',
+                 type:'line',
+                 stack: '总量',
+                 data:[null, null, null, null, null, null, null]
+             },
+             {
+                 name:'联盟广告',
+                 type:'line',
+                 stack: '总量',
+                 data:[null, null, null, null, null, null, null]
+             },
+             {
+                 name:'视频广告',
+                 type:'line',
+                 stack: '总量',
+                 data:[150, 232, 201, 154, 190, 330, null]
+             }
+             ];
+             此时name有问题
+             */
+            //var res = params[0].name;
+            var res = '';
+            angular.forEach(params, function (value) {
+                res === '' && value.name && (res = value.name);
+            });
+            for (var i = 0, l = params.length; i < l; i++) {
+                res += '<br/>' + params[i].seriesName + ' : ' + (params[i].value ? params[i].value : '-') + (flag ? flag : '');
+            }
+            return res;
+        };
+        /**
+         * 格式化转柱状图折线图
+         * @param params
+         * @param ticket
+         * @param callback
+         * @param line  折线图单位
+         * @param bar   柱状图单位
+         * @returns {string}
+         */
+        this.formatterBarLine = function (params, ticket, callback, line, bar) {
+            var res = '';
+            angular.forEach(params, function (value) {
+                res === '' && value.name && (res = value.name);
+            });
+            for (var i = 0, l = params.length; i < l; i++) {
+                if (params[i].seriesType === 'line') {
+                    res += '<br/>' + params[i].seriesName + ' : ' + (params[i].value ? params[i].value : '-') + (line ? line : '');
+                } else {
+                    res += '<br/>' + params[i].seriesName + ' : ' + (params[i].value ? params[i].value : '-') + (bar ? bar : '');
+                }
+            }
+            return res;
+        };
+    }]);
+})();
+/**
+ * Created with IntelliJ IDEA.
+ * User: gaoHuaBin
+ * Date: 2016/11/24
+ * Time: 11:12
+ * To change this template use File | Settings | File Templates.
+ */
+(function () {
+    'use strict';
+    angular.module('app.echarts').service('echartsHanderServer', ['$timeout', 'THEME', 'loading',
+        function ($timeout, THEME, loading) {
+            var _this = this;
+            /**
+             * echarts模块公共服务
+             * @param module    echarts模块项
+             */
+            this.echartsHandler = function (echartsOption, module) {
+                //遍历echarts模块项
+                angular.forEach(module, function (value, key) {
+                    $timeout(function () {
+                        _this['echarts' + key] = echarts.init(document.getElementById(key), THEME);
+                        var option = echartsOption[key];
+                        _this['echarts' + key].showLoading(loading);
+                        value(_this['echarts' + key], option);
+                    });
+                });
+                //遍历echarts浏览器缩放自适应
+                window.onresize = function () {
+                    angular.forEach(module, function (value, key) {
+                        _this['echarts' + key] && _this['echarts' + key].resize();
+                    });
+                };
+            };
+        }
+    ]);
+})();
+/**
+ * Created with IntelliJ IDEA.
+ * User: gaoHuaBin
+ * Date: 2016/11/22
+ * Time: 15:30
+ * To change this template use File | Settings | File Templates.
+ */
+(function () {
+    'use strict';
+    /**
+     * echarts主题配置
+     */
+    var _theme = {
+        'color': [
+            '#00aaff',
+            '#ff587b',
+            '#29d582',
+            '#ffc62f',
+            '#24ccf6',
+            '#f7233c',
+            '#7d68ff',
+            '#ff7700'
+        ],
+        'backgroundColor': 'rgba(0,0,0,0)',
+        'textStyle': {},
+        'title': {
+            'textStyle': {
+                'color': '#333333'
+            },
+            'subtextStyle': {
+                'color': '#aaaaaa'
+            }
+        },
+        'line': {
+            'itemStyle': {
+                'normal': {
+                    'borderWidth': '2'
+                }
+            },
+            'lineStyle': {
+                'normal': {
+                    'width': 2
+                }
+            },
+            'symbolSize': '5',
+            'symbol': 'emptyCircle',
+            'smooth': false
+        },
+        'radar': {
+            'itemStyle': {
+                'normal': {
+                    'borderWidth': '2'
+                }
+            },
+            'lineStyle': {
+                'normal': {
+                    'width': 2
+                }
+            },
+            'symbolSize': '5',
+            'symbol': 'emptyCircle',
+            'smooth': false
+        },
+        'bar': {
+            'itemStyle': {
+                'normal': {
+                    'barBorderWidth': 0,
+                    'barBorderColor': '#cccccc'
+                },
+                'emphasis': {
+                    'barBorderWidth': 0,
+                    'barBorderColor': '#cccccc'
+                }
+            }
+        },
+        'pie': {
+            'itemStyle': {
+                'normal': {
+                    'borderWidth': 0,
+                    'borderColor': '#cccccc'
+                },
+                'emphasis': {
+                    'borderWidth': 0,
+                    'borderColor': '#cccccc'
+                }
+            }
+        },
+        'scatter': {
+            'itemStyle': {
+                'normal': {
+                    'borderWidth': 0,
+                    'borderColor': '#cccccc'
+                },
+                'emphasis': {
+                    'borderWidth': 0,
+                    'borderColor': '#cccccc'
+                }
+            }
+        },
+        'boxplot': {
+            'itemStyle': {
+                'normal': {
+                    'borderWidth': 0,
+                    'borderColor': '#cccccc'
+                },
+                'emphasis': {
+                    'borderWidth': 0,
+                    'borderColor': '#cccccc'
+                }
+            }
+        },
+        'parallel': {
+            'itemStyle': {
+                'normal': {
+                    'borderWidth': 0,
+                    'borderColor': '#cccccc'
+                },
+                'emphasis': {
+                    'borderWidth': 0,
+                    'borderColor': '#cccccc'
+                }
+            }
+        },
+        'sankey': {
+            'itemStyle': {
+                'normal': {
+                    'borderWidth': 0,
+                    'borderColor': '#cccccc'
+                },
+                'emphasis': {
+                    'borderWidth': 0,
+                    'borderColor': '#cccccc'
+                }
+            }
+        },
+        'funnel': {
+            'itemStyle': {
+                'normal': {
+                    'borderWidth': 0,
+                    'borderColor': '#cccccc'
+                },
+                'emphasis': {
+                    'borderWidth': 0,
+                    'borderColor': '#cccccc'
+                }
+            }
+        },
+        'gauge': {
+            'itemStyle': {
+                'normal': {
+                    'borderWidth': 0,
+                    'borderColor': '#cccccc'
+                },
+                'emphasis': {
+                    'borderWidth': 0,
+                    'borderColor': '#cccccc'
+                }
+            }
+        },
+        'candlestick': {
+            'itemStyle': {
+                'normal': {
+                    'color': '#c12e34',
+                    'color0': '#2b821d',
+                    'borderColor': '#c12e34',
+                    'borderColor0': '#2b821d',
+                    'borderWidth': 1
+                }
+            }
+        },
+        'graph': {
+            'itemStyle': {
+                'normal': {
+                    'borderWidth': 0,
+                    'borderColor': '#cccccc'
+                }
+            },
+            'lineStyle': {
+                'normal': {
+                    'width': '1',
+                    'color': '#aaaaaa'
+                }
+            },
+            'symbolSize': '25'
+        },
+        'map': {
+            'itemStyle': {
+                'normal': {
+                    'areaColor': '#dddddd',
+                    'borderColor': '#eeeeee',
+                    'borderWidth': 0.5
+                },
+                'emphasis': {
+                    'areaColor': 'rgba(230,182,0,1)',
+                    'borderColor': '#dddddd',
+                    'borderWidth': 1
+                }
+            },
+            'label': {
+                'normal': {
+                    'textStyle': {
+                        'color': '#c12e34'
+                    }
+                },
+                'emphasis': {
+                    'textStyle': {
+                        'color': 'rgb(193,46,52)'
+                    }
+                }
+            }
+        },
+        'geo': {
+            'itemStyle': {
+                'normal': {
+                    'areaColor': '#dddddd',
+                    'borderColor': '#eeeeee',
+                    'borderWidth': 0.5
+                },
+                'emphasis': {
+                    'areaColor': 'rgba(230,182,0,1)',
+                    'borderColor': '#dddddd',
+                    'borderWidth': 1
+                }
+            },
+            'label': {
+                'normal': {
+                    'textStyle': {
+                        'color': '#c12e34'
+                    }
+                },
+                'emphasis': {
+                    'textStyle': {
+                        'color': 'rgb(193,46,52)'
+                    }
+                }
+            }
+        },
+        'categoryAxis': {
+            'axisLine': {
+                'show': true,
+                'lineStyle': {
+                    'color': '#f8f8f8'
+                }
+            },
+            'axisTick': {
+                'show': false,
+                'lineStyle': {
+                    'color': '#333'
+                }
+            },
+            'axisLabel': {
+                'show': true,
+                'textStyle': {
+                    'color': '#486074'
+                }
+            },
+            'splitLine': {
+                'show': true,
+                'lineStyle': {
+                    'color': [
+                        '#f8f8f8'
+                    ]
+                }
+            },
+            'splitArea': {
+                'show': false,
+                'areaStyle': {
+                    'color': [
+                        'rgba(250,250,250,0.3)',
+                        'rgba(200,200,200,0.3)'
+                    ]
+                }
+            }
+        },
+        'valueAxis': {
+            'axisLine': {
+                'show': true,
+                'lineStyle': {
+                    'color': '#f8f8f8'
+                }
+            },
+            'axisTick': {
+                'show': false,
+                'lineStyle': {
+                    'color': '#333'
+                }
+            },
+            'axisLabel': {
+                'show': true,
+                'textStyle': {
+                    'color': '#486074'
+                }
+            },
+            'splitLine': {
+                'show': true,
+                'lineStyle': {
+                    'color': [
+                        '#f8f8f8'
+                    ]
+                }
+            },
+            'splitArea': {
+                'show': false,
+                'areaStyle': {
+                    'color': [
+                        'rgba(250,250,250,0.3)',
+                        'rgba(200,200,200,0.3)'
+                    ]
+                }
+            }
+        },
+        'logAxis': {
+            'axisLine': {
+                'show': false,
+                'lineStyle': {
+                    'color': '#f8f8f8'
+                }
+            },
+            'axisTick': {
+                'show': false,
+                'lineStyle': {
+                    'color': '#333'
+                }
+            },
+            'axisLabel': {
+                'show': true,
+                'textStyle': {
+                    'color': '#486074'
+                }
+            },
+            'splitLine': {
+                'show': true,
+                'lineStyle': {
+                    'color': [
+                        '#f8f8f8'
+                    ]
+                }
+            },
+            'splitArea': {
+                'show': false,
+                'areaStyle': {
+                    'color': [
+                        'rgba(250,250,250,0.3)',
+                        'rgba(200,200,200,0.3)'
+                    ]
+                }
+            }
+        },
+        'timeAxis': {
+            'axisLine': {
+                'show': false,
+                'lineStyle': {
+                    'color': '#f8f8f8'
+                }
+            },
+            'axisTick': {
+                'show': false,
+                'lineStyle': {
+                    'color': '#333'
+                }
+            },
+            'axisLabel': {
+                'show': true,
+                'textStyle': {
+                    'color': '#486074'
+                }
+            },
+            'splitLine': {
+                'show': true,
+                'lineStyle': {
+                    'color': [
+                        '#f8f8f8'
+                    ]
+                }
+            },
+            'splitArea': {
+                'show': false,
+                'areaStyle': {
+                    'color': [
+                        'rgba(250,250,250,0.3)',
+                        'rgba(200,200,200,0.3)'
+                    ]
+                }
+            }
+        },
+        'toolbox': {
+            'iconStyle': {
+                'normal': {
+                    'borderColor': '#06467c'
+                },
+                'emphasis': {
+                    'borderColor': '#4187c2'
+                }
+            }
+        },
+        'legend': {
+            'textStyle': {
+                'color': '#486074'
+            }
+        },
+        'tooltip': {
+            'axisPointer': {
+                'lineStyle': {
+                    'color': '#f8f8f8',
+                    'width': 1
+                },
+                'crossStyle': {
+                    'color': '#f8f8f8',
+                    'width': 1
+                }
+            }
+        },
+        'timeline': {
+            'lineStyle': {
+                'color': '#005eaa',
+                'width': 1
+            },
+            'itemStyle': {
+                'normal': {
+                    'color': '#005eaa',
+                    'borderWidth': 1
+                },
+                'emphasis': {
+                    'color': '#005eaa'
+                }
+            },
+            'controlStyle': {
+                'normal': {
+                    'color': '#005eaa',
+                    'borderColor': '#005eaa',
+                    'borderWidth': 0.5
+                },
+                'emphasis': {
+                    'color': '#005eaa',
+                    'borderColor': '#005eaa',
+                    'borderWidth': 0.5
+                }
+            },
+            'checkpointStyle': {
+                'color': '#005eaa',
+                'borderColor': 'rgba(49,107,194,0.5)'
+            },
+            'label': {
+                'normal': {
+                    'textStyle': {
+                        'color': '#005eaa'
+                    }
+                },
+                'emphasis': {
+                    'textStyle': {
+                        'color': '#005eaa'
+                    }
+                }
+            }
+        },
+        'visualMap': {
+            'color': [
+                '#12a1e8',
+                '#96d2f0'
+            ]
+        },
+        'dataZoom': {
+            'backgroundColor': 'rgba(47,69,84,0)',
+            'dataBackgroundColor': 'rgba(47,69,84,0.3)',
+            'fillerColor': 'rgba(167,183,204,0.4)',
+            'handleColor': '#a7b7cc',
+            'handleSize': '100%',
+            'textStyle': {
+                'color': '#333333'
+            }
+        },
+        'markPoint': {
+            'label': {
+                'normal': {
+                    'textStyle': {
+                        'color': '#486074'
+                    }
+                },
+                'emphasis': {
+                    'textStyle': {
+                        'color': '#486074'
+                    }
+                }
+            }
+        }
+    };
+    angular.module('app.echarts').constant('THEME', _theme);
+})();
+/**
+ * Created with IntelliJ IDEA.
+ * User: dothin
+ * Date: 2017/2/9
+ * Time: 15:34
+ * To change this template use File | Settings | File Templates.
+ */
+(function () {
+    'use strict';
+    /**
+     * 常量
+     */
+    angular.module('app.echarts').constant('loading', {
+        text: '',
+        color: '#ff587b'
+    });
+})();
 /**
  * Created with IntelliJ IDEA.
  * User: gaoHuaBin
@@ -1390,7 +2736,7 @@
                     return ngModel.$error;
                 };
                 subScope.customMessages = scope.$eval(attrs.fieldError);
-                var hint = $compile('<ul ng-if="hasError()"><li ng-repeat="(name,wrong) in errors()" class="text-error" ng-if="wrong && name !==\'parse\'">{{name | error:customMessages}}</li></ul>')(subScope);
+                var hint = $compile('<ul ng-if="hasError()"><li ng-repeat="(name,wrong) in errors()" class="text-wrong" ng-if="wrong && name !==\'parse\'">{{name | error:customMessages}}</li></ul>')(subScope);
                 element.after(hint);
             }
         };
@@ -1543,528 +2889,6 @@
     }
 })();
 /**
- * Created with IntelliJ IDEA.
- * User: gaoHuaBin
- * Date: 2016/11/22
- * Time: 15:30
- * To change this template use File | Settings | File Templates.
- */
-(function () {
-    'use strict';
-    /**
-     * echarts主题配置
-     */
-    var _theme = {
-        'color': [
-            '#00aaff',
-            '#ff587b',
-            '#29d582',
-            '#ffc62f',
-            '#24ccf6',
-            '#f7233c',
-            '#7d68ff',
-            '#ff7700'
-        ],
-        'backgroundColor': 'rgba(0,0,0,0)',
-        'textStyle': {},
-        'title': {
-            'textStyle': {
-                'color': '#333333'
-            },
-            'subtextStyle': {
-                'color': '#aaaaaa'
-            }
-        },
-        'line': {
-            'itemStyle': {
-                'normal': {
-                    'borderWidth': '2'
-                }
-            },
-            'lineStyle': {
-                'normal': {
-                    'width': 2
-                }
-            },
-            'symbolSize': '5',
-            'symbol': 'emptyCircle',
-            'smooth': false
-        },
-        'radar': {
-            'itemStyle': {
-                'normal': {
-                    'borderWidth': '2'
-                }
-            },
-            'lineStyle': {
-                'normal': {
-                    'width': 2
-                }
-            },
-            'symbolSize': '5',
-            'symbol': 'emptyCircle',
-            'smooth': false
-        },
-        'bar': {
-            'itemStyle': {
-                'normal': {
-                    'barBorderWidth': 0,
-                    'barBorderColor': '#cccccc'
-                },
-                'emphasis': {
-                    'barBorderWidth': 0,
-                    'barBorderColor': '#cccccc'
-                }
-            }
-        },
-        'pie': {
-            'itemStyle': {
-                'normal': {
-                    'borderWidth': 0,
-                    'borderColor': '#cccccc'
-                },
-                'emphasis': {
-                    'borderWidth': 0,
-                    'borderColor': '#cccccc'
-                }
-            }
-        },
-        'scatter': {
-            'itemStyle': {
-                'normal': {
-                    'borderWidth': 0,
-                    'borderColor': '#cccccc'
-                },
-                'emphasis': {
-                    'borderWidth': 0,
-                    'borderColor': '#cccccc'
-                }
-            }
-        },
-        'boxplot': {
-            'itemStyle': {
-                'normal': {
-                    'borderWidth': 0,
-                    'borderColor': '#cccccc'
-                },
-                'emphasis': {
-                    'borderWidth': 0,
-                    'borderColor': '#cccccc'
-                }
-            }
-        },
-        'parallel': {
-            'itemStyle': {
-                'normal': {
-                    'borderWidth': 0,
-                    'borderColor': '#cccccc'
-                },
-                'emphasis': {
-                    'borderWidth': 0,
-                    'borderColor': '#cccccc'
-                }
-            }
-        },
-        'sankey': {
-            'itemStyle': {
-                'normal': {
-                    'borderWidth': 0,
-                    'borderColor': '#cccccc'
-                },
-                'emphasis': {
-                    'borderWidth': 0,
-                    'borderColor': '#cccccc'
-                }
-            }
-        },
-        'funnel': {
-            'itemStyle': {
-                'normal': {
-                    'borderWidth': 0,
-                    'borderColor': '#cccccc'
-                },
-                'emphasis': {
-                    'borderWidth': 0,
-                    'borderColor': '#cccccc'
-                }
-            }
-        },
-        'gauge': {
-            'itemStyle': {
-                'normal': {
-                    'borderWidth': 0,
-                    'borderColor': '#cccccc'
-                },
-                'emphasis': {
-                    'borderWidth': 0,
-                    'borderColor': '#cccccc'
-                }
-            }
-        },
-        'candlestick': {
-            'itemStyle': {
-                'normal': {
-                    'color': '#c12e34',
-                    'color0': '#2b821d',
-                    'borderColor': '#c12e34',
-                    'borderColor0': '#2b821d',
-                    'borderWidth': 1
-                }
-            }
-        },
-        'graph': {
-            'itemStyle': {
-                'normal': {
-                    'borderWidth': 0,
-                    'borderColor': '#cccccc'
-                }
-            },
-            'lineStyle': {
-                'normal': {
-                    'width': '1',
-                    'color': '#aaaaaa'
-                }
-            },
-            'symbolSize': '25'
-        },
-        'map': {
-            'itemStyle': {
-                'normal': {
-                    'areaColor': '#dddddd',
-                    'borderColor': '#eeeeee',
-                    'borderWidth': 0.5
-                },
-                'emphasis': {
-                    'areaColor': 'rgba(230,182,0,1)',
-                    'borderColor': '#dddddd',
-                    'borderWidth': 1
-                }
-            },
-            'label': {
-                'normal': {
-                    'textStyle': {
-                        'color': '#c12e34'
-                    }
-                },
-                'emphasis': {
-                    'textStyle': {
-                        'color': 'rgb(193,46,52)'
-                    }
-                }
-            }
-        },
-        'geo': {
-            'itemStyle': {
-                'normal': {
-                    'areaColor': '#dddddd',
-                    'borderColor': '#eeeeee',
-                    'borderWidth': 0.5
-                },
-                'emphasis': {
-                    'areaColor': 'rgba(230,182,0,1)',
-                    'borderColor': '#dddddd',
-                    'borderWidth': 1
-                }
-            },
-            'label': {
-                'normal': {
-                    'textStyle': {
-                        'color': '#c12e34'
-                    }
-                },
-                'emphasis': {
-                    'textStyle': {
-                        'color': 'rgb(193,46,52)'
-                    }
-                }
-            }
-        },
-        'categoryAxis': {
-            'axisLine': {
-                'show': true,
-                'lineStyle': {
-                    'color': '#f8f8f8'
-                }
-            },
-            'axisTick': {
-                'show': false,
-                'lineStyle': {
-                    'color': '#333'
-                }
-            },
-            'axisLabel': {
-                'show': true,
-                'textStyle': {
-                    'color': '#486074'
-                }
-            },
-            'splitLine': {
-                'show': true,
-                'lineStyle': {
-                    'color': [
-                        '#f8f8f8'
-                    ]
-                }
-            },
-            'splitArea': {
-                'show': false,
-                'areaStyle': {
-                    'color': [
-                        'rgba(250,250,250,0.3)',
-                        'rgba(200,200,200,0.3)'
-                    ]
-                }
-            }
-        },
-        'valueAxis': {
-            'axisLine': {
-                'show': true,
-                'lineStyle': {
-                    'color': '#f8f8f8'
-                }
-            },
-            'axisTick': {
-                'show': false,
-                'lineStyle': {
-                    'color': '#333'
-                }
-            },
-            'axisLabel': {
-                'show': true,
-                'textStyle': {
-                    'color': '#486074'
-                }
-            },
-            'splitLine': {
-                'show': true,
-                'lineStyle': {
-                    'color': [
-                        '#f8f8f8'
-                    ]
-                }
-            },
-            'splitArea': {
-                'show': false,
-                'areaStyle': {
-                    'color': [
-                        'rgba(250,250,250,0.3)',
-                        'rgba(200,200,200,0.3)'
-                    ]
-                }
-            }
-        },
-        'logAxis': {
-            'axisLine': {
-                'show': false,
-                'lineStyle': {
-                    'color': '#f8f8f8'
-                }
-            },
-            'axisTick': {
-                'show': false,
-                'lineStyle': {
-                    'color': '#333'
-                }
-            },
-            'axisLabel': {
-                'show': true,
-                'textStyle': {
-                    'color': '#486074'
-                }
-            },
-            'splitLine': {
-                'show': true,
-                'lineStyle': {
-                    'color': [
-                        '#f8f8f8'
-                    ]
-                }
-            },
-            'splitArea': {
-                'show': false,
-                'areaStyle': {
-                    'color': [
-                        'rgba(250,250,250,0.3)',
-                        'rgba(200,200,200,0.3)'
-                    ]
-                }
-            }
-        },
-        'timeAxis': {
-            'axisLine': {
-                'show': false,
-                'lineStyle': {
-                    'color': '#f8f8f8'
-                }
-            },
-            'axisTick': {
-                'show': false,
-                'lineStyle': {
-                    'color': '#333'
-                }
-            },
-            'axisLabel': {
-                'show': true,
-                'textStyle': {
-                    'color': '#486074'
-                }
-            },
-            'splitLine': {
-                'show': true,
-                'lineStyle': {
-                    'color': [
-                        '#f8f8f8'
-                    ]
-                }
-            },
-            'splitArea': {
-                'show': false,
-                'areaStyle': {
-                    'color': [
-                        'rgba(250,250,250,0.3)',
-                        'rgba(200,200,200,0.3)'
-                    ]
-                }
-            }
-        },
-        'toolbox': {
-            'iconStyle': {
-                'normal': {
-                    'borderColor': '#06467c'
-                },
-                'emphasis': {
-                    'borderColor': '#4187c2'
-                }
-            }
-        },
-        'legend': {
-            'textStyle': {
-                'color': '#486074'
-            }
-        },
-        'tooltip': {
-            'axisPointer': {
-                'lineStyle': {
-                    'color': '#f8f8f8',
-                    'width': 1
-                },
-                'crossStyle': {
-                    'color': '#f8f8f8',
-                    'width': 1
-                }
-            }
-        },
-        'timeline': {
-            'lineStyle': {
-                'color': '#005eaa',
-                'width': 1
-            },
-            'itemStyle': {
-                'normal': {
-                    'color': '#005eaa',
-                    'borderWidth': 1
-                },
-                'emphasis': {
-                    'color': '#005eaa'
-                }
-            },
-            'controlStyle': {
-                'normal': {
-                    'color': '#005eaa',
-                    'borderColor': '#005eaa',
-                    'borderWidth': 0.5
-                },
-                'emphasis': {
-                    'color': '#005eaa',
-                    'borderColor': '#005eaa',
-                    'borderWidth': 0.5
-                }
-            },
-            'checkpointStyle': {
-                'color': '#005eaa',
-                'borderColor': 'rgba(49,107,194,0.5)'
-            },
-            'label': {
-                'normal': {
-                    'textStyle': {
-                        'color': '#005eaa'
-                    }
-                },
-                'emphasis': {
-                    'textStyle': {
-                        'color': '#005eaa'
-                    }
-                }
-            }
-        },
-        'visualMap': {
-            'color': [
-                '#12a1e8',
-                '#96d2f0'
-            ]
-        },
-        'dataZoom': {
-            'backgroundColor': 'rgba(47,69,84,0)',
-            'dataBackgroundColor': 'rgba(47,69,84,0.3)',
-            'fillerColor': 'rgba(167,183,204,0.4)',
-            'handleColor': '#a7b7cc',
-            'handleSize': '100%',
-            'textStyle': {
-                'color': '#333333'
-            }
-        },
-        'markPoint': {
-            'label': {
-                'normal': {
-                    'textStyle': {
-                        'color': '#486074'
-                    }
-                },
-                'emphasis': {
-                    'textStyle': {
-                        'color': '#486074'
-                    }
-                }
-            }
-        }
-    };
-    angular.module('app.core').constant('THEME', _theme);
-})();
-/**
- * Created with IntelliJ IDEA.
- * User: gaoHuaBin
- * Date: 2016/12/5
- * Time: 11:02
- * To change this template use File | Settings | File Templates.
- */
-(function () {
-    'use strict';
-    /**
-     * 常量
-     */
-    angular.module('app.core').constant('ERRORS', {
-        email: '格式错误',
-        required: '不能为空',
-        validatePassword: '密码格式错误',
-        repeat: '确认秘密和新密码不一致',
-        number: '只能是数字'
-    });
-})();
-/**
- * Created with IntelliJ IDEA.
- * User: dothin
- * Date: 2017/4/13
- * Time: 11:20
- * To change this template use File | Settings | File Templates.
- */
-(function () {
-    'use strict';
-    /**
-     * 常量
-     */
-    angular.module('app.core').constant('ROOT', '');
-})();
-/**
  * @Author: gaohuabin
  * @Date:   2016-10-07 17:17:55
  * @Last Modified by:   gaohuabin
@@ -2117,6 +2941,40 @@
             }
         };
     }
+})();
+/**
+ * Created with IntelliJ IDEA.
+ * User: gaoHuaBin
+ * Date: 2016/12/5
+ * Time: 11:02
+ * To change this template use File | Settings | File Templates.
+ */
+(function () {
+    'use strict';
+    /**
+     * 常量
+     */
+    angular.module('app.core').constant('ERRORS', {
+        email: '格式错误',
+        required: '不能为空',
+        validatePassword: '密码格式错误',
+        repeat: '确认秘密和新密码不一致',
+        number: '只能是数字'
+    });
+})();
+/**
+ * Created with IntelliJ IDEA.
+ * User: dothin
+ * Date: 2017/4/13
+ * Time: 11:20
+ * To change this template use File | Settings | File Templates.
+ */
+(function () {
+    'use strict';
+    /**
+     * 常量
+     */
+    angular.module('app.core').constant('ROOT', '');
 })();
 /**
  * Created with IntelliJ IDEA.
@@ -2359,4 +3217,451 @@
             }
         };
     }
+})();
+/**
+ * Created with IntelliJ IDEA.
+ * User: gaoHuaBin
+ * Date: 2016/11/23
+ * Time: 13:43
+ * To change this template use File | Settings | File Templates.
+ */
+(function () {
+    'use strict';
+    angular.module('app.echarts').service('bar', barService);
+
+    barService.$inject = ['echartsFormatter'];
+
+    function barService(echartsFormatter) {
+        /**
+         *  柱状图基本配置
+         * @param flag  单位
+         * @returns {{tooltip: {trigger: string, axisPointer: {type: string}, formatter: bar.tooltip.formatter}, legend: {bottom: number, data: Array}, grid: {left: number, right: number, bottom: string, top: string, containLabel: boolean}, xAxis: {type: string, data: Array}, yAxis: {type: string}, series: Array}}
+         */
+        this.getOption = function (flag) {
+            return {
+                tooltip: {
+                    trigger: 'axis',
+                    axisPointer: {
+                        type: 'shadow'
+                    },
+                    confine: true,
+                    formatter: function (params, ticket, callback) {
+                        return echartsFormatter.formatter(params, ticket, callback, flag);
+                    }
+                },
+                legend: {
+                    bottom: 0,
+                    data: [],
+                    itemHeight: 10,
+                    itemWidth: 10
+                },
+                grid: {
+                    left: '3%',
+                    right: '4%',
+                    bottom: '13%',
+                    top: 8,
+                    containLabel: true
+                },
+                xAxis: {
+                    type: 'category',
+                    data: []
+                },
+                yAxis: {
+                    type: 'value',
+                    axisLabel: {
+                        formatter: '{value}' + flag
+                    }
+                },
+                series: []
+            };
+        };
+    };
+})();
+/**
+ * Created by xd-66 on 2016/11/24.
+ */
+(function () {
+    'use strict';
+    angular.module('app.echarts').service('barLine', barLineService);
+
+    barLineService.$inject = ['echartsFormatter'];
+
+    function barLineService(echartsFormatter) {
+        /**
+         * 柱折混合图基本配置
+         * @param line
+         * @param bar
+         * @returns {{tooltip: {trigger: string, confine: boolean, formatter: tooltip.formatter}, legend: {data: Array, bottom: number}, grid: {left: string, right: string, bottom: number, top: number, containLabel: boolean}, xAxis: [*], yAxis: [*,*], series: Array}}
+         */
+        this.getOption = function (line, bar) {
+            return {
+                tooltip: {
+                    trigger: 'axis',
+                    confine: true,
+                    formatter: function (params, ticket, callback) {
+                        return echartsFormatter.formatterBarLine(params, ticket, callback, line, bar);
+                    }
+                },
+                legend: {
+                    data: [],
+                    bottom: 0
+                },
+                grid: {
+                    left: '3%',
+                    right: '4%',
+                    bottom: 25,
+                    top: 10,
+                    containLabel: true
+                },
+                xAxis: [
+                    {
+                        type: 'category',
+                        data: []
+                    }
+                ],
+                yAxis: [
+                    {
+                        type: 'value',
+                        axisLabel: {
+                            formatter: '{value}' + line
+                        }
+                    },
+                    {
+                        type: 'value',
+                        axisLabel: {
+                            formatter: '{value}' + bar
+                        },
+                        splitLine: {
+                            show: false
+                        }
+                    }
+                ],
+                series: []
+
+            };
+        };
+    }
+})();
+/**
+ * Created with IntelliJ IDEA.
+ * User: gaoHuaBin
+ * Date: 2016/12/12
+ * Time: 20:10
+ * To change this template use File | Settings | File Templates.
+ */
+(function () {
+    'use strict';
+    angular.module('app.echarts').service('chinaMap', [
+        function () {
+            /**
+             * 地图配置
+             * @returns {{tooltip: {trigger: string}, visualMap: {min: number, max: number, left: string, itemHeight: number, top: string, text: string[], calculable: boolean}, series: *[]}}
+             */
+            this.getOption = function () {
+                return {
+                    tooltip: {
+                        trigger: 'item'
+                    },
+                    visualMap: {
+                        min: 0,
+                        max: 100,
+                        left: 'left',
+                        itemHeight: document.documentElement.clientHeight > 700 ? 100 : 60,
+                        top: 'bottom',
+                        text: ['高', '低'],           // 文本，默认为数值文本
+                        calculable: true
+                    },
+                    series: [
+                        {
+                            name: '人数',
+                            type: 'map',
+                            roam: true,
+                            mapType: 'china',
+                            data: []
+                        }
+                    ]
+                };
+            };
+        }
+    ]);
+})();
+/**
+ * Created by xd-66 on 2016/11/24.
+ */
+(function () {
+    'use strict';
+    angular.module('app.echarts').service('decareMap', [
+        function () {
+            /**
+             * 笛卡尔坐标系上的热力图的基本配置
+             */
+            this.getOption = function () {
+                return {
+                    grid: {
+                        left: '22%',
+                        height: '75%',
+                        right: '0',
+                        top: '0'
+                    },
+                    xAxis: {
+                        type: 'category',
+                        data: [],
+                        splitArea: {
+                            show: true
+                        }
+                    },
+                    yAxis: {
+                        type: 'category',
+                        data: [],
+                        splitArea: {
+                            show: true
+                        }
+                    },
+                    visualMap: {
+                        min: 0,
+                        max: 50,
+                        calculable: true,
+                        orient: 'horizontal',
+                        left: 'center'
+                    },
+                    series: [{
+                        name: 'Punch Card',
+                        type: 'heatmap',
+                        data: [],
+                        label: {
+                            normal: {
+                                show: true
+                            }
+                        },
+                        itemStyle: {
+                            emphasis: {
+                                shadowBlur: 10,
+                                shadowColor: 'rgba(0, 0, 0, 0.5)'
+                            }
+                        }
+                    }]
+
+                };
+            };
+        }
+    ]);
+})();
+/**
+ * Created by xd-66 on 2016/11/23.
+ */
+(function () {
+    'use strict';
+    angular.module('app.echarts').service('gauge', [
+        function () {
+            /**
+             *  仪表盘基本配置
+             * @param flag  单位
+             */
+            this.getOption = function (flag) {
+                return{
+                    tooltip: {
+                        confine: true,
+                        formatter: function (params, ticket, callback) {//修改formatter方式，模板法在有legend的情况下有bug
+                            var res = params.name;
+                            res += params.seriesName + ' : ' + params.value + flag;
+                            return res;
+                        }
+                    },
+                    series: []
+                };
+            };
+        }
+    ]);
+})();
+/**
+ * Created with IntelliJ IDEA.
+ * User: gaoHuaBin
+ * Date: 2016/11/23
+ * Time: 14:18
+ * To change this template use File | Settings | File Templates.
+ */
+(function () {
+    'use strict';
+    angular.module('app.echarts').service('line', ['echartsFormatter',
+        function (echartsFormatter) {
+            /**
+             * 折线图基本配置
+             * @param flag 单位
+             * @returns {{tooltip: {trigger: string, formatter: line.tooltip.formatter}, legend: {data: Array, bottom: number}, grid: {left: string, right: string, bottom: string, top: number, containLabel: boolean}, xAxis: {type: string, boundaryGap: boolean, data: Array}, yAxis: {type: string, axisLabel: {formatter: string}}, series: Array}}
+             */
+            this.getOption = function (flag) {
+                return {
+                    tooltip: {
+                        trigger: 'axis',
+                        confine: true,
+                        formatter: function (params, ticket, callback) {
+                            return echartsFormatter.formatter(params, ticket, callback, flag);
+                        }
+                    },
+                    legend: {
+                        data: [],
+                        bottom: 0
+                    },
+                    grid: {
+                        left: '3%',
+                        right: '4%',
+                        bottom: 25,
+                        top: 10,
+                        containLabel: true
+                    },
+                    xAxis: {
+                        type: 'category',
+                        /*axisLabel:{
+                         interval:0
+                         },*/
+                        data: []
+                    },
+                    yAxis: {
+                        type: 'value',
+                        axisLabel: {
+                            formatter: '{value}' + flag
+                        }
+                    },
+                    series: []
+                };
+            };
+        }
+    ]);
+})();
+/**
+ * Created by xd-66 on 2016/11/24.
+ */
+(function () {
+    'use strict';
+    angular.module('app.echarts').service('pie', [
+        function () {
+            /**
+             * 饼图基本配置
+             * @param flag 单位
+             */
+            this.getOption = function (flag) {
+                return {
+                    color: [],
+                    tooltip: {
+                        trigger: 'item',
+                        formatter: function (params, ticket, callback) {//修改formatter方式，模板法在有legend的情况下有bug
+                            var res = params.seriesName;
+                            res += '<br/>' + params.name + ' : ' + params.percent + flag;
+                            return res;
+                        }
+                    },
+                    legend: {
+                        data: []
+                    },
+                    series: []
+
+                };
+            };
+        }
+    ]);
+})();
+/**
+ * Created by xd-66 on 2016/11/25.
+ */
+(function () {
+    'use strict';
+    angular.module('app.echarts').service('relationGraph', [
+        function () {
+            /**
+             *  关系图基本配置
+             */
+            this.getOption = function () {
+                return {
+                    tooltip: {},
+                    series: [
+                        {
+                            type: 'graph',
+                            layout: 'force',
+                            data: [],
+                            links: [],
+                            categories: [],
+                            roam: true,
+                            label: {
+                                normal: {
+                                    position: 'right'
+                                }
+                            },
+                            force: {
+                                edgeLength: ['200', '5'],
+                                repulsion: 1000
+                            },
+                            draggable: true,
+                            focusNodeAdjacency: true,
+                            itemStyle: {
+                                emphasis: {
+                                    show: true
+                                }
+                            },
+                            symbolSize: 25
+
+                        }
+                    ]
+                };
+            };
+        }
+    ]);
+})();
+/**
+ * Created with IntelliJ IDEA.
+ * User: gaoHuaBin
+ * Date: 2016/11/23
+ * Time: 13:54
+ * To change this template use File | Settings | File Templates.
+ */
+(function () {
+    'use strict';
+    angular.module('app.echarts').service('sankey', [
+        function () {
+            /**
+             * 散点图基本配置
+             * @returns {{tooltip: {position: string, formatter: sankey.tooltip.formatter}, grid: {left: number, bottom: number, right: number, top: number, containLabel: boolean}, xAxis: {type: string, data: string[], boundaryGap: boolean, splitLine: {show: boolean, lineStyle: {color: string}}}, yAxis: {type: string, data: string[], splitLine: {show: boolean, lineStyle: {color: string}}}, series: *[]}}
+             */
+            this.getOption = function () {
+                return {
+                    tooltip: {
+                        confine: true,
+                        position: 'top'
+                    },
+                    grid: {
+                        left: 2,
+                        bottom: 10,
+                        right: 20,
+                        top: 2,
+                        containLabel: true
+                    },
+                    xAxis: {
+                        type: 'category',
+                        data: []
+                    },
+                    yAxis: {
+                        type: 'category',
+                        data: []
+                    },
+                    series: [{
+                        name: 'Punch Card',
+                        type: 'scatter',
+                        symbolSize: function (val) {
+                            var _size = val[2];
+                            if (0 < _size && _size < 5) {
+                                _size = 5;
+                            }
+                            if (_size > 40) {
+                                _size = 40;
+                            }
+                            return _size;
+                        },
+                        data: [],
+                        animationDelay: function (idx) {
+                            return idx * 5;
+                        }
+                    }]
+                };
+            };
+        }
+    ]);
 })();

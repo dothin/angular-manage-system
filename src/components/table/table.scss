@@ -1,2 +1,24 @@
-
-/**********************table********************************/
+/*************************table***************************/
+table {
+	@extend .w100s;
+	tr {
+		@extend .h40;
+		@extend .lh40;
+		th {
+			@extend .tl;
+			@extend .pl20;
+			font-weight: normal;
+			border-bottom: 1px solid $border-color;
+		}
+		td {
+			@extend .pl20;
+			a {
+				@extend .mr10;
+				color: $link-color;
+			}
+		}
+	}
+	tbody > tr:nth-child(even) {
+		background: $table-odd-bg;
+	}
+}

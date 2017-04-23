@@ -484,5 +484,5 @@
             }
         }
     };
-    angular.module('app.core').constant('THEME', _theme);
+    angular.module('app.echarts').constant('THEME', _theme);
 })();
