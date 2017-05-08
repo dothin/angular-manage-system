@@ -7,115 +7,134 @@
  */
 (function () {
     'use strict';
-    angular.module('app.echarts').controller('barCtrl', ['echartsHanderServer', 'barServer', 'compareResultLibraryServer', 'tools', '$filter', '$scope',
-        function (echartsHanderServer, barServer, compareResultLibraryServer, tools, $filter, $scope) {
+    angular.module('app.echarts').controller('barCtrl', ['echartsHanderServer', 'barServer',
+        function (echartsHanderServer, barServer) {
             var vm = this;
+
             vm.init = function () {
-                echartsHanderServer.echartsHandler({
-                    'situation': function (ech, option) {
+                echartsHanderServer.echartsHandler(barServer, {
+                    'bar1': function (ech, option) {
                         vm.initSituation = function () {
-                            vm._postData = {
-                                startDate: vm.timeConf.startDate,
-                                endDate: vm.timeConf.endDate
-                            };
-                            angular.forEach(_param, function (data) {
-                                angular.extend(data, vm._postData);
-                            });
-                            compareResultLibraryServer.getCompareLibrarySituation(_param).then(function (data) {
-                                if (data.status) {
-                                    option.xAxis.data = _conditionList;
-                                    option.legend.data = ['平均每天泡馆时长', '平均每月泡馆天数'];
-                                    option.series = [
-                                        {
-                                            name: '平均每天泡馆时长',
-                                            type: 'bar',
-                                            barMaxWidth: 50,
-                                            data: $filter('toFixed')(data.data.avgHours, 2)
-                                        },
-                                        {
-                                            name: '平均每月泡馆天数',
-                                            type: 'bar',
-                                            barMaxWidth: 50,
-                                            yAxisIndex: 1,
-                                            data: $filter('toFixed')(data.data.avgDays, 2)
-                                        }
-                                    ];
-                                    ech.clear();
-                                    ech.setOption(option);
-                                    ech.hideLoading();
+
+                            option.legend.data = ['人均', '总体'];
+                            option.xAxis.data = ['6月', '7月', '8月', '9月', '10月', '11月', '12月'];
+                            option.series = [
+                                {
+                                    name: '人均',
+                                    type: 'bar',
+                                    barWidth: 50,
+                                    data: [50, 400, 180, 400, 50, 280, 450]
+                                },
+                                {
+                                    name: '总体',
+                                    type: 'bar',
+                                    barWidth: 50,
+                                    data: [200, 150, 300, 250, 450, 180, 320]
                                 }
-                            });
+                            ];
+
+                            ech.clear();
+                            ech.setOption(option);
+                            ech.hideLoading();
                         };
                         vm.initSituation();
                     },
-                    'proportion': function (ech, option) {
-                        vm.initProportion = function () {
-                            vm._postData = {
-                                startDate: vm.timeConf.startDate,
-                                endDate: vm.timeConf.endDate
-                            };
-                            angular.forEach(_param, function (data) {
-                                angular.extend(data, vm._postData);
-                            });
-                            compareResultLibraryServer.getCompareLibraryProportion(_param).then(function (data) {
-                                if (data.status) {
-                                    option.xAxis.data = _conditionList;
-                                    option.series = [
-                                        {
-                                            name: '占比',
-                                            type: 'bar',
-                                            barMaxWidth: 50,
-                                            data: $filter('toFixed')(tools.formatArr(data.data, 100), 2)
+                    'bar2': function (ech, option) {
+                        vm.initSituation = function () {
+
+                            option.legend.data = ['人均', '总体'];
+                            option.yAxis.data = ['2012级', '2011级', '2010级'];
+                            option.series = [{
+                                name: '人均',
+                                type: 'bar',
+                                stack: '总量',
+                                label: {
+                                    normal: {
+                                        show: false,
+                                        position: 'insideRight'
+                                    }
+                                },
+                                data: [60, 50, 30]
+                            }, {
+                                name: '总体',
+                                type: 'bar',
+                                stack: '总量',
+                                label: {
+                                    normal: {
+                                        formatter: '{c}%',
+                                        show: true,
+                                        position: 'right',
+                                        textStyle: {
+                                            color: '#000'
                                         }
-                                    ];
-                                    ech.clear();
-                                    ech.setOption(option);
-                                    ech.hideLoading();
-                                }
-                            });
+                                    }
+                                },
+                                itemStyle: {
+                                    normal: {
+                                        color: '#c9c9c9'
+                                    }
+                                },
+                                data: [40, 50, 70]
+                            }];
+
+                            ech.clear();
+                            ech.setOption(option);
+                            ech.hideLoading();
                         };
-                        vm.initProportion();
+                        vm.initSituation();
                     },
-                    'average': function (ech, option) {
-                        vm.initAverage = function () {
-                            vm._postData = {
-                                startDate: vm.timeConf.startDate,
-                                endDate: vm.timeConf.endDate
-                            };
-                            angular.forEach(_param, function (data) {
-                                angular.extend(data, vm._postData);
-                            });
-                            compareResultLibraryServer.getCompareLibraryAverage(_param).then(function (data) {
-                                if (data.status) {
-                                    option.xAxis.data = data.data.date;
-                                    option.legend.data = _conditionList;
-                                    option.series = [];
-                                    angular.forEach(option.legend.data, function (data1, key) {
-                                        option.series.push({
-                                            name: data1,
-                                            type: 'line',
-                                            showAllSymbol: true,
-                                            data: $filter('toFixed')(data.data.data[key], 2)
-                                        });
-                                    });
-                                    ech.clear();
-                                    ech.setOption(option);
-                                    ech.hideLoading();
+                    'bar3': function (ech, option) {
+                        vm.initSituation = function () {
+
+                            option.legend.data = ['利润', '支出', '收入'];
+                            option.xAxis.data = ['周一','周二','周三','周四','周五','周六','周日'];
+                            option.series = [
+                                {
+                                    name:'利润',
+                                    type:'bar',
+                                    label: {
+                                        normal: {
+                                            show: true,
+                                            position: 'inside'
+                                        }
+                                    },
+                                    data:[200, 170, 240, 244, 200, 220, 210]
+                                },
+                                {
+                                    name:'收入',
+                                    type:'bar',
+                                    stack: '总量',
+                                    label: {
+                                        normal: {
+                                            show: true
+                                        }
+                                    },
+                                    data:[320, 302, 341, 374, 390, 450, 420]
+                                },
+                                {
+                                    name:'支出',
+                                    type:'bar',
+                                    stack: '总量',
+                                    label: {
+                                        normal: {
+                                            show: true,
+                                            position: 'left'
+                                        }
+                                    },
+                                    data:[-120, -132, -101, -134, -190, -230, -210]
                                 }
-                            });
+                            ];
+
+                            ech.clear();
+                            ech.setOption(option);
+                            ech.hideLoading();
                         };
-                        vm.initAverage();
+                        vm.initSituation();
                     }
                 });
             };
-            $scope.$watch('vm.timeConf.ready', function (to) {
-                to && vm.init();
-            });
-            vm.timeConf = {
-                submitTime: function () {
-                    vm.init();
-                }
-            };
+
+            vm.init();
         }
     ]);
 })();

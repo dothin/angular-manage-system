@@ -8,6 +8,7 @@
 (function () {
     'use strict';
     angular.module('app').run(appRun);
+
     appRun.$inject = ['$rootScope', '$cookies', '$state', '$http'];
 
     function appRun($rootScope, $cookies, $state, $http) {
@@ -24,10 +25,12 @@
                 }
             });
         };
+
         $rootScope.$on('$stateChangeStart', function (event, toState, toParams, fromState, fromParams) {
             $rootScope.clearPending();
             $rootScope.alert = false;
         });
+
         //操作成功或失败弹窗
         $rootScope.isActive;
         $rootScope.alertValue = '';

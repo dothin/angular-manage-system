@@ -8,7 +8,7 @@
 	.row{
 		@extend .h100s
 	}
-	.col-md-12,.col-md-4{
+	.col-md-12,.col-md-4,.col-md-8{
 		.col-wrap {
 			background: $fff;
 			@extend .h100s;

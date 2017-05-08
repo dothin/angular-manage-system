@@ -10,6 +10,7 @@
     angular.module('app.echarts').controller('pieCtrl', ['echartsHanderServer', 'pieServer',
         function (echartsHanderServer, pieServer) {
             var vm = this;
+
             vm.init = function () {
                 echartsHanderServer.echartsHandler(pieServer, {
                     'pie1': function (ech, option) {
@@ -87,6 +88,7 @@
                     }
                 });
             };
+
             vm.init();
         }
     ]);

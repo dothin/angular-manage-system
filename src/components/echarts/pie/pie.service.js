@@ -12,6 +12,7 @@
                 pie1: function () {
                     //获取基础配置项
                     var pieOption = pie.getOption('%');
+                    //需要修改配置在此处进行
                     pieOption.xAxis = [
                         {
                             type: 'category',
@@ -220,12 +221,12 @@
                                 hoverAnimation: false
                             }]
                         }];
-                    //需要修改配置在此处进行
                     return pieOption;
                 },
                 pie2: function () {
                     //获取基础配置项
                     var pieOption = pie.getOption('%');
+                    //需要修改配置在此处进行
                     pieOption.series = [
                         {
                             name: '单维度占比',
@@ -274,12 +275,12 @@
                                 }
                             ]
                         }];
-                    //需要修改配置在此处进行
                     return pieOption;
                 },
                 pie3: function () {
                     //获取基础配置项
                     var pieOption = pie.getOption('%');
+                    //需要修改配置在此处进行
                     var data = [{
                         value: 11,
                         name: '食堂'
@@ -354,12 +355,12 @@
                         },
                         data: data
                     }];
-                    //需要修改配置在此处进行
                     return pieOption;
                 },
                 pie4: function () {
                     //获取基础配置项
                     var pieOption = pie.getOption('%');
+                    //需要修改配置在此处进行
                     var data = [{
                         value: 11,
                         name: '食堂'
@@ -412,7 +413,6 @@
                         },
                         data: data
                     }];
-                    //需要修改配置在此处进行
                     return pieOption;
                 }
             };
