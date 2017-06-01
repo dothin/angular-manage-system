@@ -65,23 +65,23 @@
  * Created with IntelliJ IDEA.
  * User: dothin
  * Date: 2017/4/12
- * Time: 20:33
- * To change this template use File | Settings | File Templates.
- */
-(function() {
-    'use strict';
-    angular.module('app.layout', ['app.core']);
-})();
-/**
- * Created with IntelliJ IDEA.
- * User: dothin
- * Date: 2017/4/12
  * Time: 17:54
  * To change this template use File | Settings | File Templates.
  */
 (function() {
     'use strict';
     angular.module('app.login', ['app.core']);
+})();
+/**
+ * Created with IntelliJ IDEA.
+ * User: dothin
+ * Date: 2017/4/12
+ * Time: 20:33
+ * To change this template use File | Settings | File Templates.
+ */
+(function() {
+    'use strict';
+    angular.module('app.layout', ['app.core']);
 })();
 /**
  * Created with IntelliJ IDEA.
@@ -437,6 +437,67 @@
 /**
  * Created with IntelliJ IDEA.
  * User: gaoHuaBin
+ * Date: 2016/10/20
+ * Time: 11:18
+ * To change this template use File | Settings | File Templates.
+ */
+(function () {
+    'use strict';
+    angular.module('app.login').controller('loginCtrl', loginCtrl);
+    loginCtrl.$inject = ['$rootScope', '$state', '$cookies'];
+
+    function loginCtrl($rootScope, $state, $cookies) {
+        //检查登录
+        $rootScope.user && $state.go('main');
+        var vm = this;
+        vm.submit = false;
+        vm.user = {};
+        /**
+         * 登录
+         * @returns {boolean}
+         */
+        vm.login = function () {
+            vm.submit = true;
+            if (vm.loginForm.$valid) {
+                $cookies.putObject('user', {
+                    name: vm.user.username
+                });
+                $rootScope.user = $cookies.getObject('user');
+                $state.go('main');
+            }
+        };
+    }
+})();
+/**
+ * Created with IntelliJ IDEA.
+ * User: dothin
+ * Date: 2017/4/12
+ * Time: 18:00
+ * To change this template use File | Settings | File Templates.
+ */
+(function() {
+    'use strict';
+    angular.module('app.login').run(appRun);
+    appRun.$inject = ['routerHelper'];
+
+    function appRun(routerHelper) {
+        routerHelper.configureStates(getStates());
+    }
+
+    function getStates() {
+        return [{
+            state: 'login',
+            config: {
+                url: '/login',
+                templateUrl: 'dist/tpls/login/login.html',
+                controller: 'loginCtrl as vm'
+            }
+        }];
+    }
+})();
+/**
+ * Created with IntelliJ IDEA.
+ * User: gaoHuaBin
  * Date: 2016/11/8
  * Time: 15:54
  * To change this template use File | Settings | File Templates.
@@ -563,67 +624,6 @@
 
 /**
  * Created with IntelliJ IDEA.
- * User: gaoHuaBin
- * Date: 2016/10/20
- * Time: 11:18
- * To change this template use File | Settings | File Templates.
- */
-(function () {
-    'use strict';
-    angular.module('app.login').controller('loginCtrl', loginCtrl);
-    loginCtrl.$inject = ['$rootScope', '$state', '$cookies'];
-
-    function loginCtrl($rootScope, $state, $cookies) {
-        //检查登录
-        $rootScope.user && $state.go('main');
-        var vm = this;
-        vm.submit = false;
-        vm.user = {};
-        /**
-         * 登录
-         * @returns {boolean}
-         */
-        vm.login = function () {
-            vm.submit = true;
-            if (vm.loginForm.$valid) {
-                $cookies.putObject('user', {
-                    name: vm.user.username
-                });
-                $rootScope.user = $cookies.getObject('user');
-                $state.go('main');
-            }
-        };
-    }
-})();
-/**
- * Created with IntelliJ IDEA.
- * User: dothin
- * Date: 2017/4/12
- * Time: 18:00
- * To change this template use File | Settings | File Templates.
- */
-(function() {
-    'use strict';
-    angular.module('app.login').run(appRun);
-    appRun.$inject = ['routerHelper'];
-
-    function appRun(routerHelper) {
-        routerHelper.configureStates(getStates());
-    }
-
-    function getStates() {
-        return [{
-            state: 'login',
-            config: {
-                url: '/login',
-                templateUrl: 'dist/tpls/login/login.html',
-                controller: 'loginCtrl as vm'
-            }
-        }];
-    }
-})();
-/**
- * Created with IntelliJ IDEA.
  * User: dothin
  * Date: 2017/4/12
  * Time: 20:30
@@ -632,7 +632,7 @@
 
 (function () {
     'use strict';
-    angular.module('app.home').controller('tableCtrl', tableCtrl);
+    angular.module('app.table').controller('tableCtrl', tableCtrl);
     tableCtrl.$inject = ['$state', '$rootScope', 'tools'];
     function tableCtrl($state, $rootScope, tools) {
         tools.alertSuccess('success')
@@ -666,6 +666,20 @@
                         controller: 'tableCtrl as vm'
                     }
                 }
+            }
+        },{
+            state: 'main.table.ngTable',
+            config:{
+                url: '/ngTable',
+                templateUrl: 'dist/tpls/table/ngTable/ngTable.html',
+                controller: 'ngTableCtrl as vm'
+            }
+        },{
+            state: 'main.table.ngPagination',
+            config:{
+                url: '/ngPagination',
+                templateUrl: 'dist/tpls/table/ngPagination/ngPagination.html',
+                controller: 'ngPaginationCtrl as vm'
             }
         }];
     }
@@ -1137,8 +1151,8 @@
                                 '40%'
                             ],
                             radius: [
-                                '40%',
-                                '50%'
+                                '30%',
+                                '40%'
                             ],
                             type: 'pie',
                             labelLine: {
@@ -1184,8 +1198,8 @@
                                 '40%'
                             ],
                             radius: [
-                                '40%',
-                                '50%'
+                                '30%',
+                                '40%'
                             ],
                             type: 'pie',
                             labelLine: {
@@ -1231,8 +1245,8 @@
                                 '40%'
                             ],
                             radius: [
-                                '40%',
-                                '50%'
+                                '30%',
+                                '40%'
                             ],
                             type: 'pie',
                             labelLine: {
@@ -1278,8 +1292,8 @@
                                 '40%'
                             ],
                             radius: [
-                                '40%',
-                                '50%'
+                                '30%',
+                                '40%'
                             ],
                             type: 'pie',
                             labelLine: {
@@ -2141,6 +2155,165 @@
         text: '',
         color: '#ff587b'
     });
+})();
+/**
+ * Created by liuying on 2017/6/1.
+ */
+(function () {
+
+    'use strict';
+
+    angular.module('app.table').controller('ngPaginationCtrl',[
+        function () {
+            var vm = this;
+        }
+    ]);
+})();
+
+/**
+ * Created by liuying on 2017/6/1.
+ */
+(function () {
+
+    'use strict';
+
+    angular.module('app.table').factory('ngPaginationServer', [
+        function () {
+
+        }
+    ]);
+
+})();
+/**
+ * Created by liuying on 2017/6/1.
+ */
+(function () {
+
+    'use strict';
+
+    angular.module('app.table').controller('ngTableCtrl',['NgTableParams',
+        function (NgTableParams) {
+            var vm = this;
+
+            vm.dataset = [
+                {
+                    "sId":1,
+                    "submitTime":"2017.5.12 14:32:00",
+                    "stuName":"李思思",
+                    "stuNum":2014010413001,
+                    "col":"经管学院"
+                },{
+                    "sId":2,
+                    "submitTime":"2017.5.12 14:32:01",
+                    "stuName":"张学雨",
+                    "stuNum":2014010413002,
+                    "col":"金融学院"
+                },{
+                    "sId":3,
+                    "submitTime":"2017.5.12 14:32:02",
+                    "stuName":"谢小龙",
+                    "stuNum":2014010413015,
+                    "col":"会计学院"
+                },{
+                    "sId":4,
+                    "submitTime":"2017.5.12 14:32:03",
+                    "stuName":"刘天宇",
+                    "stuNum":2014010413016,
+                    "col":"统计学院"
+                },{
+                    "sId":5,
+                    "submitTime":"2017.5.12 14:32:04",
+                    "stuName":"夏雨欣",
+                    "stuNum":2014010413032,
+                    "col":"法学院"
+                },{
+                    "sId":6,
+                    "submitTime":"2017.5.12 14:32:05",
+                    "stuName":"陈思雨",
+                    "stuNum":2014010413016,
+                    "col":"经管学院"
+                },{
+                    "sId":7,
+                    "submitTime":"2017.5.12 14:32:06",
+                    "stuName":"吴宇",
+                    "stuNum":2014010413018,
+                    "col":"金融学院"
+                },{
+                    "sId":8,
+                    "submitTime":"2017.5.12 14:32:07",
+                    "stuName":"刘旭",
+                    "stuNum":2014010413014,
+                    "col":"会计学院"
+                },{
+                    "sId":9,
+                    "submitTime":"2017.5.12 14:32:08",
+                    "stuName":"李菊宇",
+                    "stuNum":2014010413013,
+                    "col":"统计学院"
+                },{
+                    "sId":10,
+                    "submitTime":"2017.5.12 14:32:09",
+                    "stuName":"万晓强",
+                    "stuNum":2014010413002,
+                    "col":"法学院"
+                },{
+                    "sId":11,
+                    "submitTime":"2017.5.12 14:32:10",
+                    "stuName":"曾玉",
+                    "stuNum":2014010413007,
+                    "col":"经管学院"
+                },{
+                    "sId":12,
+                    "submitTime":"2017.5.12 14:32:11",
+                    "stuName":"罗啸天",
+                    "stuNum":2014010413008,
+                    "col":"金融学院"
+                },{
+                    "sId":13,
+                    "submitTime":"2017.5.12 14:32:12",
+                    "stuName":"罗晓霞",
+                    "stuNum":2014010413009,
+                    "col":"会计学院"
+                },{
+                    "sId":14,
+                    "submitTime":"2017.5.12 14:32:13",
+                    "stuName":"孙玉",
+                    "stuNum":2014010413032,
+                    "col":"统计学院"
+                }
+            ];
+
+            vm.tableParams = new NgTableParams({
+                count: 10
+            },{
+                counts: [],
+                paginationMaxBlocks: 2,//最大页数
+                paginationMinBlocks: 1,//最小页数
+                dataset:vm.dataset
+            });
+
+            vm.showFilter = false;
+
+            vm.showSearch = function () {
+                vm.showFilter = !vm.showFilter;
+            }
+        }
+    ]);
+})();
+
+/**
+ * Created by liuying on 2017/6/1.
+ */
+(function () {
+
+    'use strict';
+
+    angular.module('app.table').factory('ngTableServer', [
+        function () {
+
+        }
+    ]);
+
 })();
 /**
  * Created with IntelliJ IDEA.
@@ -3010,6 +3183,123 @@
  * Created with IntelliJ IDEA.
  * User: dothin
  * Date: 2017/4/12
+ * Time: 17:57
+ * To change this template use File | Settings | File Templates.
+ */
+(function() {
+    'use strict';
+    angular.module('app.core').service('tools', tools);
+    tools.$inject = ['$timeout', '$rootScope', '$cookies'];
+
+    function tools($timeout, $rootScope, $cookies) {
+        /**
+         * 退出
+         */
+        this.logout = function () {
+            $cookies.remove('user');
+            $rootScope.user = $cookies.getObject('user');
+            localStorage.clear();
+        };
+        /**
+         * 成功提示框
+         * @param data  提示信息
+         */
+        this.alertSuccess = function (data, time) {
+            $rootScope.alert = true;
+            $rootScope.isActive = true;
+            $timeout(function () {
+                $rootScope.alert = false;
+            }, time ? time : 2000);
+            $rootScope.alertValue = data;
+        };
+        /**
+         * 失败提示框
+         * @param data  提示信息
+         */
+        this.alertError = function (data, time) {
+            $rootScope.alert = true;
+            $rootScope.isActive = false;
+            $timeout(function () {
+                $rootScope.alert = false;
+            }, time ? time : 2000);
+            $rootScope.alertValue = data;
+        };
+        /**
+         * 判断对象是否为空
+         * @param e
+         * @returns {boolean}
+         */
+        this.isEmptyObject = function (e) {
+            var t;
+            for (t in e) {
+                return !1;
+            }
+            return !0;
+        };
+        /**
+         * 改数组null为0
+         * @param arr
+         * @param item *多少
+         * @returns {boolean}
+         */
+        this.formatArr = function (arr, item) {
+            return arr.map(function (data) {
+                return data == null || data === 'NaN' ? 0 : (item == null ? data : data * item);
+            });
+        };
+        /**
+         * 格式化字符串
+         * @param str   传入字符串
+         * @param num   从第几个位置开始
+         * @param tips  添加标记
+         * @returns {string}
+         */
+        this.formatStr = function (str, num, tips) {
+            var newStr = '';
+            var count = 0;
+            if (str) {
+                for (var i = 0, len = str.length; i < len; i++) {
+                    if (count % num === 0 && count !== 0) {
+                        newStr = newStr + tips + str.charAt(i);
+                    } else {
+                        newStr = newStr + str.charAt(i);
+                    }
+                    count++;
+                }
+                return newStr;
+            } else {
+                return str;
+            }
+        };
+        /**
+         * 返回数组中最大值
+         * @param arr
+         */
+        this.max = function (arr) {
+            //Math.max.apply(null, [])  =>-Infinity
+            if (angular.isArray(arr)) {
+                return arr.length > 0 ? Math.max.apply(null, arr) : 0;
+            } else {
+                console.log(arr + 'is not a array');
+            }
+        };
+        /**
+         * 返回数组中最小值
+         * @param arr
+         */
+        this.min = function (arr) {
+            if (angular.isArray(arr)) {
+                return arr.length > 0 ? Math.min.apply(null, arr) : 0;
+            } else {
+                console.log(arr + 'is not a array');
+            }
+        };
+    }
+})();
+/**
+ * Created with IntelliJ IDEA.
+ * User: dothin
+ * Date: 2017/4/12
  * Time: 20:16
  * To change this template use File | Settings | File Templates.
  */
@@ -3129,123 +3419,6 @@
             return httpServer.postHttp('/user/logout');
         };
         return myServices;
-    }
-})();
-/**
- * Created with IntelliJ IDEA.
- * User: dothin
- * Date: 2017/4/12
- * Time: 17:57
- * To change this template use File | Settings | File Templates.
- */
-(function() {
-    'use strict';
-    angular.module('app.core').service('tools', tools);
-    tools.$inject = ['$timeout', '$rootScope', '$cookies'];
-
-    function tools($timeout, $rootScope, $cookies) {
-        /**
-         * 退出
-         */
-        this.logout = function () {
-            $cookies.remove('user');
-            $rootScope.user = $cookies.getObject('user');
-            localStorage.clear();
-        };
-        /**
-         * 成功提示框
-         * @param data  提示信息
-         */
-        this.alertSuccess = function (data, time) {
-            $rootScope.alert = true;
-            $rootScope.isActive = true;
-            $timeout(function () {
-                $rootScope.alert = false;
-            }, time ? time : 2000);
-            $rootScope.alertValue = data;
-        };
-        /**
-         * 失败提示框
-         * @param data  提示信息
-         */
-        this.alertError = function (data, time) {
-            $rootScope.alert = true;
-            $rootScope.isActive = false;
-            $timeout(function () {
-                $rootScope.alert = false;
-            }, time ? time : 2000);
-            $rootScope.alertValue = data;
-        };
-        /**
-         * 判断对象是否为空
-         * @param e
-         * @returns {boolean}
-         */
-        this.isEmptyObject = function (e) {
-            var t;
-            for (t in e) {
-                return !1;
-            }
-            return !0;
-        };
-        /**
-         * 改数组null为0
-         * @param arr
-         * @param item *多少
-         * @returns {boolean}
-         */
-        this.formatArr = function (arr, item) {
-            return arr.map(function (data) {
-                return data == null || data === 'NaN' ? 0 : (item == null ? data : data * item);
-            });
-        };
-        /**
-         * 格式化字符串
-         * @param str   传入字符串
-         * @param num   从第几个位置开始
-         * @param tips  添加标记
-         * @returns {string}
-         */
-        this.formatStr = function (str, num, tips) {
-            var newStr = '';
-            var count = 0;
-            if (str) {
-                for (var i = 0, len = str.length; i < len; i++) {
-                    if (count % num === 0 && count !== 0) {
-                        newStr = newStr + tips + str.charAt(i);
-                    } else {
-                        newStr = newStr + str.charAt(i);
-                    }
-                    count++;
-                }
-                return newStr;
-            } else {
-                return str;
-            }
-        };
-        /**
-         * 返回数组中最大值
-         * @param arr
-         */
-        this.max = function (arr) {
-            //Math.max.apply(null, [])  =>-Infinity
-            if (angular.isArray(arr)) {
-                return arr.length > 0 ? Math.max.apply(null, arr) : 0;
-            } else {
-                console.log(arr + 'is not a array');
-            }
-        };
-        /**
-         * 返回数组中最小值
-         * @param arr
-         */
-        this.min = function (arr) {
-            if (angular.isArray(arr)) {
-                return arr.length > 0 ? Math.min.apply(null, arr) : 0;
-            } else {
-                console.log(arr + 'is not a array');
-            }
-        };
     }
 })();
 /**

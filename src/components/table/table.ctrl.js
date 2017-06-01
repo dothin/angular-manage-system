@@ -8,7 +8,7 @@
 
 (function () {
     'use strict';
-    angular.module('app.home').controller('tableCtrl', tableCtrl);
+    angular.module('app.table').controller('tableCtrl', tableCtrl);
     tableCtrl.$inject = ['$state', '$rootScope', 'tools'];
     function tableCtrl($state, $rootScope, tools) {
         tools.alertSuccess('success')

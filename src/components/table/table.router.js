@@ -26,6 +26,20 @@
                     }
                 }
             }
+        },{
+            state: 'main.table.ngTable',
+            config:{
+                url: '/ngTable',
+                templateUrl: 'dist/tpls/table/ngTable/ngTable.html',
+                controller: 'ngTableCtrl as vm'
+            }
+        },{
+            state: 'main.table.ngPagination',
+            config:{
+                url: '/ngPagination',
+                templateUrl: 'dist/tpls/table/ngPagination/ngPagination.html',
+                controller: 'ngPaginationCtrl as vm'
+            }
         }];
     }
 })();

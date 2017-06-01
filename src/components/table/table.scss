@@ -22,3 +22,26 @@ table {
 		background: $table-odd-bg;
 	}
 }
+
+.table-container {
+	@include stretch(0, 0, 0, 0);
+	@extend .h100s;
+	overflow-x: hidden;
+	overflow-y: auto;
+	padding: 10px 35px;
+	.col-wrap {
+		background: $fff;
+		@extend .h100s;
+		@extend .p20;
+		@media (max-height: 768px) {
+			padding:10px;
+		}
+		.allResultTable{
+			thead{
+				tr:nth-child(2){
+					display: none;
+				}
+			}
+		}
+	}
+}
