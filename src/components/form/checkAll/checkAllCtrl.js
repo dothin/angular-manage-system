@@ -32,7 +32,6 @@
                     vm.checked = [];
                 })
             }
-            console.log(vm.checked);
         };
         vm.selectOne = function () {
             angular.forEach(vm.list , function (i) {
@@ -49,7 +48,6 @@
             } else {
                 vm.select_all = false;
             }
-            console.log(vm.checked);
         }
     }]);
 })();

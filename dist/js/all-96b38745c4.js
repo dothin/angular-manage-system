@@ -65,23 +65,23 @@
  * Created with IntelliJ IDEA.
  * User: dothin
  * Date: 2017/4/12
- * Time: 17:54
- * To change this template use File | Settings | File Templates.
- */
-(function() {
-    'use strict';
-    angular.module('app.login', ['app.core']);
-})();
-/**
- * Created with IntelliJ IDEA.
- * User: dothin
- * Date: 2017/4/12
  * Time: 20:33
  * To change this template use File | Settings | File Templates.
  */
 (function() {
     'use strict';
     angular.module('app.layout', ['app.core']);
+})();
+/**
+ * Created with IntelliJ IDEA.
+ * User: dothin
+ * Date: 2017/4/12
+ * Time: 17:54
+ * To change this template use File | Settings | File Templates.
+ */
+(function() {
+    'use strict';
+    angular.module('app.login', ['app.core']);
 })();
 /**
  * Created with IntelliJ IDEA.
@@ -373,7 +373,7 @@
         return [{
             state: 'main.form',
             config: {
-                url: 'dist/tpls/form/form.html',
+                url: '/form',
                 views: {
                     'section@main': {
                         templateUrl: 'dist/tpls/form/form.html',
@@ -384,14 +384,16 @@
         },{
             state: 'main.form.checkAll',
             config: {
-                url: 'dist/tpls/form/checkAll/checkAll.html',
+                url: '/checkAll',
+                templateUrl: 'dist/tpls/form/checkAll/checkAll.html',
                 controller: 'checkAllCtrl as vm'
             }
         },{
             state: 'main.form.editor',
-                config: {
-                url: 'dist/tpls/form/editor/editor.html',
-                    controller: 'editorCtrl as vm'
+            config: {
+                url: '/editor',
+                templateUrl: 'dist/tpls/form/editor/editor.html',
+                controller: 'editorCtrl as vm'
             }
         }];
     }
@@ -446,67 +448,6 @@
     }
 })();
 
-/**
- * Created with IntelliJ IDEA.
- * User: gaoHuaBin
- * Date: 2016/10/20
- * Time: 11:18
- * To change this template use File | Settings | File Templates.
- */
-(function () {
-    'use strict';
-    angular.module('app.login').controller('loginCtrl', loginCtrl);
-    loginCtrl.$inject = ['$rootScope', '$state', '$cookies'];
-
-    function loginCtrl($rootScope, $state, $cookies) {
-        //检查登录
-        $rootScope.user && $state.go('main');
-        var vm = this;
-        vm.submit = false;
-        vm.user = {};
-        /**
-         * 登录
-         * @returns {boolean}
-         */
-        vm.login = function () {
-            vm.submit = true;
-            if (vm.loginForm.$valid) {
-                $cookies.putObject('user', {
-                    name: vm.user.username
-                });
-                $rootScope.user = $cookies.getObject('user');
-                $state.go('main');
-            }
-        };
-    }
-})();
-/**
- * Created with IntelliJ IDEA.
- * User: dothin
- * Date: 2017/4/12
- * Time: 18:00
- * To change this template use File | Settings | File Templates.
- */
-(function() {
-    'use strict';
-    angular.module('app.login').run(appRun);
-    appRun.$inject = ['routerHelper'];
-
-    function appRun(routerHelper) {
-        routerHelper.configureStates(getStates());
-    }
-
-    function getStates() {
-        return [{
-            state: 'login',
-            config: {
-                url: '/login',
-                templateUrl: 'dist/tpls/login/login.html',
-                controller: 'loginCtrl as vm'
-            }
-        }];
-    }
-})();
 /**
  * Created with IntelliJ IDEA.
  * User: gaoHuaBin
@@ -634,6 +575,67 @@
     }
 })();
 
+/**
+ * Created with IntelliJ IDEA.
+ * User: gaoHuaBin
+ * Date: 2016/10/20
+ * Time: 11:18
+ * To change this template use File | Settings | File Templates.
+ */
+(function () {
+    'use strict';
+    angular.module('app.login').controller('loginCtrl', loginCtrl);
+    loginCtrl.$inject = ['$rootScope', '$state', '$cookies'];
+
+    function loginCtrl($rootScope, $state, $cookies) {
+        //检查登录
+        $rootScope.user && $state.go('main');
+        var vm = this;
+        vm.submit = false;
+        vm.user = {};
+        /**
+         * 登录
+         * @returns {boolean}
+         */
+        vm.login = function () {
+            vm.submit = true;
+            if (vm.loginForm.$valid) {
+                $cookies.putObject('user', {
+                    name: vm.user.username
+                });
+                $rootScope.user = $cookies.getObject('user');
+                $state.go('main');
+            }
+        };
+    }
+})();
+/**
+ * Created with IntelliJ IDEA.
+ * User: dothin
+ * Date: 2017/4/12
+ * Time: 18:00
+ * To change this template use File | Settings | File Templates.
+ */
+(function() {
+    'use strict';
+    angular.module('app.login').run(appRun);
+    appRun.$inject = ['routerHelper'];
+
+    function appRun(routerHelper) {
+        routerHelper.configureStates(getStates());
+    }
+
+    function getStates() {
+        return [{
+            state: 'login',
+            config: {
+                url: '/login',
+                templateUrl: 'dist/tpls/login/login.html',
+                controller: 'loginCtrl as vm'
+            }
+        }];
+    }
+})();
 /**
  * Created with IntelliJ IDEA.
  * User: dothin
@@ -2174,16 +2176,6 @@
 (function () {
     'use strict';
 
-    angular.module('app.form').controller('editorCtrl', [function () {
-        var vm = this;
-    }]);
-})();
-/**
- * Created by liuying on 2017/6/5.
- */
-(function () {
-    'use strict';
-
     angular.module('app.form').controller('checkAllCtrl', [function () {
         var vm = this;
 
@@ -2212,7 +2204,6 @@
                     vm.checked = [];
                 })
             }
-            console.log(vm.checked);
         };
         vm.selectOne = function () {
             angular.forEach(vm.list , function (i) {
@@ -2229,8 +2220,17 @@
             } else {
                 vm.select_all = false;
             }
-            console.log(vm.checked);
         }
+    }]);
+})();
+/**
+ * Created by liuying on 2017/6/5.
+ */
+(function () {
+    'use strict';
+
+    angular.module('app.form').controller('editorCtrl', [function () {
+        var vm = this;
     }]);
 })();
 /**
@@ -2391,6 +2391,525 @@
         }
     ]);
 
+})();
+/**
+ * @Author: gaohuabin
+ * @Date:   2016-10-07 17:17:55
+ * @Last Modified by:   gaohuabin
+ * @Last Modified time: 2016-10-07 17:19:15
+ */
+(function () {
+    'use strict';
+    angular.module('app.core').factory('postInterceptor', postInterceptor);
+    postInterceptor.$inject = ['$rootScope', '$location', '$q', 'tools', '$timeout', '$cookies'];
+    function postInterceptor ($rootScope, $location, $q, tools, $timeout, $cookies) {
+        return {
+            'request': function (config) {
+                return config;
+            },
+            'response': function (resp) {
+                if (resp.data.status === false) {
+                    if (resp.data.code === 70005) {
+                        if (resp.data.code === 70005) {
+                            tools.alertError('登录过期，正在跳转到登录界面');
+                            $timeout(function () {
+                                $cookies.remove('user');
+                                $rootScope.user = $cookies.getObject('user');
+                                localStorage.clear();
+                                window.location.href = $location.$$absUrl.split('#')[0] + '#/login';
+                            }, 2000);
+                        } else {
+                            tools.alertError(resp.data.message);
+                        }
+                    } else {
+                        tools.alertError(resp.data.message);
+                    }
+                }
+                return resp;
+            },
+            'requestError': function (rejection) {
+                console.log('requestError' + $q.reject(rejection));
+                return $q.reject(rejection);
+            },
+            'responseError': function (rejection) {
+                if (rejection.status === 500) {
+                    tools.alertError('服务器异常！！！');
+                    /*$timeout(function () {
+                     $cookies.remove('user');
+                     $rootScope.user = $cookies.getObject('user');
+                     localStorage.clear();
+                     window.location.href = $location.$$protocol + '://' + $location.$$host + ':' + $location.$$port + '/#/login';
+                     }, 1000);*/
+                }
+                return rejection;
+            }
+        };
+    }
+})();
+/**
+ * Created with IntelliJ IDEA.
+ * User: gaoHuaBin
+ * Date: 2016/12/5
+ * Time: 11:02
+ * To change this template use File | Settings | File Templates.
+ */
+(function () {
+    'use strict';
+    /**
+     * 常量
+     */
+    angular.module('app.core').constant('ERRORS', {
+        email: '格式错误',
+        required: '不能为空',
+        validatePassword: '密码格式错误',
+        repeat: '确认秘密和新密码不一致',
+        number: '只能是数字'
+    });
+})();
+/**
+ * Created with IntelliJ IDEA.
+ * User: dothin
+ * Date: 2017/4/13
+ * Time: 11:20
+ * To change this template use File | Settings | File Templates.
+ */
+(function () {
+    'use strict';
+    /**
+     * 常量
+     */
+    angular.module('app.core').constant('ROOT', '');
+})();
+/**
+ * Created with IntelliJ IDEA.
+ * User: dothin
+ * Date: 2017/4/12
+ * Time: 20:16
+ * To change this template use File | Settings | File Templates.
+ */
+(function () {
+    'use strict';
+    angular.module('app.core').factory('httpServer', httpServer);
+    httpServer.$inject = ['$http', '$q', 'ROOT'];
+
+    function httpServer($http, $q, ROOT) {
+        return {
+            postHttp: function (url, data) {
+                var deferred = $q.defer();
+                if (data) {
+                    $http({
+                        method: 'post',
+                        url: ROOT + url,
+                        data: data,
+                        timeout: deferred.promise,
+                        cancel: deferred
+                    }).success(function (resp) {
+                        deferred.resolve(resp);
+                    }).error(function (resp) {
+                        deferred.reject(resp);
+                    });
+                } else {
+                    $http({
+                        method: 'post',
+                        url: ROOT + url,
+                        timeout: deferred.promise,
+                        cancel: deferred,
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded'
+                        }
+                    }).success(function (resp) {
+                        deferred.resolve(resp);
+                    }).error(function (resp) {
+                        deferred.reject(resp);
+                    });
+                }
+                return deferred.promise;
+            },
+            put: function (url, data) {
+                var deferred = $q.defer();
+                $http({
+                    method: 'put',
+                    url: ROOT + url,
+                    data: data,
+                    timeout: deferred.promise,
+                    cancel: deferred
+                }).success(function (resp) {
+                    deferred.resolve(resp);
+                }).error(function (resp) {
+                    deferred.reject(resp);
+                });
+                return deferred.promise;
+            },
+            post: function (url, data) {
+                var deferred = $q.defer();
+                $http.post(ROOT + url + '/' + data, {
+                    timeout: deferred.promise,
+                    cancel: deferred
+                }).success(function (resp) {
+                    deferred.resolve(resp);
+                }).error(function (resp) {
+                    deferred.reject(resp);
+                });
+                return deferred.promise;
+            },
+            get: function (url, data) {
+                var deferred = $q.defer();
+                $http.get(ROOT + url + (data ? ('/' + data) : ''), {
+                    timeout: deferred.promise,
+                    cancel: deferred
+                }).success(function (resp) {
+                    deferred.resolve(resp);
+                }).error(function (resp) {
+                    deferred.reject(resp);
+                });
+                return deferred.promise;
+            },
+            delete: function (url, data) {
+                var deferred = $q.defer();
+                $http.delete(ROOT + url + '/' + data, {
+                    timeout: deferred.promise,
+                    cancel: deferred
+                }).success(function (resp) {
+                    deferred.resolve(resp);
+                }).error(function (resp) {
+                    deferred.reject(resp);
+                });
+                return deferred.promise;
+            }
+        };
+    }
+})();
+
+/**
+ * Created with IntelliJ IDEA.
+ * User: dothin
+ * Date: 2017/4/13
+ * Time: 11:41
+ * To change this template use File | Settings | File Templates.
+ */
+(function() {
+    'use strict';
+    angular.module('app.core').factory('userServer', userServer);
+    userServer.$inject = ['httpServer'];
+
+    function userServer(httpServer) {
+        var myServices = {};
+        //登录
+        myServices.login = function (data) {
+            return httpServer.postHttp('/user/login', data);
+        };
+        //退出登录
+        myServices.logout = function () {
+            return httpServer.postHttp('/user/logout');
+        };
+        return myServices;
+    }
+})();
+/**
+ * Created with IntelliJ IDEA.
+ * User: dothin
+ * Date: 2017/4/12
+ * Time: 17:57
+ * To change this template use File | Settings | File Templates.
+ */
+(function() {
+    'use strict';
+    angular.module('app.core').service('tools', tools);
+    tools.$inject = ['$timeout', '$rootScope', '$cookies'];
+
+    function tools($timeout, $rootScope, $cookies) {
+        /**
+         * 退出
+         */
+        this.logout = function () {
+            $cookies.remove('user');
+            $rootScope.user = $cookies.getObject('user');
+            localStorage.clear();
+        };
+        /**
+         * 成功提示框
+         * @param data  提示信息
+         */
+        this.alertSuccess = function (data, time) {
+            $rootScope.alert = true;
+            $rootScope.isActive = true;
+            $timeout(function () {
+                $rootScope.alert = false;
+            }, time ? time : 2000);
+            $rootScope.alertValue = data;
+        };
+        /**
+         * 失败提示框
+         * @param data  提示信息
+         */
+        this.alertError = function (data, time) {
+            $rootScope.alert = true;
+            $rootScope.isActive = false;
+            $timeout(function () {
+                $rootScope.alert = false;
+            }, time ? time : 2000);
+            $rootScope.alertValue = data;
+        };
+        /**
+         * 判断对象是否为空
+         * @param e
+         * @returns {boolean}
+         */
+        this.isEmptyObject = function (e) {
+            var t;
+            for (t in e) {
+                return !1;
+            }
+            return !0;
+        };
+        /**
+         * 改数组null为0
+         * @param arr
+         * @param item *多少
+         * @returns {boolean}
+         */
+        this.formatArr = function (arr, item) {
+            return arr.map(function (data) {
+                return data == null || data === 'NaN' ? 0 : (item == null ? data : data * item);
+            });
+        };
+        /**
+         * 格式化字符串
+         * @param str   传入字符串
+         * @param num   从第几个位置开始
+         * @param tips  添加标记
+         * @returns {string}
+         */
+        this.formatStr = function (str, num, tips) {
+            var newStr = '';
+            var count = 0;
+            if (str) {
+                for (var i = 0, len = str.length; i < len; i++) {
+                    if (count % num === 0 && count !== 0) {
+                        newStr = newStr + tips + str.charAt(i);
+                    } else {
+                        newStr = newStr + str.charAt(i);
+                    }
+                    count++;
+                }
+                return newStr;
+            } else {
+                return str;
+            }
+        };
+        /**
+         * 返回数组中最大值
+         * @param arr
+         */
+        this.max = function (arr) {
+            //Math.max.apply(null, [])  =>-Infinity
+            if (angular.isArray(arr)) {
+                return arr.length > 0 ? Math.max.apply(null, arr) : 0;
+            } else {
+                console.log(arr + 'is not a array');
+            }
+        };
+        /**
+         * 返回数组中最小值
+         * @param arr
+         */
+        this.min = function (arr) {
+            if (angular.isArray(arr)) {
+                return arr.length > 0 ? Math.min.apply(null, arr) : 0;
+            } else {
+                console.log(arr + 'is not a array');
+            }
+        };
+    }
+})();
+/**
+ * Created with IntelliJ IDEA.
+ * User: gaoHuaBin
+ * Date: 2016/10/11
+ * Time: 10:45
+ * To change this template use File | Settings | File Templates.
+ */
+(function () {
+    'use strict';
+    /**
+     * 错误提示指令
+     */
+    angular.module('app.core').directive('fieldError', fieldError);
+
+    fieldError.$inject = ['$compile'];
+
+    function fieldError($compile) {
+        return {
+            restrict: 'A',
+            require: 'ngModel',
+            scope: {
+                active: '='
+            },
+            link: function (scope, element, attrs, ngModel) {
+                var subScope = scope.$new(true);
+                subScope.hasError = function () {
+                    if(scope.active != null){
+                        return ngModel.$invalid && scope.active;
+                    }else{
+                        return ngModel.$invalid && ngModel.$dirty;
+                    }
+                    //return ngModel.$invalid && ngModel.$dirty && (scope.active != null ? scope.active : true);
+                };
+                subScope.errors = function () {
+                    return ngModel.$error;
+                };
+                subScope.customMessages = scope.$eval(attrs.fieldError);
+                var hint = $compile('<ul ng-if="hasError()"><li ng-repeat="(name,wrong) in errors()" class="text-wrong" ng-if="wrong && name !==\'parse\'">{{name | error:customMessages}}</li></ul>')(subScope);
+                element.after(hint);
+            }
+        };
+    }
+})();
+/**
+ * Created with IntelliJ IDEA.
+ * User: gaoHuaBin
+ * Date: 2016/8/22
+ * Time: 15:43
+ * To change this template use File | Settings | File Templates.
+ */
+(function () {
+    'use strict';
+    angular.module('app.core').directive('repeat', repeat);
+
+    repeat.$inject = [];
+
+    function repeat() {
+        return {
+            restrict: 'A',
+            require: 'ngModel',
+            link: function (scope, element, attrs, ctrl) {
+                if (ctrl) {
+                    var otherInput = element.inheritedData('$formController')[attrs.repeat];
+
+                    var repeatValidator = function (value) {
+                        var validity = value === otherInput.$viewValue;
+                        ctrl.$setValidity('repeat', validity);
+                        return validity ? value : undefined;
+                    };
+
+                    ctrl.$parsers.push(repeatValidator);
+                    ctrl.$formatters.push(repeatValidator);
+
+                    otherInput.$parsers.push(function (value) {
+                        ctrl.$setValidity('repeat', value === ctrl.$viewValue);
+                        return value;
+                    });
+                }
+            }
+        };
+    }
+})();
+/**
+ * Created with IntelliJ IDEA.
+ * User: gaoHuaBin
+ * Date: 2016/11/17
+ * Time: 14:40
+ * To change this template use File | Settings | File Templates.
+ */
+(function () {
+    'use strict';
+    angular.module('app.core').directive('tooltip', tooltip);
+
+    tooltip.$inject = ['$compile'];
+
+    function tooltip($compile) {
+        return {
+            restrict: 'A',
+            link: function (scope, element, attrs) {
+                //定义策略，为了防止多次声明，先判断是否存在
+                var strategy = strategy || {
+                        top: function (ele, tip) {
+                            return {
+                                left: ele.offsetWidth > tip.offsetWidth ? Math.abs(tip.offsetWidth - ele.offsetWidth) / 2 : -Math.abs(tip.offsetWidth - ele.offsetWidth) / 2,
+                                top: -(ele.offsetHeight + 15)
+                            };
+                        },
+                        right: function (ele, tip) {
+                            return {
+                                left: ele.offsetWidth + 10,
+                                top: ele.offsetHeight > tip.offsetHeight ? Math.abs(tip.offsetHeight - ele.offsetHeight) / 2 : -Math.abs(tip.offsetHeight - ele.offsetHeight) / 2
+                            };
+                        },
+                        bottom: function (ele, tip) {
+                            return {
+                                left: this.top(ele, tip).left,
+                                top: ele.offsetHeight + 10
+                            };
+                        },
+                        left: function (ele, tip) {
+                            return {
+                                left: -(ele.offsetWidth + 15),
+                                top: this.right(ele, tip).top
+                            };
+                        }
+                    };
+                var subScope = scope.$new(true);
+                subScope.tooltip = {
+                    content: '',
+                    mode: 'top'
+                };
+                //获取用户配置
+                angular.extend(subScope.tooltip, scope.$eval(attrs.tooltip));
+                var hint = $compile('<span class="tool-tip tool-tip-' + subScope.tooltip.mode + '">{{tooltip.content}}</span>')(subScope);
+                //监听，用tooltip-content属性值覆盖tooltip值
+                attrs.$observe('tooltipContent', function (newTooltipContent) {
+                    if (newTooltipContent) {
+                        hint = $compile('<span class="tool-tip tool-tip-' + subScope.tooltip.mode + '">' + newTooltipContent + '</span>')(subScope);
+                    }
+                });
+                //防止element有决定定位，不需要加相对定位
+                //element.css({'position': 'relative'});
+                element.on('mouseover', function () {
+                    element.append(hint).removeAttr('title');
+                    //使用策略
+                    hint.css({
+                        left: strategy[subScope.tooltip.mode](element[0], hint[0]).left + 'px',
+                        top: strategy[subScope.tooltip.mode](element[0], hint[0]).top + 'px'
+                    });
+                });
+                element.on('mouseleave', function () {
+                    hint && hint.remove();
+                });
+            }
+        };
+    }
+})();
+/**
+ * Created with IntelliJ IDEA.
+ * User: gaoHuaBin
+ * Date: 2016/8/22
+ * Time: 15:43
+ * To change this template use File | Settings | File Templates.
+ */
+(function () {
+    'use strict';
+    angular.module('app.core').directive('validatePassword', validatePassword);
+
+    validatePassword.$inject = ['$compile'];
+
+    function validatePassword($compile) {
+        return {
+            require: 'ngModel',
+            link: function (scope, element, attr, ngModel) {
+                if (ngModel) {
+                    //正则反向验证：密码要求长度8-20位，至少包括大写字母、小写字母、数字、特殊字符中的两项。
+                    var passwordRegexp = /^([0-9]*|[A-Z]*|[a-z]*|[^0-9a-zA-Z]*)$/;
+                }
+                var customValidator = function (value) {
+                    var validity = ngModel.$isEmpty(value) || !passwordRegexp.test(value);
+                    ngModel.$setValidity('validatePassword', validity);
+                    return validity ? value : undefined;
+                };
+                ngModel.$formatters.push(customValidator);
+                ngModel.$parsers.push(customValidator);
+            }
+        };
+    }
 })();
 /**
  * Created with IntelliJ IDEA.
@@ -2978,525 +3497,6 @@
             }
         };
     }]);
-})();
-/**
- * Created with IntelliJ IDEA.
- * User: gaoHuaBin
- * Date: 2016/10/11
- * Time: 10:45
- * To change this template use File | Settings | File Templates.
- */
-(function () {
-    'use strict';
-    /**
-     * 错误提示指令
-     */
-    angular.module('app.core').directive('fieldError', fieldError);
-
-    fieldError.$inject = ['$compile'];
-
-    function fieldError($compile) {
-        return {
-            restrict: 'A',
-            require: 'ngModel',
-            scope: {
-                active: '='
-            },
-            link: function (scope, element, attrs, ngModel) {
-                var subScope = scope.$new(true);
-                subScope.hasError = function () {
-                    if(scope.active != null){
-                        return ngModel.$invalid && scope.active;
-                    }else{
-                        return ngModel.$invalid && ngModel.$dirty;
-                    }
-                    //return ngModel.$invalid && ngModel.$dirty && (scope.active != null ? scope.active : true);
-                };
-                subScope.errors = function () {
-                    return ngModel.$error;
-                };
-                subScope.customMessages = scope.$eval(attrs.fieldError);
-                var hint = $compile('<ul ng-if="hasError()"><li ng-repeat="(name,wrong) in errors()" class="text-wrong" ng-if="wrong && name !==\'parse\'">{{name | error:customMessages}}</li></ul>')(subScope);
-                element.after(hint);
-            }
-        };
-    }
-})();
-/**
- * Created with IntelliJ IDEA.
- * User: gaoHuaBin
- * Date: 2016/8/22
- * Time: 15:43
- * To change this template use File | Settings | File Templates.
- */
-(function () {
-    'use strict';
-    angular.module('app.core').directive('repeat', repeat);
-
-    repeat.$inject = [];
-
-    function repeat() {
-        return {
-            restrict: 'A',
-            require: 'ngModel',
-            link: function (scope, element, attrs, ctrl) {
-                if (ctrl) {
-                    var otherInput = element.inheritedData('$formController')[attrs.repeat];
-
-                    var repeatValidator = function (value) {
-                        var validity = value === otherInput.$viewValue;
-                        ctrl.$setValidity('repeat', validity);
-                        return validity ? value : undefined;
-                    };
-
-                    ctrl.$parsers.push(repeatValidator);
-                    ctrl.$formatters.push(repeatValidator);
-
-                    otherInput.$parsers.push(function (value) {
-                        ctrl.$setValidity('repeat', value === ctrl.$viewValue);
-                        return value;
-                    });
-                }
-            }
-        };
-    }
-})();
-/**
- * Created with IntelliJ IDEA.
- * User: gaoHuaBin
- * Date: 2016/11/17
- * Time: 14:40
- * To change this template use File | Settings | File Templates.
- */
-(function () {
-    'use strict';
-    angular.module('app.core').directive('tooltip', tooltip);
-
-    tooltip.$inject = ['$compile'];
-
-    function tooltip($compile) {
-        return {
-            restrict: 'A',
-            link: function (scope, element, attrs) {
-                //定义策略，为了防止多次声明，先判断是否存在
-                var strategy = strategy || {
-                        top: function (ele, tip) {
-                            return {
-                                left: ele.offsetWidth > tip.offsetWidth ? Math.abs(tip.offsetWidth - ele.offsetWidth) / 2 : -Math.abs(tip.offsetWidth - ele.offsetWidth) / 2,
-                                top: -(ele.offsetHeight + 15)
-                            };
-                        },
-                        right: function (ele, tip) {
-                            return {
-                                left: ele.offsetWidth + 10,
-                                top: ele.offsetHeight > tip.offsetHeight ? Math.abs(tip.offsetHeight - ele.offsetHeight) / 2 : -Math.abs(tip.offsetHeight - ele.offsetHeight) / 2
-                            };
-                        },
-                        bottom: function (ele, tip) {
-                            return {
-                                left: this.top(ele, tip).left,
-                                top: ele.offsetHeight + 10
-                            };
-                        },
-                        left: function (ele, tip) {
-                            return {
-                                left: -(ele.offsetWidth + 15),
-                                top: this.right(ele, tip).top
-                            };
-                        }
-                    };
-                var subScope = scope.$new(true);
-                subScope.tooltip = {
-                    content: '',
-                    mode: 'top'
-                };
-                //获取用户配置
-                angular.extend(subScope.tooltip, scope.$eval(attrs.tooltip));
-                var hint = $compile('<span class="tool-tip tool-tip-' + subScope.tooltip.mode + '">{{tooltip.content}}</span>')(subScope);
-                //监听，用tooltip-content属性值覆盖tooltip值
-                attrs.$observe('tooltipContent', function (newTooltipContent) {
-                    if (newTooltipContent) {
-                        hint = $compile('<span class="tool-tip tool-tip-' + subScope.tooltip.mode + '">' + newTooltipContent + '</span>')(subScope);
-                    }
-                });
-                //防止element有决定定位，不需要加相对定位
-                //element.css({'position': 'relative'});
-                element.on('mouseover', function () {
-                    element.append(hint).removeAttr('title');
-                    //使用策略
-                    hint.css({
-                        left: strategy[subScope.tooltip.mode](element[0], hint[0]).left + 'px',
-                        top: strategy[subScope.tooltip.mode](element[0], hint[0]).top + 'px'
-                    });
-                });
-                element.on('mouseleave', function () {
-                    hint && hint.remove();
-                });
-            }
-        };
-    }
-})();
-/**
- * Created with IntelliJ IDEA.
- * User: gaoHuaBin
- * Date: 2016/8/22
- * Time: 15:43
- * To change this template use File | Settings | File Templates.
- */
-(function () {
-    'use strict';
-    angular.module('app.core').directive('validatePassword', validatePassword);
-
-    validatePassword.$inject = ['$compile'];
-
-    function validatePassword($compile) {
-        return {
-            require: 'ngModel',
-            link: function (scope, element, attr, ngModel) {
-                if (ngModel) {
-                    //正则反向验证：密码要求长度8-20位，至少包括大写字母、小写字母、数字、特殊字符中的两项。
-                    var passwordRegexp = /^([0-9]*|[A-Z]*|[a-z]*|[^0-9a-zA-Z]*)$/;
-                }
-                var customValidator = function (value) {
-                    var validity = ngModel.$isEmpty(value) || !passwordRegexp.test(value);
-                    ngModel.$setValidity('validatePassword', validity);
-                    return validity ? value : undefined;
-                };
-                ngModel.$formatters.push(customValidator);
-                ngModel.$parsers.push(customValidator);
-            }
-        };
-    }
-})();
-/**
- * @Author: gaohuabin
- * @Date:   2016-10-07 17:17:55
- * @Last Modified by:   gaohuabin
- * @Last Modified time: 2016-10-07 17:19:15
- */
-(function () {
-    'use strict';
-    angular.module('app.core').factory('postInterceptor', postInterceptor);
-    postInterceptor.$inject = ['$rootScope', '$location', '$q', 'tools', '$timeout', '$cookies'];
-    function postInterceptor ($rootScope, $location, $q, tools, $timeout, $cookies) {
-        return {
-            'request': function (config) {
-                return config;
-            },
-            'response': function (resp) {
-                if (resp.data.status === false) {
-                    if (resp.data.code === 70005) {
-                        if (resp.data.code === 70005) {
-                            tools.alertError('登录过期，正在跳转到登录界面');
-                            $timeout(function () {
-                                $cookies.remove('user');
-                                $rootScope.user = $cookies.getObject('user');
-                                localStorage.clear();
-                                window.location.href = $location.$$absUrl.split('#')[0] + '#/login';
-                            }, 2000);
-                        } else {
-                            tools.alertError(resp.data.message);
-                        }
-                    } else {
-                        tools.alertError(resp.data.message);
-                    }
-                }
-                return resp;
-            },
-            'requestError': function (rejection) {
-                console.log('requestError' + $q.reject(rejection));
-                return $q.reject(rejection);
-            },
-            'responseError': function (rejection) {
-                if (rejection.status === 500) {
-                    tools.alertError('服务器异常！！！');
-                    /*$timeout(function () {
-                     $cookies.remove('user');
-                     $rootScope.user = $cookies.getObject('user');
-                     localStorage.clear();
-                     window.location.href = $location.$$protocol + '://' + $location.$$host + ':' + $location.$$port + '/#/login';
-                     }, 1000);*/
-                }
-                return rejection;
-            }
-        };
-    }
-})();
-/**
- * Created with IntelliJ IDEA.
- * User: gaoHuaBin
- * Date: 2016/12/5
- * Time: 11:02
- * To change this template use File | Settings | File Templates.
- */
-(function () {
-    'use strict';
-    /**
-     * 常量
-     */
-    angular.module('app.core').constant('ERRORS', {
-        email: '格式错误',
-        required: '不能为空',
-        validatePassword: '密码格式错误',
-        repeat: '确认秘密和新密码不一致',
-        number: '只能是数字'
-    });
-})();
-/**
- * Created with IntelliJ IDEA.
- * User: dothin
- * Date: 2017/4/13
- * Time: 11:20
- * To change this template use File | Settings | File Templates.
- */
-(function () {
-    'use strict';
-    /**
-     * 常量
-     */
-    angular.module('app.core').constant('ROOT', '');
-})();
-/**
- * Created with IntelliJ IDEA.
- * User: dothin
- * Date: 2017/4/12
- * Time: 17:57
- * To change this template use File | Settings | File Templates.
- */
-(function() {
-    'use strict';
-    angular.module('app.core').service('tools', tools);
-    tools.$inject = ['$timeout', '$rootScope', '$cookies'];
-
-    function tools($timeout, $rootScope, $cookies) {
-        /**
-         * 退出
-         */
-        this.logout = function () {
-            $cookies.remove('user');
-            $rootScope.user = $cookies.getObject('user');
-            localStorage.clear();
-        };
-        /**
-         * 成功提示框
-         * @param data  提示信息
-         */
-        this.alertSuccess = function (data, time) {
-            $rootScope.alert = true;
-            $rootScope.isActive = true;
-            $timeout(function () {
-                $rootScope.alert = false;
-            }, time ? time : 2000);
-            $rootScope.alertValue = data;
-        };
-        /**
-         * 失败提示框
-         * @param data  提示信息
-         */
-        this.alertError = function (data, time) {
-            $rootScope.alert = true;
-            $rootScope.isActive = false;
-            $timeout(function () {
-                $rootScope.alert = false;
-            }, time ? time : 2000);
-            $rootScope.alertValue = data;
-        };
-        /**
-         * 判断对象是否为空
-         * @param e
-         * @returns {boolean}
-         */
-        this.isEmptyObject = function (e) {
-            var t;
-            for (t in e) {
-                return !1;
-            }
-            return !0;
-        };
-        /**
-         * 改数组null为0
-         * @param arr
-         * @param item *多少
-         * @returns {boolean}
-         */
-        this.formatArr = function (arr, item) {
-            return arr.map(function (data) {
-                return data == null || data === 'NaN' ? 0 : (item == null ? data : data * item);
-            });
-        };
-        /**
-         * 格式化字符串
-         * @param str   传入字符串
-         * @param num   从第几个位置开始
-         * @param tips  添加标记
-         * @returns {string}
-         */
-        this.formatStr = function (str, num, tips) {
-            var newStr = '';
-            var count = 0;
-            if (str) {
-                for (var i = 0, len = str.length; i < len; i++) {
-                    if (count % num === 0 && count !== 0) {
-                        newStr = newStr + tips + str.charAt(i);
-                    } else {
-                        newStr = newStr + str.charAt(i);
-                    }
-                    count++;
-                }
-                return newStr;
-            } else {
-                return str;
-            }
-        };
-        /**
-         * 返回数组中最大值
-         * @param arr
-         */
-        this.max = function (arr) {
-            //Math.max.apply(null, [])  =>-Infinity
-            if (angular.isArray(arr)) {
-                return arr.length > 0 ? Math.max.apply(null, arr) : 0;
-            } else {
-                console.log(arr + 'is not a array');
-            }
-        };
-        /**
-         * 返回数组中最小值
-         * @param arr
-         */
-        this.min = function (arr) {
-            if (angular.isArray(arr)) {
-                return arr.length > 0 ? Math.min.apply(null, arr) : 0;
-            } else {
-                console.log(arr + 'is not a array');
-            }
-        };
-    }
-})();
-/**
- * Created with IntelliJ IDEA.
- * User: dothin
- * Date: 2017/4/12
- * Time: 20:16
- * To change this template use File | Settings | File Templates.
- */
-(function () {
-    'use strict';
-    angular.module('app.core').factory('httpServer', httpServer);
-    httpServer.$inject = ['$http', '$q', 'ROOT'];
-
-    function httpServer($http, $q, ROOT) {
-        return {
-            postHttp: function (url, data) {
-                var deferred = $q.defer();
-                if (data) {
-                    $http({
-                        method: 'post',
-                        url: ROOT + url,
-                        data: data,
-                        timeout: deferred.promise,
-                        cancel: deferred
-                    }).success(function (resp) {
-                        deferred.resolve(resp);
-                    }).error(function (resp) {
-                        deferred.reject(resp);
-                    });
-                } else {
-                    $http({
-                        method: 'post',
-                        url: ROOT + url,
-                        timeout: deferred.promise,
-                        cancel: deferred,
-                        headers: {
-                            'Content-Type': 'application/x-www-form-urlencoded'
-                        }
-                    }).success(function (resp) {
-                        deferred.resolve(resp);
-                    }).error(function (resp) {
-                        deferred.reject(resp);
-                    });
-                }
-                return deferred.promise;
-            },
-            put: function (url, data) {
-                var deferred = $q.defer();
-                $http({
-                    method: 'put',
-                    url: ROOT + url,
-                    data: data,
-                    timeout: deferred.promise,
-                    cancel: deferred
-                }).success(function (resp) {
-                    deferred.resolve(resp);
-                }).error(function (resp) {
-                    deferred.reject(resp);
-                });
-                return deferred.promise;
-            },
-            post: function (url, data) {
-                var deferred = $q.defer();
-                $http.post(ROOT + url + '/' + data, {
-                    timeout: deferred.promise,
-                    cancel: deferred
-                }).success(function (resp) {
-                    deferred.resolve(resp);
-                }).error(function (resp) {
-                    deferred.reject(resp);
-                });
-                return deferred.promise;
-            },
-            get: function (url, data) {
-                var deferred = $q.defer();
-                $http.get(ROOT + url + (data ? ('/' + data) : ''), {
-                    timeout: deferred.promise,
-                    cancel: deferred
-                }).success(function (resp) {
-                    deferred.resolve(resp);
-                }).error(function (resp) {
-                    deferred.reject(resp);
-                });
-                return deferred.promise;
-            },
-            delete: function (url, data) {
-                var deferred = $q.defer();
-                $http.delete(ROOT + url + '/' + data, {
-                    timeout: deferred.promise,
-                    cancel: deferred
-                }).success(function (resp) {
-                    deferred.resolve(resp);
-                }).error(function (resp) {
-                    deferred.reject(resp);
-                });
-                return deferred.promise;
-            }
-        };
-    }
-})();
-
-/**
- * Created with IntelliJ IDEA.
- * User: dothin
- * Date: 2017/4/13
- * Time: 11:41
- * To change this template use File | Settings | File Templates.
- */
-(function() {
-    'use strict';
-    angular.module('app.core').factory('userServer', userServer);
-    userServer.$inject = ['httpServer'];
-
-    function userServer(httpServer) {
-        var myServices = {};
-        //登录
-        myServices.login = function (data) {
-            return httpServer.postHttp('/user/login', data);
-        };
-        //退出登录
-        myServices.logout = function () {
-            return httpServer.postHttp('/user/logout');
-        };
-        return myServices;
-    }
 })();
 /**
  * Created with IntelliJ IDEA.
