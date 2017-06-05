@@ -292,57 +292,6 @@
 })();
 /**
  * Created with IntelliJ IDEA.
- * User: codingYing
- * Date: 2017/4/21
- * Time: 10:32
- * To change this template use File | Settings | File Templates.
- */
-(function () {
-    'use strict';
-
-    angular.module('app.echarts').controller('formCtrl', formCtrl);
-
-    formCtrl.$inject = [];
-
-    function formCtrl() {
-        var vm = this;
-    }
-})();
-
-/**
- * Created with IntelliJ IDEA.
- * User: dothin
- * Date: 2017/4/12
- * Time: 20:34
- * To change this template use File | Settings | File Templates.
- */
-(function () {
-    'use strict';
-    angular.module('app.form').run(appRun);
-    appRun.$inject = ['routerHelper'];
-
-    function appRun(routerHelper) {
-        routerHelper.configureStates(getStates());
-    }
-
-    function getStates() {
-        return [{
-            state: 'main.form',
-            config: {
-                url: '/form',
-                views: {
-                    'section@main': {
-                        templateUrl: 'dist/tpls/form/form.html',
-                        controller: 'formCtrl as vm'
-                    }
-                }
-            }
-        }];
-    }
-})();
-
-/**
- * Created with IntelliJ IDEA.
  * User: dothin
  * Date: 2017/4/13
  * Time: 9:38
@@ -385,6 +334,69 @@
         }
     }
 })();
+/**
+ * Created with IntelliJ IDEA.
+ * User: codingYing
+ * Date: 2017/4/21
+ * Time: 10:32
+ * To change this template use File | Settings | File Templates.
+ */
+(function () {
+    'use strict';
+
+    angular.module('app.echarts').controller('formCtrl', formCtrl);
+
+    formCtrl.$inject = [];
+
+    function formCtrl() {
+        var vm = this;
+    }
+})();
+
+/**
+ * Created with IntelliJ IDEA.
+ * User: dothin
+ * Date: 2017/4/12
+ * Time: 20:34
+ * To change this template use File | Settings | File Templates.
+ */
+(function () {
+    'use strict';
+    angular.module('app.form').run(appRun);
+    appRun.$inject = ['routerHelper'];
+
+    function appRun(routerHelper) {
+        routerHelper.configureStates(getStates());
+    }
+
+    function getStates() {
+        return [{
+            state: 'main.form',
+            config: {
+                url: 'dist/tpls/form/form.html',
+                views: {
+                    'section@main': {
+                        templateUrl: 'dist/tpls/form/form.html',
+                        controller: 'formCtrl as vm'
+                    }
+                }
+            }
+        },{
+            state: 'main.form.checkAll',
+            config: {
+                url: 'dist/tpls/form/checkAll/checkAll.html',
+                controller: 'checkAllCtrl as vm'
+            }
+        },{
+            state: 'main.form.editor',
+                config: {
+                url: 'dist/tpls/form/editor/editor.html',
+                    controller: 'editorCtrl as vm'
+            }
+        }];
+    }
+})();
+
 /**
  * Created with IntelliJ IDEA.
  * User: dothin
@@ -2155,6 +2167,71 @@
         text: '',
         color: '#ff587b'
     });
+})();
+/**
+ * Created by liuying on 2017/6/5.
+ */
+(function () {
+    'use strict';
+
+    angular.module('app.form').controller('editorCtrl', [function () {
+        var vm = this;
+    }]);
+})();
+/**
+ * Created by liuying on 2017/6/5.
+ */
+(function () {
+    'use strict';
+
+    angular.module('app.form').controller('checkAllCtrl', [function () {
+        var vm = this;
+
+        vm.list = [
+            {'id': 101},
+            {'id': 102},
+            {'id': 103},
+            {'id': 104},
+            {'id': 105},
+            {'id': 106},
+            {'id': 107}
+        ];
+
+        vm.m = [];
+        vm.checked = [];
+        vm.selectAll = function () {
+            if(vm.select_all) {
+                vm.checked = [];
+                angular.forEach(vm.list, function (i) {
+                    i.checked = true;
+                    vm.checked.push(i.id);
+                })
+            }else {
+                angular.forEach(vm.list, function (i) {
+                    i.checked = false;
+                    vm.checked = [];
+                })
+            }
+            console.log(vm.checked);
+        };
+        vm.selectOne = function () {
+            angular.forEach(vm.list , function (i) {
+                var index = vm.checked.indexOf(i.id);
+                if(i.checked && index === -1) {
+                    vm.checked.push(i.id);
+                } else if (!i.checked && index !== -1){
+                    vm.checked.splice(index, 1);
+                };
+            })
+
+            if (vm.list.length === vm.checked.length) {
+                vm.select_all = true;
+            } else {
+                vm.select_all = false;
+            }
+            console.log(vm.checked);
+        }
+    }]);
 })();
 /**
  * Created by liuying on 2017/6/1.

@@ -18,13 +18,25 @@
         return [{
             state: 'main.form',
             config: {
-                url: '/form',
+                url: 'dist/tpls/form/form.html',
                 views: {
                     'section@main': {
                         templateUrl: 'dist/tpls/form/form.html',
                         controller: 'formCtrl as vm'
                     }
                 }
+            }
+        },{
+            state: 'main.form.checkAll',
+            config: {
+                url: 'dist/tpls/form/checkAll/checkAll.html',
+                controller: 'checkAllCtrl as vm'
+            }
+        },{
+            state: 'main.form.editor',
+                config: {
+                url: 'dist/tpls/form/editor/editor.html',
+                    controller: 'editorCtrl as vm'
             }
         }];
     }
