@@ -18,7 +18,7 @@
         return [{
             state: 'main.form',
             config: {
-                url: 'dist/tpls/form/form.html',
+                url: '/form',
                 views: {
                     'section@main': {
                         templateUrl: 'dist/tpls/form/form.html',
@@ -29,14 +29,16 @@
         },{
             state: 'main.form.checkAll',
             config: {
-                url: 'dist/tpls/form/checkAll/checkAll.html',
+                url: '/checkAll',
+                templateUrl: 'dist/tpls/form/checkAll/checkAll.html',
                 controller: 'checkAllCtrl as vm'
             }
         },{
             state: 'main.form.editor',
-                config: {
-                url: 'dist/tpls/form/editor/editor.html',
-                    controller: 'editorCtrl as vm'
+            config: {
+                url: '/editor',
+                templateUrl: 'dist/tpls/form/editor/editor.html',
+                controller: 'editorCtrl as vm'
             }
         }];
     }
