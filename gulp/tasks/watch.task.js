@@ -23,7 +23,7 @@ module.exports = (gulp, config, $) =>  {
          *      'revHtml');
          * });
          */
-        gulp.watch(config.root + '**/*.scss', ['sass']);
+        gulp.watch(config.root + 'src/**/*.scss', ['sass']);
         gulp.watch(config.htmlSrc, ['minifyHtml']);
         gulp.watch(config.jsSrc, ['uglifyJs']);
         gulp.watch(config.root + 'src/index.html', ['revHtml']);
